@@ -15,7 +15,8 @@
 </template>
 
 <script>
-require('./assets/api/golos.min_global.js')
+//require('golos-js');
+require('./assets/api/golos.min_test.js')
 import VideoBlock from './VideoBlock.vue'
 
 export default {
@@ -75,6 +76,7 @@ export default {
 
     // пока что везде вывводим свежее, как будет постов побольше, надо будет передавать функцию через props
     golos.api.getDiscussionsByCreated(query, function(err, result) {
+      console.log('callback');
       if (!err) {
         for (var i = 0; i < result.length; ++i) {
           var v = result[i];
@@ -83,6 +85,7 @@ export default {
         }
       } else {
         console.log(err)
+        console.log(err.payload)
       }
     });
   }
