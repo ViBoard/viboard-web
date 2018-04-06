@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Index from './Index.vue'
 import New from './New.vue'
 import Single from './Single.vue'
+import Embed from './Embed.vue'
 
 // пути к страницам
 const routes = {
@@ -14,7 +15,7 @@ const routes = {
 new Vue({
   // элемент на странице, в который рендерится приложение
   el: '#app',
-  
+
   data: {
     currentRoute: window.location.pathname,
   },

@@ -20,7 +20,7 @@ var golos = require('golos-js')
 
 export default {
   name: 'Category',
-  
+
   components: {
     VideoBlock,
   },
