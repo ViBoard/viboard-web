@@ -90,42 +90,49 @@ export default {
 </script>
 
 <style>
-.category {
-  margin-top: 2em;
-  margin-left: 150px;
-  padding: 1em;
-}
+  .category-title {
+    padding-left: 8px;
+    margin-bottom: 0.6em;
+    font-size: 1.4em;
+  }
 
-.grid-big {
-  display: grid;
-  grid-template-columns: 33% 33% 33%;
-}
+  .category {
+    margin-top: 2em;
+    margin-left: 12.5em;
+    padding: 1em;
 
-.grid-medium {
-  display: grid;
-  grid-template-columns: 25% 25% 25%;
-}
+  }
 
-.grid-small {
-  display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
-}
+  .grid-big {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+  }
 
-.video-block {
-  padding: 0.5em;
-  padding-right: 1.5em;
-}
+  .grid-medium {
+    display: grid;
+    grid-template-columns: 25% 25% 25%;
+  }
 
-video {
-  width: 100%;
-  -webkit-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.2);
-  -moz-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.2);
-  box-shadow: 3px 3px 0px 0px rgba(0,0,0, 0.2);
-}
+  .grid-small {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+  }
 
-video:hover {
-  -webkit-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.3);
-  -moz-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.3);
-  box-shadow: 3px 3px 0px 0px rgba(0,0,0.3);
-}
+  .video-block {
+    padding: 0.5em;
+    padding-right: 1.5em;
+  }
+
+  video {
+    width: 100%;
+    /* -webkit-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.2);
+    -moz-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.2);
+    box-shadow: 3px 3px 0px 0px rgba(0,0,0, 0.2); */
+  }
+
+  video:hover {
+    -webkit-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.3);
+    -moz-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.3);
+    box-shadow: 3px 3px 0px 0px rgba(0,0,0.3);
+  }
 </style>

@@ -15,7 +15,7 @@ import SidebarLink from './SidebarLink.vue'
 
 export default {
   name: 'Sidebar',
-  
+
   components: {
     SidebarLink,
   },
@@ -34,11 +34,13 @@ export default {
 #sidebar a, #sidebar div {
   padding-left: 1em;
   margin-top: 1em;
+  padding-right: 3em;
   display: block;
 }
 
 nav {
   padding-top: 5em;
   position:fixed;
+  /* background-color: #f5f5f5; */
 }
 </style>

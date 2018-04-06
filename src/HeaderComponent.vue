@@ -10,14 +10,14 @@
           <a class="menu-bar" href="#"><div id="signout" @click="signout">Выйти</div></a>
       </div>
       <div id="login-bar" v-if="!logged_in">
-          <a class="menu-bar" href="#"><div id="signup" onclick="document.getElementById('id01').style.display='block'">Регистрация</div></a>
-          <a class="menu-bar" href="#"><div id="signin" @click="signin">Вход</div></a>
+          <a class="menu-bar" href="#"><div id="signup" onclick="document.getElementById('signup_form').style.display='block'">Регистрация</div></a>
+          <a class="menu-bar" href="#"><div id="signin" onclick="document.getElementById('signin_form').style.display='block'">Вход</div></a>
       </div>
     </div>
 
     <!-- The Modal (contains the Sign Up form) -->
-    <div id="id01" class="modal">
-      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+    <div id="signup_form" class="modal">
+      <span onclick="document.getElementById('signup_form').style.display='none'" class="close" title="Close Modal">&times;</span>
       <form class="modal-content">
         <div class="container">
           <h1>Регистрация</h1>
@@ -39,11 +39,36 @@
             <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить
           </label>
 
-          <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
+          <!-- <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p> -->
 
           <div class="clearfix">
-            <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Отменить</button>
+            <button type="button" onclick="document.getElementById('signup_form').style.display='none'" class="cancelbtn">Отменить</button>
             <button type="button" class="signupbtn">Создать аккаунт!</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- The Modal (contains the Sign In form) -->
+    <div id="signin_form" class="modal">
+      <span onclick="document.getElementById('signin_form').style.display='none'" class="close" title="Close Modal">&times;</span>
+      <form class="modal-content">
+        <div class="container">
+          <h1>Вход на сайт</h1>
+          <p id="signin_form_alerts"></p>
+          <hr>
+          <label for="login"><b>Логин</b></label>
+          <input type="text" placeholder="Введите логин" name="login" required>
+
+          <label for="psw"><b>Пароль</b></label>
+          <input type="password" placeholder="Введите пароль" name="psw" required>
+
+          <label>
+            <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить
+          </label>
+
+          <div class="clearfix">
+            <button type="button" onclick="document.getElementById('signin_form').style.display='none'" class="cancelbtn">Отменить</button>
+            <button type="button" class="signupbtn">Войти!</button>
           </div>
         </div>
       </form>
@@ -63,7 +88,7 @@ export default {
   },
 
   created: function() {
-    // var modal1 = document.getElementById('id01');
+    // var modal1 = document.getElementById('signup_form');
     // // When the user clicks anywhere outside of the modal, close it
     // window.onclick = function(event) {
     //     if (event.target != modal1) {
@@ -94,9 +119,9 @@ export default {
   width: 100%;
   top: 0px;
   background: #fff;
-  -webkit-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.2);
-  -moz-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.2);
-  box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.2);
+  -webkit-box-shadow: 0px 1px 5px 0px rgba(136,136,136,0.2);
+  -moz-box-shadow: 0px 1px 5px 0px rgba(136,136,136,0.2);
+  box-shadow: 0px 1px 5px 0px rgba(136,136,136,0.2);
   overflow: hidden;
 }
 
@@ -192,9 +217,9 @@ button:hover {
 /* Modal Content/Box */
 .modal-content {
   background-color: #fefefe;
-  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  margin: 3% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 30%; /* Could be more or less, depending on screen size */
 }
 
 /* Style the horizontal ruler */
