@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Index from './Index.vue'
 import New from './New.vue'
 import Single from './Single.vue'
+import Upload from './Upload'
 import Embed from './Embed.vue'
 
 // пути к страницам
@@ -9,6 +10,7 @@ const routes = {
   '/': Index,
   '/new': New,
   '/watch': Single,
+  '/upload': Upload
 }
 
 

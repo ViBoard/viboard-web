@@ -5,7 +5,7 @@
         <img id="logo" src="./assets/logo.jpg">
       </div>
       <div id="account-info" v-if="logged_in">
-          <a class="menu-bar" href="#"><div id="upload">Загрузить</div></a>
+          <a class="menu-bar" href="/upload"><div id="upload">Загрузить</div></a>
           <a class="menu-bar" href="#"><div id="nickname">mmalikov</div></a>
           <a class="menu-bar" href="#"><div id="signout" @click="signout">Выйти</div></a>
       </div>
@@ -48,6 +48,7 @@
         </div>
       </form>
     </div>
+
     <!-- The Modal (contains the Sign In form) -->
     <div id="signin_form" class="modal">
       <span onclick="document.getElementById('signin_form').style.display='none'" class="close" title="Close Modal">&times;</span>
@@ -83,7 +84,7 @@ export default {
   name: 'HeaderComponent',
   data: function() {
     return {
-      logged_in: false,
+      logged_in: true,
     }
   },
 
