@@ -21,7 +21,7 @@
       <form class="modal-content">
         <div class="container">
           <h1>Регистрация</h1>
-          <p id="signup_form_alerts"></p>
+
           <hr>
           <label for="login"><b>Логин</b></label>
           <input type="text" placeholder="Введите логин" name="login" required>
@@ -34,10 +34,6 @@
 
           <label for="psw-repeat"><b>Повтор пароля</b></label>
           <input type="password" placeholder="Повторите пароль" name="psw-repeat" required>
-
-          <label>
-            <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить
-          </label>
 
           <!-- <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p> -->
 
@@ -54,21 +50,26 @@
       <form class="modal-content">
         <div class="container">
           <h1>Вход на сайт</h1>
-          <p id="signin_form_alerts"></p>
+          <div class="control-group" id="auth_result_success" style="display: none; color: green">
+    				Успешно
+    			</div>
+    			<div class="control-group" id="auth_result_fail" style="display: none; color: red">
+    				Неверный логин/пароль
+          </div>
           <hr>
           <label for="login"><b>Логин</b></label>
-          <input type="text" placeholder="Введите логин" name="login" required>
+          <input id="login-name" type="text" placeholder="Введите логин" name="login" required>
 
           <label for="psw"><b>Пароль</b></label>
-          <input type="password" placeholder="Введите пароль" name="psw" required>
+          <input id="login-pass" type="password" placeholder="Введите пароль" name="psw" required>
 
           <label>
-            <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить
+            <input id="remember-me" type="checkbox" checked="unchecked" name="remember" style="margin-bottom:15px"> Запомнить
           </label>
 
           <div class="clearfix">
             <button type="button" onclick="document.getElementById('signin_form').style.display='none'" class="cancelbtn">Отменить</button>
-            <button type="button" class="signupbtn">Войти!</button>
+            <button type="button" class="signupbtn" @click="auth">Войти!</button>
           </div>
         </div>
       </form>
@@ -79,6 +80,10 @@
 </template>
 
 <script>
+var golos = require("golos-js");
+require("./assets/cookie")
+golos.config.set('websocket', 'wss://ws.golos.io');
+
 export default {
   name: 'HeaderComponent',
   data: function() {
@@ -108,6 +113,37 @@ export default {
 
     signup: function() {
       this.logged_in = true;
+    },
+
+    auth: function() {
+      var login = document.getElementById("login-name").value;
+      var password = document.getElementById("login-pass").value;
+      var remember_me = document.getElementById("remember-me").checked;
+
+      var roles = ['posting'];
+      console.log(login, password, remember_me);
+      var keys = golos.auth.getPrivateKeys(login, password, roles);
+      console.log('postingPubkey', keys['postingPubkey']);
+
+      var auths = {
+        posting: [[keys['postingPubkey']]]
+      };
+
+      var verifyResult = golos.auth.verify(login, password, auths);
+      console.log('verify', verifyResult);
+
+      if(verifyResult){
+        document.getElementById("auth_result_success").style.display = "block";
+        document.getElementById("auth_result_fail").style.display = "none";
+        setCookie("login", login, {});
+        setCookie("password", password, {});
+        setCookie("post_password", post_password, {});
+        setCookie("priv_post_password", priv_post_password, {});
+        setTimeout('window.location = "index.html"',1000);
+      } else{
+        document.getElementById("auth_result_success").style.display = "none";
+        document.getElementById("auth_result_fail").style.display = "block";
+      }
     }
   }
 }
