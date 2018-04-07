@@ -4,12 +4,12 @@
 
     <div id="box">
       <div id="main">
-        <h5 style="font-size: 14px">Заголовок видео:</h5>
-        <input style = "font-size: 2em; width: 70%; margin-bottom: 2em" id="video_name" type="text">
-        <h5>Тэги:</h5>
-        <input style = "font-size: 2em; width: 70%; margin-bottom: 2em" id="video_tags" type="text">
+        <span class="input-title">Заголовок видео:</span>
+        <input id="video_name" type="text">
+        <span class="input-title">Тэги:</span>
+        <input id="video_tags" type="text">
         <input id="video_file" type="file" value="Choose file.." style="display:block; position:relative; opacity:1; top:auto; left:40%; width:auto; font-size:1em; margin-top:1em">
-        <button onclick=upload() style="background: black; color: white; font-size: 14px; border-radius: 3px; font-family: 'Open Sans', sans-serif; margin-top: 2em"> Загрузить видео </button>
+        <button id="upload" onclick=upload()> Загрузить видео </button>
 
       </div>
     </div>
@@ -36,6 +36,7 @@
 
 
   #box {
+    padding-top: 4em;
     height: 100%;
     margin-left: 10%;
     margin-right: 10%;
@@ -49,6 +50,12 @@
     margin-left: 25%;
     align-content: center;
 
+  }
+
+  .input-title {
+    display: block;
+    margin-top: 2em;
+    font-size: 1.5em;
   }
 
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class='video-block'>
-    <a :href="'watch?v=' + video.ipfs_id.toLowerCase() + '&a=' + video.author">
+    <a :href="controls ? '#' : getHref">
     <video :autoplay="ap ? true : false"
            :muted="muted ? true : false"
            :controls="controls ? true : false"
@@ -35,8 +35,13 @@ export default {
       type: Boolean,
       required: true,
     }
-  }
+  },
 
+  computed: {
+    getHref: function() {
+      return 'watch?v=' + this.video.ipfs_id.toLowerCase() + '&a=' + this.video.author
+    }
+  }
 }
 </script>
 
