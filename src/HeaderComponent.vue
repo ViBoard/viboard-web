@@ -2,7 +2,9 @@
   <div>
     <div id="header">
       <div id="logo-container">
-        <img id="logo" src="./assets/logo.jpg">
+        <a href="/">
+          <img id="logo" src="./assets/logo.jpg">
+        </a>
       </div>
       <div id="account-info" v-if="logged_in">
           <a class="menu-bar" href="/upload"><div id="upload">Загрузить</div></a>
