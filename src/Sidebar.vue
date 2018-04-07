@@ -41,6 +41,7 @@ export default {
 nav {
   padding-top: 5em;
   position:fixed;
-  /* background-color: #f5f5f5; */
+  background-color: #f5f5f5;
+  z-index: -1;
 }
 </style>
