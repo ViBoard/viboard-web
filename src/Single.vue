@@ -3,7 +3,9 @@
     <FixedElements/>
     <Sidebar/>
     <div id="main">
-    <video-block :video="video"
+    <video-block 
+           :author="author"
+           :permlink="permlink"
            :ap="true"
            :muted="false"
            :controls="true"
@@ -16,7 +18,6 @@
 <script>
   import VideoBlock from './VideoBlock.vue'
   var queryString = require('query-string')
-  var golos = require('golos-js')
   import FixedElements from './FixedElements.vue'
   import Sidebar from './Sidebar.vue'
   import Category from './Category.vue'
@@ -31,25 +32,15 @@
 
     data: function() {
       return {
-        video: {}
+        author: "",
+        permlink: "",
       };
     },
 
     created: function() {
-      var vm = this;
       var queries = queryString.parse(location.search);
-      golos.api.getContent(queries.a, queries.v, function(err, result) {
-        if (!err) {
-          vm.video = {
-            title: result.title,
-            ipfs_id: result.body,
-            author: queries.a,
-          }
-        } else {
-          console.log(err);
-        }
-      });
-
+      this.author = queries.a;
+      this.permlink = queries.v;
     }
   }
 </script>

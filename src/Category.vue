@@ -4,11 +4,12 @@
     <div v-bind:class="gridClass">
       <video-block
         v-for="item in videosList"
-        v-bind:video="item"
-        v-bind:ap="ap"
-        v-bind:muted="muted"
-        v-bind:controls="controls"
-        v-bind:key="item.id">
+        :author="item.author"
+        :permlink="item.permlink"
+        :ap="ap"
+        :muted="true"
+        :controls="false"
+        :key="item.id">
       </video-block>
     </div>
   </div>
@@ -78,11 +79,10 @@ export default {
       if (!err) {
         for (var i = 0; i < result.length; ++i) {
           var v = result[i];
-          vm.videosList.push({ id: i, title: v.title, ipfs_id: v.body, author: v.author, total: v.curator_payout_value })
+          vm.videosList.push({ id: i,  permlink: v.permlink, author: v.author  })
         }
       } else {
         console.log(err)
-        console.log(err.payload)
       }
     });
   }

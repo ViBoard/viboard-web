@@ -10,7 +10,8 @@ const routes = {
   '/': Index,
   '/new': New,
   '/watch': Single,
-  '/upload': Upload
+  '/upload': Upload,
+  '/embed': Embed,
 }
 
 
