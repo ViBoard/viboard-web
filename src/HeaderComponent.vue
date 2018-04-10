@@ -2,7 +2,7 @@
   <div>
     <div id="header">
       <div id="logo-container">
-        <a href="/">
+        <a href="/" id="a-logo">
           <img id="logo" src="./assets/logo.jpg">
         </a>
       </div>
@@ -92,14 +92,17 @@ export default {
   data: function() {
     return {
       logged_in: false,
-      login: "",
+      login: "pass",
     }
   },
 
   created: function() {
-    temp_login = Cookies.get("login");
-    if (temp_login != "") {
-      login = temp_login;
+    var vm = this;
+    var temp_login = Cookies.get("login");
+    console.log('loggggg', temp_login);
+    if (temp_login) {
+      vm.login = temp_login;
+      vm.logged_in = true;
     }
   },
 
@@ -112,7 +115,7 @@ export default {
     },
 
     auth: function() {
-      var kostyl = this;
+      var vm = this;
       var login = document.getElementById("login-name").value;
       var password = document.getElementById("login-pass").value;
       var remember_me = document.getElementById("remember-me").checked;
@@ -139,7 +142,8 @@ export default {
               // Cookies.set("password", password, {});
               Cookies.set("posting_pubkey", postingPubkey);
               setTimeout("document.getElementById('signin_form').style.display='none'", 1000);
-              kostyl.logged_in = true;
+              vm.login = login;
+              vm.logged_in = true;
             } else{
               document.getElementById("auth_result_success").style.display = "none";
               document.getElementById("auth_result_fail").style.display = "block";
@@ -184,10 +188,15 @@ export default {
 #logo {
   display: block;
   width: 8em; /*8em was*/
+}
+
+#a-logo {
+  display: block;
+  width: 8em; /*8em was*/
   margin-left: auto;
   margin-right: auto;
-  padding-top: 1em;
-  padding-bottom: 1em;
+  padding: 1em;
+  /* padding-bottom: 1em; */
 }
 
 #account-info, #login-bar {
