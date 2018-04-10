@@ -57,22 +57,21 @@
             var parentAuthor = '';
             var parentPermlink = 'videotest';
             var author = login;
-            var permlink = result[0].hash.toLowerCase();
+            var permlink = result[0].hash.toLowerCase() + Date.now();
             var title = vm.$refs.title.value;
-            var body = `
-              <iframe src="viboard.me/embed?a=${author}&v=${permlink}"></iframe>
-              <img src="http://www.1x1px.me/#" alt="${result[0].hash}"`
+            var body = `<a href="http://viboard.me/watch?v=${permlink}&a=${author}"><img src="http://www.viboard.me/dist/banner.png" alt="${result[0].hash}"></img></a>`
           
             var tagList = vm.$refs.tags.value.split(' ', 4);
+            tagList.unshift(parentPermlink) 
             console.log(tagList);
             var jsonMetadata = {
-              tags: tagList.unshift(parentPermlink) 
+              tags: tagList
             };
             console.log(jsonMetadata);
 
             golos.broadcast.comment(wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, function(err, result) {
               if (!err) {
-                window.location.replace('/');
+                window.location.replace(`/watch?v=${permlink}&a=${author}`);
               } else {
                 console.log(err);
               }
