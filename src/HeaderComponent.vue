@@ -84,14 +84,14 @@
 
 <script>
 var golos = require("golos-js");
-require("./assets/cookie")
+var Cookies = require('js-cookie');
 golos.config.set('websocket', 'wss://ws.golos.io');
 
 export default {
   name: 'HeaderComponent',
   data: function() {
     return {
-      logged_in: false,
+      logged_in: true,
     }
   },
 
@@ -107,28 +107,45 @@ export default {
 
   methods: {
     signout: function() {
+      Cookies.remove("login");
+      // Cookies.set("password", password, {});
+      Cookies.remove("posting_pubkey");
       this.logged_in = false;
     },
 
-    signin: function() {
-      this.logged_in = true;
-    },
-
-    signup: function() {
-      this.logged_in = true;
-    },
-
     auth: function() {
+      var kostyl = this;
       var login = document.getElementById("login-name").value;
       var password = document.getElementById("login-pass").value;
       var remember_me = document.getElementById("remember-me").checked;
 
-      var accounts = [ login, 'epexa', 'epexa2' ];
+      var accounts = [ login ];
       golos.api.getAccounts(accounts, function(err, result) {
         //console.log(err, result);
         if (!err) {
           result.forEach(function(item) {
-            console.log('getAccounts', item);
+            var postingPubkey = item.posting.key_auths[0][0];
+            console.log('getAccounts', item.posting.key_auths[0][0]); // Костыль?
+
+            var auths = {
+              posting: [[postingPubkey]]
+            };
+
+            var verifyResult = golos.auth.verify(login, password, auths);
+            console.log('verify', verifyResult);
+
+            if(verifyResult){
+              document.getElementById("auth_result_success").style.display = "block";
+              document.getElementById("auth_result_fail").style.display = "none";
+              Cookies.set("login", login);
+              // Cookies.set("password", password, {});
+              Cookies.set("posting_pubkey", postingPubkey);
+              setTimeout("document.getElementById('signin_form').style.display='none'", 1000);
+              kostyl.logged_in = true;
+            } else{
+              document.getElementById("auth_result_success").style.display = "none";
+              document.getElementById("auth_result_fail").style.display = "block";
+            }
           });
         }
         else console.error(err);
@@ -147,26 +164,8 @@ export default {
       // console.log('postingPubkey', pkey);
       // var resultWifIsValid = golos.auth.wifIsValid(pkey['posting'], pkey['postingPubkey']);
       // console.log('wifIsValid', resultWifIsValid);
-      //
-      // var auths = {
-      //   posting: [[pkey['postingPubkey']]]
-      // };
-      //
-      // var verifyResult = golos.auth.verify(login, password, auths);
-      // console.log('verify', verifyResult);
 
-      // if(verifyResult){
-      //   document.getElementById("auth_result_success").style.display = "block";
-      //   document.getElementById("auth_result_fail").style.display = "none";
-      //   setCookie("login", login, {});
-      //   setCookie("password", password, {});
-      //   setCookie("post_password", post_password, {});
-      //   setCookie("priv_post_password", priv_post_password, {});
-      //   setTimeout('window.location = "index.html"',1000);
-      // } else{
-      //   document.getElementById("auth_result_success").style.display = "none";
-      //   document.getElementById("auth_result_fail").style.display = "block";
-      // }
+
     }
   }
 }
