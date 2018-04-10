@@ -8,7 +8,7 @@
       </div>
       <div id="account-info" v-if="logged_in">
           <a class="menu-bar" href="/upload"><div id="upload">Загрузить</div></a>
-          <a class="menu-bar" href="#"><div id="nickname">mmalikov</div></a>
+          <a class="menu-bar" href="#"><div id="nickname">{{login}}</div></a>
           <a class="menu-bar" href="#"><div id="signout" @click="signout">Выйти</div></a>
       </div>
       <div id="login-bar" v-if="!logged_in">
@@ -91,18 +91,16 @@ export default {
   name: 'HeaderComponent',
   data: function() {
     return {
-      logged_in: true,
+      logged_in: false,
+      login: "",
     }
   },
 
   created: function() {
-    // var modal1 = document.getElementById('signup_form');
-    // // When the user clicks anywhere outside of the modal, close it
-    // window.onclick = function(event) {
-    //     if (event.target != modal1) {
-    //         modal1.style.display = "none";
-    //     }
-    // }
+    temp_login = Cookies.get("login");
+    if (temp_login != "") {
+      login = temp_login;
+    }
   },
 
   methods: {
