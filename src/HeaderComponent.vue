@@ -89,7 +89,7 @@ export default {
   name: 'HeaderComponent',
   data: function() {
     return {
-      logged_in: true,
+      logged_in: false,
     }
   },
 
@@ -121,30 +121,50 @@ export default {
       var password = document.getElementById("login-pass").value;
       var remember_me = document.getElementById("remember-me").checked;
 
-      var roles = ['posting'];
-      console.log(login, password, remember_me);
-      var keys = golos.auth.getPrivateKeys(login, password, roles);
-      console.log('postingPubkey', keys['postingPubkey']);
+      var accounts = [ login, 'epexa', 'epexa2' ];
+      golos.api.getAccounts(accounts, function(err, result) {
+        //console.log(err, result);
+        if (!err) {
+          result.forEach(function(item) {
+            console.log('getAccounts', item);
+          });
+        }
+        else console.error(err);
+      });
 
-      var auths = {
-        posting: [[keys['postingPubkey']]]
-      };
+      // var roles = ['owner', 'active', 'posting', 'memo'];
+      // var keys = golos.auth.getPrivateKeys(login, password, roles);
+      // console.log('getPrivateKeys', keys);
+      //
+      // var resultWifToPublic = golos.auth.wifToPublic(keys.posting, keys.postingPubkey);
+      // console.log('wifToPublic', resultWifToPublic);
 
-      var verifyResult = golos.auth.verify(login, password, auths);
-      console.log('verify', verifyResult);
+      // var roles = ['owner', 'active', 'posting', 'memo'];
+      // console.log(login, password, remember_me);
+      // var pkey = golos.auth.getPrivateKeys(login, password, roles);
+      // console.log('postingPubkey', pkey);
+      // var resultWifIsValid = golos.auth.wifIsValid(pkey['posting'], pkey['postingPubkey']);
+      // console.log('wifIsValid', resultWifIsValid);
+      //
+      // var auths = {
+      //   posting: [[pkey['postingPubkey']]]
+      // };
+      //
+      // var verifyResult = golos.auth.verify(login, password, auths);
+      // console.log('verify', verifyResult);
 
-      if(verifyResult){
-        document.getElementById("auth_result_success").style.display = "block";
-        document.getElementById("auth_result_fail").style.display = "none";
-        setCookie("login", login, {});
-        setCookie("password", password, {});
-        setCookie("post_password", post_password, {});
-        setCookie("priv_post_password", priv_post_password, {});
-        setTimeout('window.location = "index.html"',1000);
-      } else{
-        document.getElementById("auth_result_success").style.display = "none";
-        document.getElementById("auth_result_fail").style.display = "block";
-      }
+      // if(verifyResult){
+      //   document.getElementById("auth_result_success").style.display = "block";
+      //   document.getElementById("auth_result_fail").style.display = "none";
+      //   setCookie("login", login, {});
+      //   setCookie("password", password, {});
+      //   setCookie("post_password", post_password, {});
+      //   setCookie("priv_post_password", priv_post_password, {});
+      //   setTimeout('window.location = "index.html"',1000);
+      // } else{
+      //   document.getElementById("auth_result_success").style.display = "none";
+      //   document.getElementById("auth_result_fail").style.display = "block";
+      // }
     }
   }
 }
