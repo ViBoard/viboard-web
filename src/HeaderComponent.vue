@@ -135,12 +135,16 @@ export default {
             var verifyResult = golos.auth.verify(login, password, auths);
             console.log('verify', verifyResult);
 
+            var roles = ['posting'];
+            var keys = golos.auth.getPrivateKeys(login, password, roles);
+
             if(verifyResult){
               document.getElementById("auth_result_success").style.display = "block";
               document.getElementById("auth_result_fail").style.display = "none";
               Cookies.set("login", login);
               // Cookies.set("password", password, {});
               Cookies.set("posting_pubkey", postingPubkey);
+              Cookies.set("posting_private", keys.posting);
               setTimeout("document.getElementById('signin_form').style.display='none'", 1000);
               vm.login = login;
               vm.logged_in = true;
