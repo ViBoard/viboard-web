@@ -8,7 +8,7 @@
       </div>
       <div id="account-info" v-if="logged_in">
           <a class="menu-bar" href="/upload"><div id="upload">Загрузить</div></a>
-          <a class="menu-bar" href="#"><div id="nickname">{{login}}</div></a>
+          <a class="menu-bar" href="#"><div id="nickname" @click="nickname_click">{{login}}</div></a>
           <a class="menu-bar" href="#"><div id="signout" @click="signout">Выйти</div></a>
       </div>
       <div id="login-bar" v-if="!logged_in">
@@ -114,6 +114,15 @@ export default {
       this.logged_in = false;
     },
 
+    nickname_click: function() {
+      var videolist = document.getElementsByClassName("videofoo");
+      console.log("wqefsgdfd");
+      for (var i = 0; i < videolist.length; i++) {
+          videolist[i].style.height = 9/16*videolist[i].offsetWidth;
+          console.log(videolist[i].style.height, videolist[i].offsetWidth);
+      }
+    },
+
     auth: function() {
       var vm = this;
       var login = document.getElementById("login-name").value;
@@ -173,6 +182,8 @@ export default {
 
 
     }
+
+
   }
 }
 </script>
