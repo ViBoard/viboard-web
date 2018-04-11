@@ -4,7 +4,7 @@
     <video :autoplay="ap ? true : false"
            :muted="muted ? true : false"
            :controls="controls ? true : false"
-           :src="src"></video>
+           :src="src" class="videofoo"></video>
     </a>
     <div class="video-header"> {{ title }} </div>
     <div class="video-info">
@@ -71,6 +71,11 @@ export default {
         console.log(err);
       }
     });
+
+    var videolist = document.getElementsByClassName("videofoo");
+    for (var i = 0; i < videolist.length; i++) {
+        videolist[i].style.height = 9/16*videolist[i].offsetWidth;
+    }
   }}
 </script>
 

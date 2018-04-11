@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <FixedElements/>
-
+    <Sidebar/>
     <div id="box">
       <div id="main">
         <span class="input-title">Название:</span>
@@ -19,6 +19,8 @@
   var buffer = require("buffer");
   var ipfsAPI = require("ipfs-api")
   var golos = require("golos-js")
+  var Cookies = require('js-cookie');
+
   import FixedElements from './FixedElements.vue'
   import Sidebar from "./Sidebar";
   export default {
@@ -43,26 +45,25 @@
 
             let url = `https://ipfs.io/ipfs/${result[0].hash}`
             console.log(`Url --> ${url}`)
-            var login = "mmalikov";
-            var password = "P5K6kcP1SYbgDUywsCSMiSVWuJdADFcw43XTDQzjfGxTqcjpW2Ab";
-            var post_password = "GLS7m8NasReBvir3AqWbiVnNDoSgUKhb2pwK4jcuB4VtJhAWZ6J9t";
-            var priv_post_password = "5HzbpzRRy6th3FYQpXb9AmKwC461ZCkFdmyqcpXciwVupxweLoR";
+            var login = Cookies.get("login");
+            var password = Cookies.get("posting_private");
 
             var auths = {
-              posting: [[post_password]]
+              posting: [[golos.auth.wifToPublic(password)]] // golos.auth.wifToPublic(password)
             };
 
             var verifyResult = golos.auth.verify(login, password, auths);
-            var wif = priv_post_password;
+            console.log('ver_res', verifyResult)
+            var wif = password;
             var parentAuthor = '';
             var parentPermlink = 'videotest';
             var author = login;
             var permlink = result[0].hash.toLowerCase() + Date.now();
             var title = vm.$refs.title.value;
             var body = `<a href="http://viboard.me/watch?v=${permlink}&a=${author}"><img src="http://www.viboard.me/dist/banner.png" alt="${result[0].hash}"></img></a>`
-          
+
             var tagList = vm.$refs.tags.value.split(' ', 4);
-            tagList.unshift(parentPermlink) 
+            tagList.unshift(parentPermlink)
             console.log(tagList);
             var jsonMetadata = {
               tags: tagList

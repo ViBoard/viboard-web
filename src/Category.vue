@@ -85,6 +85,13 @@ export default {
         console.log(err)
       }
     });
+
+    // var videolist = document.getElementsByClassName("videofoo");
+    // console.log("wqefsgdfd");
+    // for (var i = 0; i < videolist.length; i++) {
+    //     videolist[i].style.height = 9/16*videolist[i].offsetWidth;
+    //     console.log(videolist[i].style.height, videolist[i].offsetWidth);
+    // }
   }
 }
 </script>
@@ -131,8 +138,8 @@ export default {
   }
 
   video:hover {
-    -webkit-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.3);
+    /* -webkit-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.3);
     -moz-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.3);
-    box-shadow: 3px 3px 0px 0px rgba(0,0,0.3);
+    box-shadow: 3px 3px 0px 0px rgba(0,0,0.3); */
   }
 </style>

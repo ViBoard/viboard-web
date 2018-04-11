@@ -8,7 +8,7 @@
       </div>
       <div id="account-info" v-if="logged_in">
           <a class="menu-bar" href="/upload"><div id="upload">Загрузить</div></a>
-          <a class="menu-bar" href="#"><div id="nickname">{{login}}</div></a>
+          <a class="menu-bar" href="#"><div id="nickname" @click="nickname_click">{{login}}</div></a>
           <a class="menu-bar" href="#"><div id="signout" @click="signout">Выйти</div></a>
       </div>
       <div id="login-bar" v-if="!logged_in">
@@ -114,6 +114,15 @@ export default {
       this.logged_in = false;
     },
 
+    nickname_click: function() {
+      var videolist = document.getElementsByClassName("videofoo");
+      console.log("wqefsgdfd");
+      for (var i = 0; i < videolist.length; i++) {
+          videolist[i].style.height = 9/16*videolist[i].offsetWidth;
+          console.log(videolist[i].style.height, videolist[i].offsetWidth);
+      }
+    },
+
     auth: function() {
       var vm = this;
       var login = document.getElementById("login-name").value;
@@ -135,12 +144,16 @@ export default {
             var verifyResult = golos.auth.verify(login, password, auths);
             console.log('verify', verifyResult);
 
+            var roles = ['posting'];
+            var keys = golos.auth.getPrivateKeys(login, password, roles);
+
             if(verifyResult){
               document.getElementById("auth_result_success").style.display = "block";
               document.getElementById("auth_result_fail").style.display = "none";
               Cookies.set("login", login);
               // Cookies.set("password", password, {});
               Cookies.set("posting_pubkey", postingPubkey);
+              Cookies.set("posting_private", keys.posting);
               setTimeout("document.getElementById('signin_form').style.display='none'", 1000);
               vm.login = login;
               vm.logged_in = true;
@@ -169,6 +182,8 @@ export default {
 
 
     }
+
+
   }
 }
 </script>
