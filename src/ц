@@ -9,15 +9,13 @@
            :ap="true"
            :muted="false"
            :controls="true"
-    />
-    <Upvotes 
-      :author="author"
-      :permlink="permlink"
-    />
-    <Comments id="comments"
-      :author="author"
-      :permlink="permlink"
-    />
+              />
+    <div id="nUpvotes">{{ upvotes.length; }}</div>
+    <div id="upvoters" v-if="upvotesHovered">
+      <div v-for="u in upvotes" class="upvoter">
+        {{ u.name }} {{ u.power }}
+      </div>
+    </div>
   </div>
   </div>
 </template>
@@ -29,8 +27,6 @@
   import FixedElements from './FixedElements.vue'
   import Sidebar from './Sidebar.vue'
   import Category from './Category.vue'
-  import Comments from './Comments.vue'
-  import Upvotes from './Upvotes.vue'
   export default {
     name: 'app',
 
@@ -38,14 +34,13 @@
       FixedElements,
       Sidebar,
       VideoBlock,
-      Comments,
-      Upvotes,
     },
 
     data: function() {
       return {
         author: "",
         permlink: "",
+        upvotes: [],  
       };
     },
 
@@ -54,6 +49,17 @@
       var queries = queryString.parse(location.search);
       vm.author = queries.a;
       vm.permlink = queries.v;
+      golos.api.getContent(vm.author, vm.permlink, function(err, result) {
+        if (!err) {
+          result.active_votes.forEach(function(item, i, arr) {
+            vm.upvotes.push({
+                              name: item.voter, 
+                              power: 
+                            })
+          });
+        }
+        else console.error(err);
+      });
     }
   }
 </script>
@@ -67,13 +73,7 @@
   margin-left: 12.5em;
 }
 
-#comments {
-  margin-top: 3em;
-}
-
-
 video {
-  width: 100%;
-  height: 80%;
+  width: 80%;
 }
 </style>
