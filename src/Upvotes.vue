@@ -14,7 +14,7 @@
         </g>
       </svg>
     </span>
-    <div id="toggle" @click="toggleUpvotes">
+    <div v-if="upvotes.length" id="toggle" @click="toggleUpvotes">
       {{ upvotesShown ? "скрыть" : "показать" }}
       <table id="upvoters" v-if="upvotesShown">
         <tr v-for="u in upvotes" class="upvoter">
@@ -122,7 +122,7 @@
 
 <style>
 #upvotes {
-  margin-top: 1.5em;
+  margin-top: 0.5em;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -140,8 +140,8 @@
 
 #icon {
   margin-right: 1em;
-  width: 2em;
-  height: 2em;
+  width: 1.5em;
+  height: 1.5em;
   cursor: pointer;
 }
 
