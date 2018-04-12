@@ -5,11 +5,11 @@
     <div id="box">
       <div id="main">
         <span class="input-title">Выберите видео:</span>
-        <input id="video-file" type="file" ref="file">
+        <input id="video-file" type="file" ref="videofile">
         <hr>
 
         <span class="input-title">Выберите превью:</span>
-        <input id="img-file" type="file" ref="file">
+        <input id="img-file" type="file" ref="imgfile">
         <hr>
 
         <span class="input-title">Название:</span>
@@ -44,56 +44,68 @@
 
     methods: {
       upload: function () {
-        const reader = new FileReader();
+        const img_reader = new FileReader();
+        const video_reader = new FileReader();
+
         var vm = this;
-        reader.onloadend = function () {
-          const ipfs = ipfsAPI('viboard.me', 81);
-          const buf = buffer.Buffer(reader.result);
-          ipfs.files.add(buf, (err, result) => {
-            if (err) {
-              console.error(err);
-              return
-            }
+        img_reader.onloadend = function () {
+          const video = vm.$refs.videofile;
+          video_reader.readAsArrayBuffer(video.files[0]);
+          video_reader.onloadend = function() {
+            const ipfs = ipfsAPI('viboard.me', 81);
+            const img_buf = buffer.Buffer(img_reader.result);
+            const video_buf = buffer.Buffer(video_reader.result);
+            ipfs.files.add(img_buf, (err, img_result) => {
+              console.log(img_result);
+              ipfs.files.add(video_buf, (err, video_result) => {
+                if (err) {
+                  console.error(err);
+                  return
+                }
 
-            let url = `https://ipfs.io/ipfs/${result[0].hash}`;
-            console.log(`Url --> ${url}`);
-            var login = Cookies.get("login");
-            var password = Cookies.get("posting_private");
+                let img_url = `https://ipfs.io/ipfs/${img_result[0].hash}`;
+                let video_url = `https://ipfs.io/ipfs/${video_result[0].hash}`;
+                console.log(`img Url --> ${img_url}`);
+                console.log(`video Url --> ${video_url}`);
+                var login = Cookies.get("login");
+                var password = Cookies.get("posting_private");
 
-            var auths = {
-              posting: [[golos.auth.wifToPublic(password)]] // golos.auth.wifToPublic(password)
-            };
+                var auths = {
+                  posting: [[golos.auth.wifToPublic(password)]] // golos.auth.wifToPublic(password)
+                };
 
-            var verifyResult = golos.auth.verify(login, password, auths);
-            console.log('ver_res', verifyResult);
-            var wif = password;
-            var parentAuthor = '';
-            var parentPermlink = 'videotest';
-            var author = login;
-            var permlink = result[0].hash.toLowerCase() + Date.now();
-            var title = vm.$refs.title.value;
-            var body = `<a href="http://viboard.me/watch?v=${permlink}&a=${author}"><img src="http://www.viboard.me/dist/banner.png" alt="${result[0].hash}"></img></a>`
+                var verifyResult = golos.auth.verify(login, password, auths);
+                console.log('ver_res', verifyResult);
+                var wif = password;
+                var parentAuthor = '';
+                var parentPermlink = 'videotest';
+                var author = login;
+                var permlink = result[0].hash.toLowerCase() + Date.now();
+                var title = vm.$refs.title.value;
+                var body = `<a href="http://viboard.me/watch?v=${permlink}&a=${author}"><img src="http://www.viboard.me/dist/banner.png" alt="${result[0].hash}"></img></a>`
 
-            var tagList = vm.$refs.tags.value.split(' ', 4);
-            tagList.unshift(parentPermlink);
-            console.log(tagList);
-            var jsonMetadata = {
-              tags: tagList
-            };
-            console.log(jsonMetadata);
+                var tagList = vm.$refs.tags.value.split(' ', 4);
+                tagList.unshift(parentPermlink);
+                console.log(tagList);
+                var jsonMetadata = {
+                  tags: tagList
+                };
+                console.log(jsonMetadata);
 
-            golos.broadcast.comment(wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, function (err, result) {
-              if (!err) {
-                window.location.replace(`/watch?v=${permlink}&a=${author}`);
-              } else {
-                console.log(err);
-              }
-            });
-          }, false);
+                golos.broadcast.comment(wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, function (err, result) {
+                  if (!err) {
+                    window.location.replace(`/watch?v=${permlink}&a=${author}`);
+                  } else {
+                    console.log(err);
+                  }
+                });
+              }, false);
+            }, false);
+          };
         };
-        // console.log(this.$refs);
-        const video = this.$refs.file;
-        reader.readAsArrayBuffer(video.files[0]);
+        console.log(this.$refs);
+        const img = this.$refs.videofile;
+        img_reader.readAsArrayBuffer(img.files[0]);
       }
     }
   }
