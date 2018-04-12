@@ -105,7 +105,7 @@
               var author = login;
               var permlink = result[0].hash.toLowerCase() + Date.now();
               var title = vm.$refs.title.value;
-              var body = `<a href="http://viboard.me/watch?v=${permlink}&a=${author}"><img src="${img_url}" alt="${result[0].hash}"></img></a>`
+              var body = `<a href="http://viboard.me/watch?v=${permlink}&a=${author}"><p>Смотреть на viboard.me</p><img src="${img_url}" alt="${result[0].hash}"></img></a>`
 
               var tagList = vm.$refs.tags.value.split(' ', 4);
               tagList.unshift(parentPermlink);
