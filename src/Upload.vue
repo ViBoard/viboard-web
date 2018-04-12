@@ -4,12 +4,23 @@
     <Sidebar/>
     <div id="box">
       <div id="main">
+        <span class="input-title">Выберите видео:</span>
+        <input id="video-file" type="file" ref="file">
+        <hr>
+
+        <span class="input-title">Выберите превью:</span>
+        <input id="img-file" type="file" ref="file">
+        <hr>
+
         <span class="input-title">Название:</span>
         <input id="video-title" type="text" ref="title">
-        <input id="video-file" type="file" value="Выбрать файл.." ref="file">
+        <hr>
+
         <span class="input-title">Тэги:</span>
         <input id="video-tags" type="text" ref="tags">
-        <button id="upload" @click="upload()"> Загрузить </button>
+        <hr>
+
+        <button id="upload" @click="upload()"> Загрузить</button>
       </div>
     </div>
   </div>
@@ -17,12 +28,13 @@
 
 <script>
   var buffer = require("buffer");
-  var ipfsAPI = require("ipfs-api")
-  var golos = require("golos-js")
+  var ipfsAPI = require("ipfs-api");
+  var golos = require("golos-js");
   var Cookies = require('js-cookie');
 
   import FixedElements from './FixedElements.vue'
   import Sidebar from "./Sidebar";
+
   export default {
     name: 'app',
     components: {
@@ -31,20 +43,20 @@
     },
 
     methods: {
-     upload: function() {
+      upload: function () {
         const reader = new FileReader();
         var vm = this;
-        reader.onloadend = function() {
-          const ipfs = ipfsAPI('viboard.me', 81)
-          const buf = buffer.Buffer(reader.result)
+        reader.onloadend = function () {
+          const ipfs = ipfsAPI('viboard.me', 81);
+          const buf = buffer.Buffer(reader.result);
           ipfs.files.add(buf, (err, result) => {
-            if(err) {
-              console.error(err)
+            if (err) {
+              console.error(err);
               return
             }
 
-            let url = `https://ipfs.io/ipfs/${result[0].hash}`
-            console.log(`Url --> ${url}`)
+            let url = `https://ipfs.io/ipfs/${result[0].hash}`;
+            console.log(`Url --> ${url}`);
             var login = Cookies.get("login");
             var password = Cookies.get("posting_private");
 
@@ -53,7 +65,7 @@
             };
 
             var verifyResult = golos.auth.verify(login, password, auths);
-            console.log('ver_res', verifyResult)
+            console.log('ver_res', verifyResult);
             var wif = password;
             var parentAuthor = '';
             var parentPermlink = 'videotest';
@@ -63,14 +75,14 @@
             var body = `<a href="http://viboard.me/watch?v=${permlink}&a=${author}"><img src="http://www.viboard.me/dist/banner.png" alt="${result[0].hash}"></img></a>`
 
             var tagList = vm.$refs.tags.value.split(' ', 4);
-            tagList.unshift(parentPermlink)
+            tagList.unshift(parentPermlink);
             console.log(tagList);
             var jsonMetadata = {
               tags: tagList
             };
             console.log(jsonMetadata);
 
-            golos.broadcast.comment(wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, function(err, result) {
+            golos.broadcast.comment(wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, function (err, result) {
               if (!err) {
                 window.location.replace(`/watch?v=${permlink}&a=${author}`);
               } else {
@@ -78,7 +90,8 @@
               }
             });
           }, false);
-        }
+        };
+        // console.log(this.$refs);
         const video = this.$refs.file;
         reader.readAsArrayBuffer(video.files[0]);
       }
@@ -90,7 +103,6 @@
   #app {
     padding-top: 4em;
   }
-
 
   #box {
     padding-top: 4em;
@@ -110,8 +122,12 @@
 
   .input-title {
     display: block;
-    margin-top: 2em;
+    margin-top: 1em;
     font-size: 1.5em;
+  }
+
+  #video-file, #img-file {
+    margin-top: 0.75em;
   }
 
 </style>
