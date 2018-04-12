@@ -1,10 +1,15 @@
 <template>
   <div class='video-block'>
     <a :href="controls ? '#' : getHref">
-    <video :autoplay="ap ? true : false"
+    <video class="video-element" 
+           v-if="!isPreview"
+           :autoplay="ap ? true : false"
            :muted="muted ? true : false"
            :controls="controls ? true : false"
-           :src="src" class="videofoo"></video>
+           :src="src"></video>
+    <div v-else class="video-element">
+      <img :src="previewSrc"></img>
+    </div>
     </a>
     <div class="video-header"> {{ title }} </div>
     <div class="video-info">
@@ -40,12 +45,17 @@ export default {
     controls: {
       type: Boolean,
       required: true,
+    },
+    isPreview: {
+      type: Boolean,
+      default: false,
     }
   },
 
   data: function() {
     return {
       src: "",
+      previewSrc: "",
       title: "",
       total: "",
     }
@@ -64,15 +74,17 @@ export default {
         console.log(result);
         vm.title = result.title;
         vm.total = result.pending_payout_value;
-        var regexp = RegExp('<img src=".*" alt="(.*)"');
-        var ipfs_id = regexp.exec(result.body)[1];
+        var regexp = RegExp('<img src="(.*)" alt="(.*)"');
+        var parsed = regexp.exec(result.body);
+        vm.previewSrc = parsed[1];
+        var ipfs_id = parsed[2];
         vm.src = "http://ipfs.io/ipfs/" + ipfs_id;
       } else {
         console.log(err);
       }
     });
 
-    var videolist = document.getElementsByClassName("videofoo");
+    var videolist = document.getElementsByClassName("video-element");
     for (var i = 0; i < videolist.length; i++) {
         videolist[i].style.height = 9/16*videolist[i].offsetWidth;
     }
@@ -102,5 +114,15 @@ export default {
 
   .video-total {
     color: black;
+  }
+
+  .video-element {
+  }
+
+  .video-element img {
+    height: 100%;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
   }
 </style>

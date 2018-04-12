@@ -9,6 +9,7 @@
         :ap="ap"
         :muted="true"
         :controls="false"
+        :isPreview="isPreview"
         :key="item.id">
       </video-block>
     </div>
@@ -27,6 +28,17 @@ export default {
   },
 
   props: {
+    method: {
+      type: String,
+      required: true,
+      validator: function (value) {
+        return [
+          'hot',
+          'trending',
+          'new',
+        ].indexOf(value) !== -1
+      },
+    },
     title: {
       type: String,
       required: true,
@@ -58,6 +70,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isPreview: {
+      type: Boolean,
+      default: false,
+    }
   },
 
   data: function() {
@@ -74,24 +90,42 @@ export default {
       limit: vm.nVideos,
     };
 
-    // пока что везде вывводим свежее, как будет постов побольше, надо будет передавать функцию через props
-    golos.api.getDiscussionsByCreated(query, function(err, result) {
-      if (!err) {
-        for (var i = 0; i < result.length; ++i) {
-          var v = result[i];
-          vm.videosList.push({ id: i,  permlink: v.permlink, author: v.author  })
+    // ужасая копипаста, но почему-то пока не получается передавать функции в props
+    if (vm.method == "hot") {
+      golos.api.getDiscussionsByHot(query, function(err, result) {
+        if (!err) {
+          for (var i = 0; i < result.length; ++i) {
+            var v = result[i];
+            vm.videosList.push({ id: i,  permlink: v.permlink, author: v.author  })
+          }
+        } else {
+          console.log(err)
         }
-      } else {
-        console.log(err)
-      }
-    });
+      });
+    } else if (vm.method == "trending") {
+      golos.api.getDiscussionsByTrending(query, function(err, result) {
+        if (!err) {
+          for (var i = 0; i < result.length; ++i) {
+            var v = result[i];
+            vm.videosList.push({ id: i,  permlink: v.permlink, author: v.author  })
+          }
+        } else {
+          console.log(err)
+        }
+      });
+    } else if (vm.method == "new"){
+       golos.api.getDiscussionsByCreated(query, function(err, result) {
+        if (!err) {
+          for (var i = 0; i < result.length; ++i) {
+            var v = result[i];
+            vm.videosList.push({ id: i,  permlink: v.permlink, author: v.author  })
+          }
+        } else {
+          console.log(err)
+        }
+      });
 
-    // var videolist = document.getElementsByClassName("videofoo");
-    // console.log("wqefsgdfd");
-    // for (var i = 0; i < videolist.length; i++) {
-    //     videolist[i].style.height = 9/16*videolist[i].offsetWidth;
-    //     console.log(videolist[i].style.height, videolist[i].offsetWidth);
-    // }
+    }
   }
 }
 </script>
@@ -130,7 +164,7 @@ export default {
     padding-right: 1.5em;
   }
 
-  video {
+  .video-element {
     width: 100%;
     /* -webkit-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.2);
     -moz-box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.2);
