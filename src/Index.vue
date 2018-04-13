@@ -6,10 +6,13 @@
               gridClass="grid-big"
               :nVideos="3"
               :ap="true"
+              method="hot"
               />
     <Category title="Актуальное"
               gridClass="grid-medium"
               :nVideos="3"
+              :isPreview="true"
+              method="trending"
               />
   </div>
 </template>
@@ -18,13 +21,14 @@
   import FixedElements from './FixedElements.vue'
   import Sidebar from './Sidebar.vue'
   import Category from './Category.vue'
+
   export default {
     name: 'app',
     components: {
       FixedElements,
       Sidebar,
       Category,
-    }
+    },
   }
 
 </script>
