@@ -80,8 +80,8 @@
         var wif = password;
         golos.broadcast.vote(wif, login, vm.author, vm.permlink, 10000, function(err, result) {
           console.log(err, result);
+          vm.update();
         });
-        vm.update();
       },
 
       toggleUpvotes: function() {

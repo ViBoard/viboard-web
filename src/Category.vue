@@ -18,6 +18,7 @@
 
 <script>
 import VideoBlock from './VideoBlock.vue'
+import { parseBody } from './parseBody.js'
 var golos = require('golos-js')
 
 export default {
@@ -26,6 +27,8 @@ export default {
   components: {
     VideoBlock,
   },
+
+  mixins: [parseBody],
 
   props: {
     method: {
@@ -87,44 +90,61 @@ export default {
 
     var query = {
       select_tags: ['videotest'],
-      limit: vm.nVideos,
+      limit: vm.nVideos * 3,
     };
 
     // ужасая копипаста, но почему-то пока не получается передавать функции в props
-    if (vm.method == "hot") {
+    if (vm.method == "new") {
+      var videos_added = 0;
+       
+      golos.api.getDiscussionsByCreated(query, function(err, result) {
+        if (!err) {
+          for (var i = 0; i < result.length; ++i) {
+            var v = result[i];
+            if (vm.parseBody(v.body)) {
+              vm.videosList.push({ id: i,  permlink: v.permlink, author: v.author })
+              videos_added++;
+            }
+            if (videos_added == vm.nVideos) {
+              break
+            }
+          }
+        }
+      });
+    } else if (vm.method == "hot") {
+      var videos_added = 0;
+       
       golos.api.getDiscussionsByHot(query, function(err, result) {
         if (!err) {
           for (var i = 0; i < result.length; ++i) {
             var v = result[i];
-            vm.videosList.push({ id: i,  permlink: v.permlink, author: v.author  })
+            if (vm.parseBody(v.body)) {
+              vm.videosList.push({ id: i,  permlink: v.permlink, author: v.author })
+              videos_added++;
+            }
+            if (videos_added == vm.nVideos) {
+              break
+            }
           }
-        } else {
-          console.log(err)
         }
       });
     } else if (vm.method == "trending") {
+      var videos_added = 0;
+       
       golos.api.getDiscussionsByTrending(query, function(err, result) {
         if (!err) {
           for (var i = 0; i < result.length; ++i) {
             var v = result[i];
-            vm.videosList.push({ id: i,  permlink: v.permlink, author: v.author  })
+            if (vm.parseBody(v.body)) {
+              vm.videosList.push({ id: i,  permlink: v.permlink, author: v.author })
+              videos_added++;
+            }
+            if (videos_added == vm.nVideos) {
+              break
+            }
           }
-        } else {
-          console.log(err)
         }
       });
-    } else if (vm.method == "new"){
-       golos.api.getDiscussionsByCreated(query, function(err, result) {
-        if (!err) {
-          for (var i = 0; i < result.length; ++i) {
-            var v = result[i];
-            vm.videosList.push({ id: i,  permlink: v.permlink, author: v.author  })
-          }
-        } else {
-          console.log(err)
-        }
-      });
-
     }
   }
 }

@@ -20,10 +20,13 @@
 </template>
 
 <script>
+import { parseBody } from './parseBody.js'
 var golos = require('golos-js')
 
 export default {
   name: 'VideoBlock',
+
+  mixins: [parseBody],
 
   props: {
     permlink: {
@@ -71,14 +74,13 @@ export default {
     var vm = this;
     golos.api.getContent(vm.author, vm.permlink, function(err, result) {
       if (!err) {
-        console.log(result);
         vm.title = result.title;
         vm.total = result.pending_payout_value;
-        var regexp = RegExp('<img src="(.*)" alt="(.*)"');
-        var parsed = regexp.exec(result.body);
-        vm.previewSrc = parsed[1];
-        var ipfs_id = parsed[2];
-        vm.src = "http://ipfs.io/ipfs/" + ipfs_id;
+        var parsed = vm.parseBody(result.body)
+        console.log(parsed)
+        vm.previewSrc = parsed.previewSrc;
+        console.log(vm.previewSrc);
+        vm.src = "http://ipfs.io/ipfs/" + parsed.ipfs_id;
       } else {
         console.log(err);
       }
