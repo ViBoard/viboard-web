@@ -55,6 +55,7 @@
           <label for="psw-repeat"><b>Код beta-теста</b></label>
           <input id="beta-key-reg" type="text" placeholder="Код" name="beta-key" required>
 
+          <div class="g-recaptcha" data-sitekey="6LcUeVMUAAAAAJogwdxvfVdWUuhCc6C8j2HsO4kz"></div>
           <!-- <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p> -->
 
           <div class="clearfix">

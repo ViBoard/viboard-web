@@ -5,6 +5,13 @@ const viboard_name = "viboard";
 let golos = require("golos-js");
 let fs = require('fs');
 
+reCAPTCHA=require('recaptcha2')
+
+recaptcha=new reCAPTCHA({
+  siteKey:'6LcUeVMUAAAAAJogwdxvfVdWUuhCc6C8j2HsO4kz',
+  secretKey:'6LcUeVMUAAAAAMcK8p-N-4RbLJIrFuKIIc_FY_oy'
+})
+
 let express = require("express");
 let app = express();
 
@@ -17,7 +24,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.post("/", function (request, responce) {
-  // console.log(request.body);
+  console.log("capcha:", request.body.captcha);
   if (beta_key == request.body.beta_key) {
     let new_keys = [request.body.owner, request.body.active, request.body.posting, request.body.memo];
     create_account(request.body.new_account_name, new_keys, responce);
