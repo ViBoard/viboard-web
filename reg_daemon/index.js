@@ -5,12 +5,7 @@ const viboard_name = "viboard";
 let golos = require("golos-js");
 let fs = require('fs');
 
-reCAPTCHA=require('recaptcha2')
 
-recaptcha=new reCAPTCHA({
-  siteKey:'6LcUeVMUAAAAAJogwdxvfVdWUuhCc6C8j2HsO4kz',
-  secretKey:'6LcUeVMUAAAAAMcK8p-N-4RbLJIrFuKIIc_FY_oy'
-})
 
 let express = require("express");
 let app = express();
@@ -24,12 +19,12 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.post("/", function (request, responce) {
-  console.log("capcha:", request.body.captcha);
   if (beta_key == request.body.beta_key) {
     let new_keys = [request.body.owner, request.body.active, request.body.posting, request.body.memo];
     create_account(request.body.new_account_name, new_keys, responce);
     // responce.send(create_result);
   } else {
+    responce.setHeader("Access-Control-Allow-Origin", "*");
     responce.send("Invalid beta key");
   }
 });
@@ -49,7 +44,7 @@ app.listen(port, function () {
 
 function create_account(new_account_name, new_keys, responce) {
   console.log("Try to create account..");
-  let fee = '1.000 GOLOS';
+  let fee = '3.000 GOLOS';
   let owner = {
     weight_threshold: 1,
     account_auths: [],
@@ -74,9 +69,11 @@ function create_account(new_account_name, new_keys, responce) {
   golos.broadcast.accountCreate(viboard_WIF, fee, viboard_name, new_account_name, owner, active, posting, memoKey, jsonMetadata, function (err, result) {
     if (!err) {
       // console.log('accountCreate', result);
+      responce.setHeader("Access-Control-Allow-Origin", "*");
       responce.send("Created");
     } else {
       console.error("Error! -> ", err);
+      responce.setHeader("Access-Control-Allow-Origin", "*");    
       responce.send("Error account creation");
     }
   });

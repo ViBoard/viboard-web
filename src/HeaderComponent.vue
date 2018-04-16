@@ -37,7 +37,7 @@
             Успешно
           </div>
           <div class="control-group" id="reg_result_fail" style="display: none; color: red">
-            Произошла какая-то ошибка
+           
           </div>
           <hr>
           <label for="login"><b>Логин</b></label>
@@ -55,7 +55,6 @@
           <label for="psw-repeat"><b>Код beta-теста</b></label>
           <input id="beta-key-reg" type="text" placeholder="Код" name="beta-key" required>
 
-          <div class="g-recaptcha" data-sitekey="6LcUeVMUAAAAAJogwdxvfVdWUuhCc6C8j2HsO4kz"></div>
           <!-- <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p> -->
 
           <div class="clearfix">
@@ -151,7 +150,7 @@
               console.log('newKeys:', newKeys);
 
               let xhr = new XMLHttpRequest();
-              xhr.open("POST", "http://localhost:3000", true);
+              xhr.open("POST", "http://viboard.me:3000", true);
               xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
               let send_req = "new_account_name=" + new_account_name + "&owner=" + newKeys.owner + "&active=" + newKeys.active
                 + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email + "&beta_key=" + beta_key;
