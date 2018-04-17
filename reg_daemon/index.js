@@ -35,7 +35,8 @@ app.listen(port, function () {
       return console.log(err);
     }
     viboard_WIF = data.toString('utf8').trim();
-    console.log("WIF:", viboard_WIF);
+    console.log("WIF got!");
+    console.log("WIF got!");
   });
 
   console.log("Ready..");
@@ -44,7 +45,7 @@ app.listen(port, function () {
 
 function create_account(new_account_name, new_keys, responce) {
   console.log("Try to create account..");
-  let fee = '3.000 GOLOS';
+  let fee = '1.500 GOLOS';
   let owner = {
     weight_threshold: 1,
     account_auths: [],
@@ -73,7 +74,7 @@ function create_account(new_account_name, new_keys, responce) {
       responce.send("Created");
     } else {
       console.error("Error! -> ", err);
-      responce.setHeader("Access-Control-Allow-Origin", "*");    
+      responce.setHeader("Access-Control-Allow-Origin", "*");
       responce.send("Error account creation");
     }
   });
