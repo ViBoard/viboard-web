@@ -95,7 +95,7 @@
             <button type="button" onclick="document.getElementById('signin_form').style.display='none'"
                     class="cancelbtn">Отменить
             </button>
-            <button type="button" class="signupbtn" @click="auth">Войти!</button>
+            <button type="button" class="signupbtn" @click="auth" id="signup-actbutton">Войти!</button>
           </div>
         </div>
       </form>
@@ -142,7 +142,7 @@
 
         //check correct
 
-        let accounts = [new_account_name];
+        let accounts = ["alamantos378ry32b32hf"];
         golos.api.getAccounts(accounts, function (err, result) {
           if (!err) {
             if (!result.length) {
