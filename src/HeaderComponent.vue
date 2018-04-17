@@ -141,7 +141,6 @@
         
         
         //check correct
-        
         let accounts = [new_account_name];
         golos.api.getAccounts(accounts, function (err, result) {
           if (!err) {

@@ -1,10 +1,9 @@
 const port = 3000;
-const beta_key = "146";
+const beta_key = "1337";
 let viboard_WIF;
 const viboard_name = "viboard";
 let golos = require("golos-js");
 let fs = require('fs');
-
 
 
 let express = require("express");
@@ -25,7 +24,7 @@ app.post("/", function (request, responce) {
     // responce.send(create_result);
   } else {
     responce.setHeader("Access-Control-Allow-Origin", "*");
-    responce.send("Invalid beta key");
+    responce.send("(-1) Invalid beta key");
   }
 });
 
@@ -71,11 +70,12 @@ function create_account(new_account_name, new_keys, responce) {
     if (!err) {
       // console.log('accountCreate', result);
       responce.setHeader("Access-Control-Allow-Origin", "*");
-      responce.send("Created");
+      responce.send("(0) Created");
     } else {
-      console.error("Error! -> ", err);
+      console.error("Error! -> ", err.payload.error.data.code, err.payload.error.data.message);
+      let answer = "(" + err.payload.error.data.code + ") " + err.payload.error.data.message;
       responce.setHeader("Access-Control-Allow-Origin", "*");
-      responce.send("Error account creation");
+      responce.send(answer);
     }
   });
 }
