@@ -6,6 +6,7 @@
               gridClass="grid-small"
               :nVideos="36"
               :isPreview="true"
+              :custom_player="false"
               method="new"
               />
 

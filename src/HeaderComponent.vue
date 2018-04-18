@@ -106,6 +106,7 @@
 </template>
 
 <script>
+  import 'vue-plyr/dist/vue-plyr.css';
   var golos = require("golos-js");
   var Cookies = require('js-cookie');
   //var request = require('request');
@@ -326,7 +327,7 @@
   }
   
   /* Set a style for all buttons */
-  button {
+  #signup_form button, #signip_form button {
     background-color: #292929; /*#4CAF50*/
     color: white;
     padding: 14px 20px;
@@ -337,7 +338,7 @@
     opacity: 0.9;
   }
   
-  button:hover {
+  #signup_form button:hover, #signin_form button:hover {
     opacity: 1;
   }
   

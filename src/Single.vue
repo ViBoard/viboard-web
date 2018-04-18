@@ -3,14 +3,15 @@
     <FixedElements/>
     <Sidebar/>
     <div id="main">
-    <video-block 
+    <video-block
            :author="author"
            :permlink="permlink"
            :ap="true"
            :muted="false"
            :controls="true"
+           :custom_player="true"
     />
-    <Upvotes 
+    <Upvotes
       :author="author"
       :permlink="permlink"
     />

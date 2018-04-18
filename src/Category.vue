@@ -10,6 +10,7 @@
         :muted="true"
         :controls="false"
         :isPreview="isPreview"
+        :custom_player="custom_player"
         :key="item.id">
       </video-block>
     </div>
@@ -71,6 +72,10 @@ export default {
       default: false,
     },
     isPreview: {
+      type: Boolean,
+      default: false,
+    },
+    custom_player: {
       type: Boolean,
       default: false,
     }
