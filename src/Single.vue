@@ -63,7 +63,7 @@
 <style>
   .plyr--video {
     width: 85%;
-    margin-top: 3em; 
+    margin-top: 3em;
   }
   
   #app {
