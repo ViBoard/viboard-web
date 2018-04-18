@@ -18,7 +18,7 @@
       <div v-if="isPreview" class="video-element">
         <img :src="previewSrc">
       </div>
-      <plyr-video class="video-element" v-else-if="custom_player" :poster="previewSrc"
+      <plyr-video v-else-if="custom_player" :poster="previewSrc"
                   :videos="this.videos"
                   :autoplay="ap ? true : false"
                   :muted="muted ? true : false"
