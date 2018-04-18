@@ -1,9 +1,10 @@
 const port = 3000;
-const beta_key = "146";
+const beta_key = "1337";
 let viboard_WIF;
 const viboard_name = "viboard";
 let golos = require("golos-js");
 let fs = require('fs');
+
 
 let express = require("express");
 let app = express();
@@ -17,13 +18,13 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.post("/", function (request, responce) {
-  // console.log(request.body);
   if (beta_key == request.body.beta_key) {
     let new_keys = [request.body.owner, request.body.active, request.body.posting, request.body.memo];
     create_account(request.body.new_account_name, new_keys, responce);
     // responce.send(create_result);
   } else {
-    responce.send("Invalid beta key");
+    responce.setHeader("Access-Control-Allow-Origin", "*");
+    responce.send("(-1) Invalid beta key");
   }
 });
 
@@ -33,7 +34,8 @@ app.listen(port, function () {
       return console.log(err);
     }
     viboard_WIF = data.toString('utf8').trim();
-    console.log("WIF:", viboard_WIF);
+    console.log("WIF got!");
+    console.log("WIF got!");
   });
 
   console.log("Ready..");
@@ -42,7 +44,7 @@ app.listen(port, function () {
 
 function create_account(new_account_name, new_keys, responce) {
   console.log("Try to create account..");
-  let fee = '1.000 GOLOS';
+  let fee = '1.500 GOLOS';
   let owner = {
     weight_threshold: 1,
     account_auths: [],
@@ -67,10 +69,13 @@ function create_account(new_account_name, new_keys, responce) {
   golos.broadcast.accountCreate(viboard_WIF, fee, viboard_name, new_account_name, owner, active, posting, memoKey, jsonMetadata, function (err, result) {
     if (!err) {
       // console.log('accountCreate', result);
-      responce.send("Created");
+      responce.setHeader("Access-Control-Allow-Origin", "*");
+      responce.send("(0) Created");
     } else {
-      console.error("Error! -> ", err);
-      responce.send("Error account creation");
+      console.error("Error! -> ", err.payload.error.data.code, err.payload.error.data.message);
+      let answer = "(" + err.payload.error.data.code + ") " + err.payload.error.data.message;
+      responce.setHeader("Access-Control-Allow-Origin", "*");
+      responce.send(answer);
     }
   });
 }

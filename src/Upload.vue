@@ -88,8 +88,8 @@
 
               let video_url = `https://ipfs.io/ipfs/${result[0].hash}`;
               let img_url = `https://ipfs.io/ipfs/${result[1].hash}`;
-              console.log('img', img_url)
-              console.log('video', video_url)
+              console.log('img', img_url);
+              console.log('video', video_url);
               var login = Cookies.get("login");
               var password = Cookies.get("posting_private");
 

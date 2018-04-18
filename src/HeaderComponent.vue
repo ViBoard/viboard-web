@@ -26,7 +26,7 @@
         </a>
       </div>
     </div>
-
+    
     <!-- The Modal (contains the Sign Up form) -->
     <div id="signup_form" class="modal">
       <span onclick="document.getElementById('signup_form').style.display='none'" class="close" title="Close Modal">&times;</span>
@@ -37,26 +37,26 @@
             Успешно
           </div>
           <div class="control-group" id="reg_result_fail" style="display: none; color: red">
-            Произошла какая-то ошибка
+          
           </div>
           <hr>
           <label for="login"><b>Логин</b></label>
           <input id="login-reg" type="text" placeholder="Введите логин" name="login" required>
-
+          
           <label for="email"><b>Email</b></label>
           <input id="email-reg" type="text" placeholder="Введите Email" name="email" required>
-
+          
           <label for="psw"><b>Пароль</b></label>
           <input id="pswd-reg" type="password" placeholder="Введите пароль" name="pswd" required>
-
+          
           <label for="psw-repeat"><b>Повтор пароля</b></label>
           <input id="pswd-repeat-reg" type="password" placeholder="Повторите пароль" name="pswd-repeat" required>
-
+          
           <label for="psw-repeat"><b>Код beta-теста</b></label>
           <input id="beta-key-reg" type="text" placeholder="Код" name="beta-key" required>
-
+          
           <!-- <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p> -->
-
+          
           <div class="clearfix">
             <button type="button" onclick="document.getElementById('signup_form').style.display='none'"
                     class="cancelbtn">Отменить
@@ -66,7 +66,7 @@
         </div>
       </form>
     </div>
-
+    
     <!-- The Modal (contains the Sign In form) -->
     <div id="signin_form" class="modal">
       <span onclick="document.getElementById('signin_form').style.display='none'" class="close" title="Close Modal">&times;</span>
@@ -82,20 +82,20 @@
           <hr>
           <label for="login"><b>Логин</b></label>
           <input id="login-name" type="text" placeholder="Введите логин" name="login" required>
-
+          
           <label for="psw"><b>Пароль</b></label>
           <input id="login-pass" type="password" placeholder="Введите пароль" name="psw" required>
-
+          
           <label>
             <input id="remember-me" type="checkbox" checked="unchecked" name="remember" style="margin-bottom:15px">
             Запомнить
           </label>
-
+          
           <div class="clearfix">
             <button type="button" onclick="document.getElementById('signin_form').style.display='none'"
                     class="cancelbtn">Отменить
             </button>
-            <button type="button" class="signupbtn" @click="auth">Войти!</button>
+            <button type="button" class="signupbtn" @click="auth" id="signup-actbutton">Войти!</button>
           </div>
         </div>
       </form>
@@ -106,11 +106,12 @@
 </template>
 
 <script>
+  import 'vue-plyr/dist/vue-plyr.css';
   var golos = require("golos-js");
   var Cookies = require('js-cookie');
   //var request = require('request');
   golos.config.set('websocket', 'wss://ws.golos.io');
-
+  
   export default {
     name: 'HeaderComponent',
     data: function () {
@@ -119,7 +120,7 @@
         login: "pass",
       }
     },
-
+    
     created: function () {
       var vm = this;
       var temp_login = Cookies.get("login");
@@ -129,7 +130,7 @@
         vm.logged_in = true;
       }
     },
-
+    
     methods: {
       register: function () {
         let vm = this;
@@ -138,19 +139,18 @@
         let pswd = document.getElementById("pswd-reg").value;
         let pswd_repeat = document.getElementById("pswd-repeat-reg").value;
         let beta_key = document.getElementById("beta-key-reg").value;
-
-
+        
+        
         //check correct
-
         let accounts = [new_account_name];
         golos.api.getAccounts(accounts, function (err, result) {
           if (!err) {
             if (!result.length) {
               let newKeys = golos.auth.generateKeys(new_account_name, pswd, ['owner', 'active', 'posting', 'memo']);
               console.log('newKeys:', newKeys);
-
+              
               let xhr = new XMLHttpRequest();
-              xhr.open("POST", "http://localhost:3000", true);
+              xhr.open("POST", "http://viboard.me:3000", true);
               xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
               let send_req = "new_account_name=" + new_account_name + "&owner=" + newKeys.owner + "&active=" + newKeys.active
                 + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email + "&beta_key=" + beta_key;
@@ -164,7 +164,6 @@
                     document.getElementById("reg_result_success").style.display = "block";
                     document.getElementById("reg_result_fail").style.display = "none";
                     Cookies.set("login", new_account_name);
-                    //Cookies.set("posting_pubkey", postingPubkey);
                     Cookies.set("posting_private", newKeys.posting);
                     setTimeout("document.getElementById('signup_form').style.display='none'", 1000);
                     vm.login = new_account_name;
@@ -181,19 +180,18 @@
           }
           else console.error(err);
         });
-
+        
         // \check correct
-
+        
         // request.post({url:'http://localhost:3000/', form: {my_key:'edited_value'}}, function(err,httpResponse,body){ /* ... */ })
       },
-
+      
       signout: function () {
         Cookies.remove("login");
-        // Cookies.set("password", password, {});
-        Cookies.remove("posting_pubkey");
+        Cookies.remove("posting_private");
         this.logged_in = false;
       },
-
+      
       nickname_click: function () {
         var videolist = document.getElementsByClassName("videofoo");
         console.log("wqefsgdfd");
@@ -202,13 +200,13 @@
           console.log(videolist[i].style.height, videolist[i].offsetWidth);
         }
       },
-
+      
       auth: function () {
         var vm = this;
         var login = document.getElementById("login-name").value;
         var password = document.getElementById("login-pass").value;
         var remember_me = document.getElementById("remember-me").checked;
-
+        
         var accounts = [login];
         golos.api.getAccounts(accounts, function (err, result) {
           //console.log(err, result);
@@ -216,23 +214,22 @@
             result.forEach(function (item) {
               var postingPubkey = item.posting.key_auths[0][0];
               console.log('getAccounts', item.posting.key_auths[0][0]); // Костыль?
-
+              
               var auths = {
                 posting: [[postingPubkey]]
               };
-
+              
               var verifyResult = golos.auth.verify(login, password, auths);
               console.log('verify', verifyResult);
-
+              
               var roles = ['posting'];
               var keys = golos.auth.getPrivateKeys(login, password, roles);
-
+              
               if (verifyResult) {
                 document.getElementById("auth_result_success").style.display = "block";
                 document.getElementById("auth_result_fail").style.display = "none";
                 Cookies.set("login", login);
                 // Cookies.set("password", password, {});
-                Cookies.set("posting_pubkey", postingPubkey);
                 Cookies.set("posting_private", keys.posting);
                 setTimeout("document.getElementById('signin_form').style.display='none'", 1000);
                 vm.login = login;
@@ -245,25 +242,25 @@
           }
           else console.error(err);
         });
-
+        
         // var roles = ['owner', 'active', 'posting', 'memo'];
         // var keys = golos.auth.getPrivateKeys(login, password, roles);
         // console.log('getPrivateKeys', keys);
         //
         // var resultWifToPublic = golos.auth.wifToPublic(keys.posting, keys.postingPubkey);
         // console.log('wifToPublic', resultWifToPublic);
-
+        
         // var roles = ['owner', 'active', 'posting', 'memo'];
         // console.log(login, password, remember_me);
         // var pkey = golos.auth.getPrivateKeys(login, password, roles);
         // console.log('postingPubkey', pkey);
         // var resultWifIsValid = golos.auth.wifIsValid(pkey['posting'], pkey['postingPubkey']);
         // console.log('wifIsValid', resultWifIsValid);
-
-
+        
+        
       }
-
-
+      
+      
     }
   }
 </script>
@@ -279,12 +276,12 @@
     box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
     overflow: hidden;
   }
-
+  
   #logo {
     display: block;
     width: 8em; /*8em was*/
   }
-
+  
   #a-logo {
     display: block;
     width: 8em; /*8em was*/
@@ -293,26 +290,26 @@
     padding: 1em;
     /* padding-bottom: 1em; */
   }
-
+  
   #account-info, #login-bar {
     position: fixed;
     right: 1em;
     top: 2em;
   }
-
+  
   #account-info div, #login-bar div {
     margin-right: 2em;
     display: inline-block;
   }
-
+  
   .menu-bar {
     color: black;
   }
-
+  
   * {
     box-sizing: border-box
   }
-
+  
   /* Full-width input fields */
   input[type=text], input[type=password] {
     width: 100%;
@@ -322,15 +319,15 @@
     border: none;
     background: #f1f1f1;
   }
-
+  
   /* Add a background color when the inputs get focus */
   input[type=text]:focus, input[type=password]:focus {
     background-color: #ddd;
     outline: none;
   }
-
+  
   /* Set a style for all buttons */
-  button {
+  #signup_form button, #signip_form button {
     background-color: #292929; /*#4CAF50*/
     color: white;
     padding: 14px 20px;
@@ -340,29 +337,29 @@
     width: 100%;
     opacity: 0.9;
   }
-
-  button:hover {
+  
+  #signup_form button:hover, #signin_form button:hover {
     opacity: 1;
   }
-
+  
   /* Extra styles for the cancel button */
   .cancelbtn {
     padding: 14px 20px;
     background-color: #ABABAB; /*#f44336*/
     color: black;
   }
-
+  
   /* Float cancel and signup buttons and add an equal width */
   .cancelbtn, .signupbtn {
     float: left;
     width: 50%;
   }
-
+  
   /* Add padding to container elements */
   .container {
     padding: 16px;
   }
-
+  
   /* The Modal (background) */
   .modal {
     display: none; /* Hidden by default */
@@ -376,7 +373,7 @@
     background-color: rgba(71, 78, 93, 0.7);
     padding-top: 50px;
   }
-
+  
   /* Modal Content/Box */
   .modal-content {
     background-color: #fefefe;
@@ -384,13 +381,13 @@
     border: 1px solid #888;
     width: 30%; /* Could be more or less, depending on screen size */
   }
-
+  
   /* Style the horizontal ruler */
   hr {
     border: 1px solid #f1f1f1;
     margin-bottom: 25px;
   }
-
+  
   /* The Close Button (x) */
   .close {
     position: absolute;
@@ -400,20 +397,20 @@
     font-weight: bold;
     color: #f1f1f1;
   }
-
+  
   .close:hover,
   .close:focus {
     color: #f44336;
     cursor: pointer;
   }
-
+  
   /* Clear floats */
   .clearfix::after {
     content: "";
     clear: both;
     display: table;
   }
-
+  
   /* Change styles for cancel button and signup button on extra small screens */
   @media screen and (max-width: 300px) {
     .cancelbtn, .signupbtn {

@@ -24,6 +24,7 @@
 <script>
   var golos = require('golos-js')
   var markdown = require('markdown').markdown
+  var Cookies = require('js-cookie')
   import Upvotes from './Upvotes.vue'
   export default {
     name: 'Comments',
@@ -71,13 +72,13 @@
 
       sendComment: function() {
         var vm = this;
-        var wif = '5HzbpzRRy6th3FYQpXb9AmKwC461ZCkFdmyqcpXciwVupxweLoR';
-        var author = 'mmalikov';
+        var wif = Cookies.get("posting_private");
+        var author = Cookies.get("login")
         var permlink = 're-' + vm.author + '-' + vm.permlink + '-' + Date.now();
         var title = '';
         var body = vm.commentText;
         var jsonMetadata = '{}';
-        golos.broadcast.comment(wif, vm.author, vm.permlink, author, permlink, title, body, jsonMetadata, function(err, result) {
+        golos.broadcast.comment(wif, author, vm.permlink, vm.author, permlink, title, body, jsonMetadata, function(err, result) {
           console.log(err, result);
           if (!err) {
             console.log('comment', result);
