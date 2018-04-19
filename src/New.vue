@@ -4,7 +4,7 @@
     <Sidebar/>
     <Category title="Новое"
               gridClass="grid-small"
-              :nVideos="36"
+              :nVideos="30"
               :isPreview="true"
               :custom_player="false"
               method="new"

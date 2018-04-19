@@ -42,6 +42,7 @@
 </template>
 
 <script>
+  import { parseBody } from './parseBody.js'
   import {PlyrVideo} from 'vue-plyr'
   // import 'vue-plyr/dist/vue-plyr.css'
   
@@ -53,6 +54,8 @@
     components: {
       PlyrVideo,
     },
+    
+      mixins: [parseBody],
     
     props: {
       permlink: {
@@ -102,19 +105,17 @@
       }
     },
     
-    created: function () {
-      let vm = this;
-      golos.api.getContent(vm.author, vm.permlink, function (err, result) {
+    created: function() {
+      var vm = this;
+      golos.api.getContent(vm.author, vm.permlink, function(err, result) {
         if (!err) {
-          console.log(result);
           vm.title = result.title;
           vm.total = result.pending_payout_value;
-          var regexp = RegExp('<img src="(.*)" alt="(.*)"');
-          var parsed = regexp.exec(result.body);
-          vm.previewSrc = parsed[1];
-          var ipfs_id = parsed[2];
-          vm.src = "http://ipfs.io/ipfs/" + ipfs_id;
-          vm.videos.push({src: vm.src, format: 'mp4'});
+          var parsed = vm.parseBody(result.body)
+          console.log(parsed)
+          vm.previewSrc = parsed.previewSrc;
+          console.log(vm.previewSrc);
+          vm.src = "http://ipfs.io/ipfs/" + parsed.ipfs_id;
         } else {
           console.log(err);
         }
