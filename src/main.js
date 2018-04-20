@@ -12,7 +12,7 @@ const routes = {
   '/watch': Single,
   '/upload': Upload,
   '/embed': Embed,
-}
+};
 
 
 new Vue({
@@ -30,4 +30,4 @@ new Vue({
   },
 
   render(h) { return h(this.ViewComponent) }
-})
+});
