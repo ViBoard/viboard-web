@@ -68,8 +68,7 @@
 
 <style>
   .plyr--video {
-    width: 85%;
-    margin-top: 3em; 
+    width: 70%;
   }
   
   #comments {

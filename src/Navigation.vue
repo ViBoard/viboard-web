@@ -2,41 +2,31 @@
   <div id="navigation">
     <b-navbar toggleable="lg" fixed="top" class="bg-white" id="header">
       <b-navbar-brand href="/" id="logo">
-          <img height="50" src="./assets/logo.jpg">
+          <img height="30" src="./assets/logo.jpg">
         </b-navbar-brand>
         <b-navbar-brand class="navbar-brand" href="/">
-          <img height="50">
+          <img height="30">
         </b-navbar-brand>
 
       <b-navbar-toggle class="ml-auto" target="nav_collapse"></b-navbar-toggle>
         <b-collapse is-nav id="nav_collapse">
           <b-navbar-nav class="ml-auto" v-if="logged_in">
             <b-nav-item href="/upload">
-              <a class="nav-link text-dark">
                 <span id="upload">Загрузить</span>
-              </a>
             </b-nav-item>
             <b-nav-item>
-              <a class="nav-link text-dark" href="#">
                 <span id="nickname" @click="nickname_click">{{login}}</span>
-              </a>
             </b-nav-item>
             <b-nav-item>
-              <a class="nav-link text-dark" href="#">
                 <span id="signout" @click="signout">Выйти</span>
-              </a>
             </b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto" v-else>
             <b-nav-item>
-              <a class="nav-link text-dark" href="#">
                 <span id="signup" v-b-modal.signup_modal>Регистрация</span>
-              </a>
             </b-nav-item>
             <b-nav-item>
-              <a class="nav-link text-dark" href="#">
                 <span id="signin" v-b-modal.login_modal>Вход</span>
-              </a>
             </b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav class="d-lg-none">
