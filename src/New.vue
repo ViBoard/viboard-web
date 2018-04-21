@@ -4,7 +4,7 @@
     <AppInner>
       <Category title="Новое"
                 gridClass="grid-small"
-                :nVideos="36"
+                :nVideos="33"
                 :isPreview="true"
                 :custom_player="false"
                 method="new"

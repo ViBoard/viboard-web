@@ -237,7 +237,7 @@
           if (!err) {
             result.forEach(function (item) {
               var postingPubkey = item.posting.key_auths[0][0];
-              console.log('getAccounts', item.posting.key_auths[0][0]); // Костыль?
+              console.log('getAccounts', item.posting); // Костыль?
               
               var auths = {
                 posting: [[postingPubkey]]

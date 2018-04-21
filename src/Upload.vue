@@ -13,11 +13,11 @@
           </b-form-group>
 
           <b-form-group label="Название:">
-            <b-form-input id="video-title" type="text" ref="title"/>
+            <b-form-input id="video-title" type="text" v-model="title"/>
           </b-form-group>
 
           <b-form-group label="Тэги:" description="Добавте теги (до четырех штук) через пробел">
-            <b-form-input id="video-tags" type="text" ref="tags"/>
+            <b-form-input id="video-tags" type="text" v-model="tags"/>
           </b-form-group>
 
           <b-alert variant="danger" ref="errors">{{ message }}</b-alert>
@@ -50,8 +50,10 @@
       return {
         videofile: null,
         imgfile: null,
+        tags: "",
         spinning: false,
         message: "",
+        title: "",
       }
     },
 
@@ -110,11 +112,11 @@
               var parentPermlink = 'videotest';
               var author = login;
               var permlink = result[0].hash.toLowerCase() + Date.now();
-              var title = vm.$refs.title.value;
+              var title = vm.title;
               var body = `<a href="http://viboard.me/watch?v=${permlink}&a=${author}"><p>Смотреть на viboard.me</p><img src="${img_url}" alt="${result[0].hash}"></img></a>`
               let percent_steem_dollars = 10000; // 100% = 10000
               
-              let tagList = vm.$refs.tags.value.split(' ', 4);
+              let tagList = vm.tags.split(' ', 4);
               tagList.unshift(parentPermlink);
               console.log(tagList);
               let jsonMetadata = {
