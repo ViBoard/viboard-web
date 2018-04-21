@@ -120,13 +120,6 @@
                 }
               }
               console.log("ne norm")
-              // if (vm.parseBody(v.body)) {
-              //       vm.videosList.push({id: i, permlink: v.permlink, author: v.author})
-              //       videos_added++;
-              //     }
-              //     if (videos_added == vm.nVideos) {
-              //       break
-              //     }
             }
           }
         });
