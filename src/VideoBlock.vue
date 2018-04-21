@@ -1,20 +1,6 @@
 <template>
   <div class='video-block'>
     <a :href="controls ? '#' : getHref">
-      <!--<plyr-video :poster="previewSrc" :videos="this.videos" :subtitles="" :crossorigin="true"/>-->
-      
-      <!--<plyr-video>-->
-      <!--<video class="video-element"-->
-      <!--v-if="!isPreview"-->
-      <!--:autoplay="ap ? true : false"-->
-      <!--:muted="muted ? true : false"-->
-      <!--:controls="controls ? true : false"-->
-      <!--:src="src">-->
-      <!--</video>-->
-      <!--<div v-else class="video-element">-->
-      <!--<img :src="previewSrc"></img>-->
-      <!--</div>-->
-      <!--</plyr-video>-->
       <div v-if="isPreview" class="video-element">
         <img :src="previewSrc">
       </div>
@@ -116,6 +102,7 @@
           vm.previewSrc = parsed.previewSrc;
           console.log(vm.previewSrc);
           vm.src = "http://ipfs.io/ipfs/" + parsed.ipfs_id;
+          vm.videos.push({src: vm.src, format: 'mp4'});
         } else {
           console.log(err);
         }
@@ -147,13 +134,6 @@
     margin: 0;
     padding: 0;
     margin-top: 0.25em;
-  }
-  
-  .video-author {
-  }
-  
-  .video-total {
-    color: black;
   }
   
   .video-element {
