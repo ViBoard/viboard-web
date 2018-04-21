@@ -115,10 +115,10 @@
             }
             
             
-            ipfs.files.add(files_img, options_img, (err, result) => {
+            ipfs.files.add(files_img, (err, result) => {
               confirm_ipfs_upload(err, result, "img");
               
-              ipfs.files.add(files_video, options_video, (err, result) => {
+              ipfs.files.add(files_video, (err, result) => {
                 confirm_ipfs_upload(err, result, "video");
                 
                 var login = Cookies.get("login");
