@@ -1,7 +1,7 @@
 <template>
   <div class='video-block'>
     <a :href="controls ? '#' : getHref">
-      <div v-if="isPreview" class="video-element bg-dark">
+      <div v-if="isPreview" class="video-element">
         <img :src="previewSrc">
       </div>
       <plyr-video v-else-if="custom_player" :poster="previewSrc"

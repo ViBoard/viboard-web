@@ -1,6 +1,6 @@
 <template>
   <div id="navigation">
-    <b-navbar toggleable="lg" fixed="top" class="bg-white">
+    <b-navbar toggleable="lg" fixed="top" class="bg-white" id="header">
       <b-navbar-brand href="/" id="logo">
           <img height="50" src="./assets/logo.jpg">
         </b-navbar-brand>
@@ -11,8 +11,8 @@
       <b-navbar-toggle class="ml-auto" target="nav_collapse"></b-navbar-toggle>
         <b-collapse is-nav id="nav_collapse">
           <b-navbar-nav class="ml-auto" v-if="logged_in">
-            <b-nav-item>
-              <a class="nav-link text-dark" href="/upload">
+            <b-nav-item href="/upload">
+              <a class="nav-link text-dark">
                 <span id="upload">Загрузить</span>
               </a>
             </b-nav-item>
@@ -41,11 +41,9 @@
           </b-navbar-nav>
           <b-navbar-nav class="d-lg-none">
             <div v-for="item in SideLinksList">
-              <b-nav-item>
                 <a class="nav-link text-dark" :href="item.href">
                   <i :class="item.icon"></i> {{ item.text }}
                 </a>
-              </b-nav-item>
             </div>
           </b-navbar-nav>
 
@@ -312,5 +310,11 @@
 
   .fas {
     margin-right: 3em;
+  }
+
+  #header {
+    -webkit-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+    -moz-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+    box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
   }
 </style>

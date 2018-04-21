@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Navigation/>
-    <div id="main">
+    <AppInner>
       <video-block
         :author="author"
         :permlink="permlink"
@@ -18,13 +18,14 @@
                 :author="author"
                 :permlink="permlink"
       />
-    </div>
+    </AppInner>
   </div>
 </template>
 
 <script>
   var queryString = require('query-string')
   var golos = require('golos-js')
+  import AppInner from './AppInner.vue'
   import VideoBlock from './VideoBlock.vue'
   import Navigation from './Navigation.vue'
   import Category from './Category.vue'
@@ -46,6 +47,7 @@
       Comments,
       Upvotes,
       Navigation,
+      AppInner,
     },
     
     data: function () {
@@ -68,14 +70,6 @@
   .plyr--video {
     width: 85%;
     margin-top: 3em; 
-  }
-  
-  #app {
-    padding-top: 4em;
-  }
-  
-  #main {
-    margin-left: 12.5em;
   }
   
   #comments {

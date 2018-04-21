@@ -4,7 +4,7 @@ dist/
 npm-debug.log
 yarn-error.log
 secret_files/*
-package_lock.json
+package-lock.json
 
 # Editor directories and files
 .idea

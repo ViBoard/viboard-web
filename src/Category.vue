@@ -1,7 +1,7 @@
 <template>
   <div class="category mb-5">
     <h3> {{ title }} </h3>
-    <div v-bind:class="gridClass">
+    <div :class="gridClass">
       <video-block
         v-for="item in videosList"
         :author="item.author"

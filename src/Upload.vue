@@ -1,30 +1,33 @@
 <template>
   <div id="app">
     <Navigation/>
-    <div id="box">
-      <div id="main">
-        <span class="input-title">Выберите видео:</span>
-        <input id="video-file" type="file" ref="videofile">
-        <hr>
+    <AppInner>
+      <b-col lg=8 offset-lg=2>
+        <b-form>
+          <b-form-group label="Видео:">
+            <b-form-file placeholder="Выбрать файл..." id="video-file" type="file" v-model="videofile"/>
+          </b-form-group>
 
-        <span class="input-title">Выберите превью:</span>
-        <input id="img-file" type="file" ref="imgfile">
-        <hr>
+          <b-form-group label="Превью:">
+            <b-form-file placeholder="Выбрать файл..." id="img-file" type="file" v-model="imgfile"/>
+          </b-form-group>
 
-        <span class="input-title">Название:</span>
-        <input id="video-title" type="text" ref="title">
-        <hr>
+          <b-form-group label="Название:">
+            <b-form-input id="video-title" type="text" ref="title"/>
+          </b-form-group>
 
-        <span class="input-title">Тэги:</span>
-        <input id="video-tags" type="text" ref="tags">
-        <hr>
-        <div id="errors">{{ message }}</div>
-        <div id="loader-wrap" v-if="spinning">
-          <div class="loader">Загрузка...</div>
-        </div>
-        <button id="upload" v-if="!spinning" ref="upload" @click="upload()"> Загрузить</button>
-      </div>
-    </div>
+          <b-form-group label="Тэги:" description="Добавте теги (до четырех штук) через пробел">
+            <b-form-input id="video-tags" type="text" ref="tags"/>
+          </b-form-group>
+
+          <b-alert variant="danger" ref="errors">{{ message }}</b-alert>
+          <div id="loader-wrap" v-if="spinning">
+            <div class="loader">Загрузка...</div>
+          </div>
+          <b-button id="upload" v-if="!spinning" ref="upload" @click="upload" variant="dark"> Загрузить</b-button>
+        </b-form>
+      </b-col>
+    </AppInner>
   </div>
 </template>
 
@@ -34,15 +37,19 @@
   var golos = require("golos-js");
   var Cookies = require('js-cookie');
   import Navigation from './Navigation.vue'
+  import AppInner from './AppInner.vue'
 
   export default {
     name: 'app',
     components: {
       Navigation,
+      AppInner,
     },
 
     data: function() {
       return {
+        videofile: null,
+        imgfile: null,
         spinning: false,
         message: "",
       }
@@ -51,18 +58,20 @@
     methods: {
       upload: function () {
         var vm = this;
-        
+        vm.$refs.errors.show = false;
+
         const img_reader = new FileReader();
         const video_reader = new FileReader();
 
         vm.message = "";
         vm.spinning = true;
         img_reader.onloadend = function () {
-          const video = vm.$refs.videofile;
+          const video = vm.videofile;
           try {
-            video_reader.readAsArrayBuffer(video.files[0]);
+            video_reader.readAsArrayBuffer(video);
           } catch(e) {
             vm.message = "Ошибка при чтении видео"
+            vm.$refs.errors.show = true;
             vm.spinning = false;
             return;
           }
@@ -77,7 +86,8 @@
             ipfs.files.add(files, (err, result) => {
               if (err) {
                 console.error(err);
-                vm.message("Ошибка при загрузке файлов")
+                vm.message = "Ошибка при загрузке файлов";
+                vm.$refs.errors.show = true;
                 vm.spinning = false;
                 return
               }
@@ -117,6 +127,7 @@
                   window.location.replace(`/watch?v=${permlink}&a=${author}`);
                 } else {
                   vm.message = "Ошибка при создании поста";
+                  vm.$refs.errors.show = true;
                   vm.spinning = false;
                   console.log(err);
                 }
@@ -124,12 +135,14 @@
             }, false);
           };
         };
-        console.log(this.$refs);
-        const img = this.$refs.imgfile;
+        const img = vm.imgfile;
+        
+        console.log(img);
         try {
-          img_reader.readAsArrayBuffer(img.files[0]);
+          img_reader.readAsArrayBuffer(img);
         } catch (e) {
           vm.message = "Ошибка при чтении превью"
+          vm.$refs.errors.show = true;
           vm.spinning = false;
           return;
         }

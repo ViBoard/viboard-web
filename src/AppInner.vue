@@ -1,6 +1,6 @@
 <template>
   
-  <b-col lg=10 offset-lg=2 class="bg-light" id="inner">
+  <b-col cols=10 offset=2 class="bg-light" id="inner">
     <slot>
 
     </slot>
