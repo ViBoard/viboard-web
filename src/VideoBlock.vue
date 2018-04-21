@@ -1,20 +1,6 @@
 <template>
   <div class='video-block'>
     <a :href="controls ? '#' : getHref">
-      <!--<plyr-video :poster="previewSrc" :videos="this.videos" :subtitles="" :crossorigin="true"/>-->
-      
-      <!--<plyr-video>-->
-      <!--<video class="video-element"-->
-      <!--v-if="!isPreview"-->
-      <!--:autoplay="ap ? true : false"-->
-      <!--:muted="muted ? true : false"-->
-      <!--:controls="controls ? true : false"-->
-      <!--:src="src">-->
-      <!--</video>-->
-      <!--<div v-else class="video-element">-->
-      <!--<img :src="previewSrc"></img>-->
-      <!--</div>-->
-      <!--</plyr-video>-->
       <div v-if="isPreview" class="video-element">
         <img :src="previewSrc">
       </div>
@@ -30,7 +16,7 @@
              :controls="controls ? true : false"
              :src="src">
       </video>
-      
+    
     
     </a>
     <div class="video-header"> {{ title }}</div>
@@ -42,8 +28,9 @@
 </template>
 
 <script>
-  import { parseBody } from './parseBody.js'
+  import {parseBody} from './parseBody.js'
   import {PlyrVideo} from 'vue-plyr'
+  import {getVideoContent} from './getVideoContent.js'
   // import 'vue-plyr/dist/vue-plyr.css'
   
   var golos = require('golos-js')
@@ -55,7 +42,7 @@
       PlyrVideo,
     },
     
-      mixins: [parseBody],
+    mixins: [parseBody, getVideoContent],
     
     props: {
       permlink: {
@@ -105,21 +92,9 @@
       }
     },
     
-    created: function() {
-      var vm = this;
-      golos.api.getContent(vm.author, vm.permlink, function(err, result) {
-        if (!err) {
-          vm.title = result.title;
-          vm.total = result.pending_payout_value;
-          var parsed = vm.parseBody(result.body)
-          console.log(parsed)
-          vm.previewSrc = parsed.previewSrc;
-          console.log(vm.previewSrc);
-          vm.src = "http://ipfs.io/ipfs/" + parsed.ipfs_id;
-        } else {
-          console.log(err);
-        }
-      });
+    created: function () {
+      let vm = this;
+      vm.getVideoContent(vm)
     },
     
     mounted: function () {

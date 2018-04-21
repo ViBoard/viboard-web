@@ -3,14 +3,12 @@
     <FixedElements/>
     <Sidebar/>
     <div id="main">
-      <video-block
-        :author="author"
-        :permlink="permlink"
-        :ap="true"
-        :muted="false"
-        :controls="true"
-        :custom_player="true"
-      />
+      <plyr-video :poster="previewSrc"
+                  :videos="this.videos"
+                  :autoplay="ap"
+                  :muted="muted"
+                  :controls="customControls"
+                  :crossorigin="true"/>
       <Upvotes
         :author="author"
         :permlink="permlink"
@@ -25,13 +23,14 @@
 
 <script>
   var queryString = require('query-string')
-  var golos = require('golos-js')
-  import VideoBlock from './VideoBlock.vue'
+  var golos = require('golos-js');
   import FixedElements from './FixedElements.vue'
   import Sidebar from './Sidebar.vue'
-  import Category from './Category.vue'
   import Comments from './Comments.vue'
   import Upvotes from './Upvotes.vue'
+  import {PlyrVideo} from 'vue-plyr'
+  import {getVideoContent} from './getVideoContent.js'
+  import {parseBody} from './parseBody.js'
   
   export default {
     name: 'app',
@@ -39,23 +38,44 @@
     components: {
       FixedElements,
       Sidebar,
-      VideoBlock,
       Comments,
       Upvotes,
+      PlyrVideo
     },
+    
+    mixins: [parseBody, getVideoContent],
     
     data: function () {
       return {
         author: "",
         permlink: "",
+        src: "",
+        previewSrc: "",
+        title: "",
+        total: "",
+        videos: [],
+        customControls: ``,
+        
+        
+        ap: false,
+        muted: false,
+        controls: true,
       };
     },
     
+    computed: {
+      getHref: function () {
+        return 'watch?v=' + this.permlink + '&a=' + this.author
+      }
+    },
+    
     created: function () {
-      var vm = this;
-      var queries = queryString.parse(location.search);
+      let vm = this;
+      let queries = queryString.parse(location.search);
       vm.author = queries.a;
       vm.permlink = queries.v;
+      vm.getVideoContent(vm);
+      console.log(vm.src, vm.ap)
     }
   }
 </script>
