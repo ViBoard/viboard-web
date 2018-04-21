@@ -102,6 +102,7 @@
           vm.previewSrc = parsed.previewSrc;
           console.log(vm.previewSrc);
           vm.src = "http://ipfs.io/ipfs/" + parsed.ipfs_id;
+          vm.videos.push({src: vm.src, format: 'mp4'});
         } else {
           console.log(err);
         }
