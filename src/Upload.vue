@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <FixedElements/>
-    <Sidebar/>
+    <Navigation/>
     <div id="box">
       <div id="main">
         <span class="input-title">Выберите видео:</span>
@@ -34,14 +33,12 @@
   var ipfsAPI = require("ipfs-api");
   var golos = require("golos-js");
   var Cookies = require('js-cookie');
-  import FixedElements from './FixedElements.vue'
-  import Sidebar from "./Sidebar";
+  import Navigation from './Navigation.vue'
 
   export default {
     name: 'app',
     components: {
-      Sidebar,
-      FixedElements,
+      Navigation,
     },
 
     data: function() {

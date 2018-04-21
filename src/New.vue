@@ -1,35 +1,32 @@
 <template>
   <div id="app">
-    <FixedElements/>
-    <Sidebar/>
-    <Category title="Новое"
-              gridClass="grid-small"
-              :nVideos="36"
-              :isPreview="true"
-              :custom_player="false"
-              method="new"
-              />
-
+    <Navigation/>
+    <AppInner>
+      <Category title="Новое"
+                gridClass="grid-small"
+                :nVideos="36"
+                :isPreview="true"
+                :custom_player="false"
+                method="new"
+                />
+    </AppInner>
   </div>
 </template>
 
 <script>
-  import FixedElements from './FixedElements.vue'
-  import Sidebar from './Sidebar.vue'
+  import Navigation from './Navigation.vue'
   import Category from './Category.vue'
+  import AppInner from './AppInner.vue'
   export default {
     name: 'app',
     components: {
-      FixedElements,
-      Sidebar,
+      Navigation,
       Category,
+      AppInner,
     }
   }
 
 </script>
 
 <style>
-#app {
-  padding-top: 4em;
-}
 </style>

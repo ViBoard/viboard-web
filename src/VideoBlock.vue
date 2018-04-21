@@ -1,21 +1,7 @@
 <template>
   <div class='video-block'>
     <a :href="controls ? '#' : getHref">
-      <!--<plyr-video :poster="previewSrc" :videos="this.videos" :subtitles="" :crossorigin="true"/>-->
-      
-      <!--<plyr-video>-->
-      <!--<video class="video-element"-->
-      <!--v-if="!isPreview"-->
-      <!--:autoplay="ap ? true : false"-->
-      <!--:muted="muted ? true : false"-->
-      <!--:controls="controls ? true : false"-->
-      <!--:src="src">-->
-      <!--</video>-->
-      <!--<div v-else class="video-element">-->
-      <!--<img :src="previewSrc"></img>-->
-      <!--</div>-->
-      <!--</plyr-video>-->
-      <div v-if="isPreview" class="video-element">
+      <div v-if="isPreview" class="video-element bg-dark">
         <img :src="previewSrc">
       </div>
       <plyr-video v-else-if="custom_player" :poster="previewSrc"
@@ -144,16 +130,6 @@
     margin: 0;
     padding: 0;
     margin-top: 0.25em;
-  }
-  
-  .video-author {
-  }
-  
-  .video-total {
-    color: black;
-  }
-  
-  .video-element {
   }
   
   .video-element img {

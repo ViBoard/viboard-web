@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <FixedElements/>
-    <Sidebar/>
+    <Navigation/>
     <div id="main">
       <video-block
         :author="author"
@@ -27,21 +26,26 @@
   var queryString = require('query-string')
   var golos = require('golos-js')
   import VideoBlock from './VideoBlock.vue'
-  import FixedElements from './FixedElements.vue'
-  import Sidebar from './Sidebar.vue'
+  import Navigation from './Navigation.vue'
   import Category from './Category.vue'
   import Comments from './Comments.vue'
   import Upvotes from './Upvotes.vue'
-  
+  import 'bootstrap/dist/css/bootstrap.css'
+  import 'bootstrap-vue/dist/bootstrap-vue.css'
+  import BootstrapVue from 'bootstrap-vue'
+  import Vue from 'vue'
+
+  Vue.use(BootstrapVue);  
+
   export default {
     name: 'app',
     
     components: {
-      FixedElements,
-      Sidebar,
+      Navigation,
       VideoBlock,
       Comments,
       Upvotes,
+      Navigation,
     },
     
     data: function () {

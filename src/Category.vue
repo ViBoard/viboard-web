@@ -1,6 +1,6 @@
 <template>
-  <div class="category">
-    <div class="category-title"> {{ title }} </div>
+  <div class="category mb-5">
+    <h3> {{ title }} </h3>
     <div v-bind:class="gridClass">
       <video-block
         v-for="item in videosList"
@@ -136,19 +136,6 @@ export default {
 </script>
 
 <style>
-  .category-title {
-    padding-left: 8px;
-    margin-bottom: 0.6em;
-    font-size: 1.4em;
-  }
-
-  .category {
-    margin-top: 2em;
-    margin-left: 12.5em;
-    padding: 1em;
-
-  }
-
   .grid-big {
     display: grid;
     grid-template-columns: 33% 33% 33%;
