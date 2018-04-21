@@ -71,7 +71,7 @@
             return;
           }
           video_reader.onloadend = function() {
-            const ipfs = ipfsAPI('https://viboard.me', 81);
+            const ipfs = ipfsAPI('viboard.me', 81, {protocol: 'https'});
             const img_buf = buffer.Buffer(img_reader.result);
             const video_buf = buffer.Buffer(video_reader.result);
             var files = [
@@ -81,7 +81,7 @@
             ipfs.files.add(files, (err, result) => {
               if (err) {
                 console.error(err);
-                vm.message("Ошибка при загрузке файлов");
+                vm.message = "Ошибка при загрузке файлов";
                 vm.spinning = false;
                 return
               }
@@ -154,7 +154,7 @@
                 golos.api.getBlockHeader(taposBlock, function (err, blockLink) {
                   if (err) return alert(tryAgain);
                   let blockid = blockLink.previous;
-                  n = [];
+                  let n = [];
                   
                   
                   for (let i = 0; i < blockid.length; i += 2) {
