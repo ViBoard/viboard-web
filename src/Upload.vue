@@ -4,6 +4,7 @@
     <Sidebar/>
     <div id="box">
       <div id="main">
+        <div id="alerts"></div>
         <span class="input-title">Выберите видео:</span>
         <input id="video-file" type="file" ref="videofile">
         <hr>
@@ -70,7 +71,7 @@
             return;
           }
           video_reader.onloadend = function() {
-            const ipfs = ipfsAPI('viboard.me', 81);
+            const ipfs = ipfsAPI('viboard.me', 81, {protocol: 'https'});
             const img_buf = buffer.Buffer(img_reader.result);
             const video_buf = buffer.Buffer(video_reader.result);
             var files = [
@@ -80,7 +81,7 @@
             ipfs.files.add(files, (err, result) => {
               if (err) {
                 console.error(err);
-                vm.message("Ошибка при загрузке файлов")
+                vm.message = "Ошибка при загрузке файлов";
                 vm.spinning = false;
                 return
               }
@@ -100,30 +101,114 @@
               var verifyResult = golos.auth.verify(login, password, auths);
               console.log('ver_res', verifyResult);
               var wif = password;
-              var parentAuthor = '';
               var parentPermlink = 'videotest';
               var author = login;
               var permlink = result[0].hash.toLowerCase() + Date.now();
               var title = vm.$refs.title.value;
               var body = `<a href="http://viboard.me/watch?v=${permlink}&a=${author}"><p>Смотреть на viboard.me</p><img src="${img_url}" alt="${result[0].hash}"></img></a>`
-
-              var tagList = vm.$refs.tags.value.split(' ', 4);
+              let percent_steem_dollars = 10000; // 100% = 10000
+              
+              let tagList = vm.$refs.tags.value.split(' ', 4);
               tagList.unshift(parentPermlink);
               console.log(tagList);
-              var jsonMetadata = {
+              let jsonMetadata = {
+                app: "viboard",
                 tags: tagList
               };
               console.log(jsonMetadata);
+              
+              let beneficiariesObj = [
+                [0, {
+                  "beneficiaries": [{"account": "viboard","weight": 1000}]
+                }]
+              ];
+              
+              let newTx = [
+                ["comment", {
+                  "parent_author": "",
+                  "parent_permlink": parentPermlink,
+                  "author": author,
+                  "permlink": permlink,
+                  "title": title,
+                  "body": body,
+                  "json_metadata": JSON.stringify(jsonMetadata)
+                }],
+                ["comment_options", {
+                  "author": author,
+                  "permlink": permlink,
+                  "max_accepted_payout": '1000000.000 GBG',
+                  "percent_steem_dollars": percent_steem_dollars,
+                  "allow_votes": true,
+                  "allow_curation_rewards": true,
+                  "extensions": beneficiariesObj
+                }]
+              ];
+              
+              let now = new Date().getTime() + 18e5;
+              let expire = new Date(now).toISOString().split('.')[0];
+              
+              golos.api.getDynamicGlobalProperties(function (e, g) {
+                if (e) return alert(tryAgain);
+                let taposBlock = g.head_block_number - 2;
+            
+                golos.api.getBlockHeader(taposBlock, function (err, blockLink) {
+                  if (err) return alert(tryAgain);
+                  let blockid = blockLink.previous;
+                  let n = [];
+                  
+                  
+                  for (let i = 0; i < blockid.length; i += 2) {
+                    n.push(blockid.substr(i, 2));
+                  }
+                  let hex = n[7] + n[6] + n[5] + n[4];
+                  let refBlockNum = taposBlock - 1 & 0xffff;
+                  let refBlockPrefix = parseInt(hex, 16);
 
-              golos.broadcast.comment(wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, function (err, result) {
-                if (!err) {
-                  window.location.replace(`/watch?v=${permlink}&a=${author}`);
-                } else {
-                  vm.message = "Ошибка при создании поста";
-                  vm.spinning = false;
-                  console.log(err);
-                }
+
+                  let trx = {
+                    "expiration": expire,
+                    "extensions": [],
+                    "operations": newTx,
+                    "ref_block_num": refBlockNum,
+                    "ref_block_prefix": refBlockPrefix
+                  };
+
+
+                  let trxs = "";
+                  try {
+                    trxs = golos.auth.signTransaction(trx, {
+                      "posting": wif
+                    });
+                  } catch (error) {
+                    console.log(error);
+                    return alert("Не удалось подписать транзакцию c постом. Откройте консоль браузера для просмотра подробностей" + error.message);
+            
+                  }
+                  console.log(JSON.stringify(trxs));
+
+                  golos.api.broadcastTransactionSynchronous(trxs, function (err, result) {
+                    console.log(err, result);
+                    
+                    if (!err) {
+                      window.location.replace(`/watch?v=${permlink}&a=${author}`);
+                    } else {
+                      vm.message = "Ошибка при создании поста";
+                      vm.spinning = false;
+                      console.log(err);
+                    }
+                  });
+                });
               });
+
+              // golos.broadcast.comment(wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, function (err, result) {
+              //   if (!err) {
+              //     window.location.replace(`/watch?v=${permlink}&a=${author}`);
+              //   } else {
+              //     vm.message = "Ошибка при создании поста";
+              //     vm.spinning = false;
+              //     console.log(err);
+              //   }
+              // });
             }, false);
           };
         };

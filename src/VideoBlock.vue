@@ -120,7 +120,9 @@
           console.log(err);
         }
       });
-      
+    },
+    
+    mounted: function () {
       var videolist = document.getElementsByClassName("video-element");
       for (var i = 0; i < videolist.length; i++) {
         videolist[i].style.height = 9 / 16 * videolist[i].offsetWidth;
@@ -155,6 +157,8 @@
   }
   
   .video-element {
+    background-color: black;
+    /*border: 1px solid black;*/
   }
   
   .video-element img {
