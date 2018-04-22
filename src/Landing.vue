@@ -2,17 +2,24 @@
   <div id=container>
     <b-navbar class="d-none d-lg-block" id="sidebar">
       <b-card id="register" title="Регистрация">
+        <b-alert variant="success" ref="reg_result_success">
+          Отлично! Теперь подтвердите Email
+        </b-alert>
         <b-alert variant="danger" ref="reg_result_fail">Ошибка</b-alert>
         <b-form>
           <b-form-group>
-            <b-form-input v-model="reg_username" type="text" placeholder="Логин" name="login" required/>
+            <b-form-input vm="reg_username" type="text" placeholder="Логин" name="login" required/>
           </b-form-group>
           <b-form-group>
-            <b-form-input v-model="reg_email" type="text" placeholder="Email" name="email" required/>
+            <b-form-input vm="reg_email" type="text" placeholder="Email" name="email" required/>
           </b-form-group>
-          <b-button variant="primary">Оставить заявку</b-button>
+          <b-form-group>
+            <b-form-input vm=reg_password type="password" placeholder="Пароль" name="pswd" required/>
+          </b-form-group>
+          <b-button variant="dark" @click="register">Зарегистрироваться</b-button>
+
         </b-form>
-        
+ 
         <h4 class="card-title">Войти через <a href="https://golos.io">golos.io</a></h4>
         <b-alert variant="success" ref="auth_result_success">
           Успешно
@@ -26,11 +33,11 @@
           <b-form-group>
             <b-form-input v-model="login_password" type="password" placeholder="Пароль" name="pswd" required/>
           </b-form-group>
-          <b-button variant="primary" @click="login">Войти</b-button>
+          <b-button variant="dark" @click="login">Войти</b-button>
         </b-form>
         
-        <b-button href="index" class="mt-3" variant="outline-primary">
-          Попробовать сейчас
+        <b-button href="index" class="mt-3" variant="outline-dark">
+         Продолжить без регистрации 
         </b-button>
       </b-card>
     </b-navbar>
@@ -42,90 +49,100 @@
     </b-navbar>
     
     <b-container fluid id="main">
-      <b-row class="d-lg-none">
+      <b-row class="d-lg-none" id="row1">
         <a href="index">
           <img src="./assets/logo.jpg"></img>
         </a>
       </b-row>
       <b-row>
         <b-col lg=6 offset-lg=6>
-          <h1>Новый взгляд на ваши видео</h1>
-          <p>Популярные сервисы уходят в прошлое, наступает время блокчейна. Только так можно обеспечить равенство,
-            справедливость и открытость</p>
+          <h1>Новый взгляд на сферу видеоконтента</h1>
+          <p>Добро пожаловать в мир, где зарабатывают на создании видеороликов, комментировании и оценке.</p>
         </b-col>
       </b-row>
       
-      <b-row>
+      <b-row id="row2">
         <b-col>
           <img src="./assets/shutup.gif">
         </b-col>
         <b-col>
-          <h1>Здесь блогеры зарабатывают</h1>
-          <p>В 2014 основатели Reddit решили разделить часть доходов между пользователям.
-            Cхема распределения была непрозрачной, не вызывала доверия, и так и не была принята сообществом.
-            С приходом новых технологий такой подход стал возможным. В системе viboard авторы получают свою долю за
-            размещение
-            видео, а зрители — за комментарии и оценки.</p>
-          <p> Выплаты происходят в криптовалюте GBG со стабильным курсом и легко переводятся в реальные деньги. </p>
+          <h1>Блогеры зарабатывают</h1>
+          <p>
+          В 2014 основатели Reddit предположили, что их площадка будет улучшена, если часть доходов будет возвращаться пользователям. Схема распределения была непрозрачной, не вызывала доверия, и так и не была принята сообществом. С приходом новой технологии такой подход стал осуществимым.
+На viboard авторы получают свою долю за видео, а зрители - за комментарии и оценки.
+          </p>
         </b-col>
       </b-row>
       
-      <b-row>
+      <b-row id="row3">
         <b-col>
           <img src="./assets/adblock.jpg">
         </b-col>
         <b-col>
           <h1>Пользователи свободны от рекламы</h1>
-          <p>Монетизация через рекламу уходит в прошлое, и больше не нужно терпеть рекламу казино и онлайн-игр</p>
-          <p>Ценность видео определяется сообществом, а не рекламодателем. Участники получают выплаты в валюте,
-            стоимость которой
-            прямо связана с популярностью площадки и качеством контента.</p>
-        </b-col>
-      </b-row>
-      
-      <b-row>
-        <b-col lg=6 offset-lg=6>
-          <h1>Концентрируйтесь на контенте.</h1>
-          <p>Вам больше не нужно вставлять рекламу казино и онлайн игр. Наша система выплачивает авторам вознаграждение,
-            если их видео кому-то нравятся
-            Ваш рейтинг влияет на место нового видео в топе, таким образом вложив свой рейтинг в новый выпуск своей
-            рубрики, можно вывести его на главную, не прибегая к рекламе
+          <p>Монетизация через рекламу уходит в прошлое, теперь вам не придется видеть назойливые рекламные вставки, пока вы смотрите видео любимого блогера.
+            Ценность каждого видеоролика определяется сообществом.
           </p>
         </b-col>
       </b-row>
       
-      <b-row class="d-lg-none">
-        <b-card title="Регистрация" style="width: 100%">
-          <b-alert variant="danger" ref="reg_result_fail">Ошибка</b-alert>
-          <b-form>
-            
-            <b-form-group>
-              <b-form-input v-model="reg_username" type="text" placeholder="Логин" name="login" required/>
-            </b-form-group>
-            <b-form-group>
-              <b-form-input v-model="reg_email" type="text" placeholder="Email" name="email" required/>
-            </b-form-group>
-            <b-button variant="primary">Оставить заявку</b-button>
-          </b-form>
-          
-          <h4 class="card-title">Войти через <a href="https://golos.io">golos.io</a></h4>
-          
-          <b-form>
-            <b-form-group>
-              <b-form-input v-model="login_username" type="text" placeholder="Логин" name="login" required/>
-            </b-form-group>
-            <b-form-group>
-              <b-form-input v-model="login_password" type="password" placeholder="Пароль" name="pswd" required/>
-            </b-form-group>
-            <b-button @click="login" variant="primary">Войти</b-button>
-          </b-form>
-          
-          <b-button href="index" class="mt-3" variant="outline-primary">
-            Попробовать сейчас
-          </b-button>
-        
-        </b-card>
+      <b-row id="row4">
+        <b-col lg=6 offset-lg=6>
+          <h1>Концентрируйтесь на контенте.</h1>
+          <p>
+          Будучи свободным от рекламы, вы можете сосредоточиться на создании уникального контента.
+          </p>
+          <p>
+           Только сообщество решает, что достойно внимания.
+          </p>
+          <p>
+            <strong>Создавайте качественный контент, теперь у вас есть возможность!</strong>
+          </p>
+          <h4><b-link href="FAQ">Читать подробнее</b-link></h4>
+        </b-col>
       </b-row>
+      
+      <b-row class="d-lg-none">
+      <b-card id="register2" title="Регистрация">
+        <b-alert variant="success" ref="reg_result_success">
+          Отлично! Теперь подтвердите Email
+        </b-alert>
+        <b-alert variant="danger" ref="reg_result_fail">Ошибка</b-alert>
+        <b-form>
+          <b-form-group>
+            <b-form-input vm="reg_username" type="text" placeholder="Логин" name="login" required/>
+          </b-form-group>
+          <b-form-group>
+            <b-form-input vm="reg_email" type="text" placeholder="Email" name="email" required/>
+          </b-form-group>
+          <b-form-group>
+            <b-form-input vm=reg_password type="password" placeholder="Пароль" name="pswd" required/>
+          </b-form-group>
+          <b-button variant="dark" @click="register">Зарегистрироваться</b-button>
+
+        </b-form>
+ 
+        <h4 class="card-title">Войти через <a href="https://golos.io">golos.io</a></h4>
+        <b-alert variant="success" ref="auth_result_success">
+          Успешно
+        </b-alert>
+        <b-alert variant="danger" ref="auth_result_fail">Ошибка</b-alert>
+        
+        <b-form>
+          <b-form-group>
+            <b-form-input v-model="login_username" type="text" placeholder="Логин" name="login" required/>
+          </b-form-group>
+          <b-form-group>
+            <b-form-input v-model="login_password" type="password" placeholder="Пароль" name="pswd" required/>
+          </b-form-group>
+          <b-button variant="dark" @click="login">Войти</b-button>
+        </b-form>
+        
+        <b-button href="index" class="mt-3" variant="outline-dark">
+         Продолжить без регистрации 
+        </b-button>
+      </b-card>
+   </b-row>
     </b-container fluid>
   
   </div>
@@ -166,15 +183,79 @@
       return {
         reg_username: "",
         reg_email: "",
+        reg_password: "",
         
         login_username: "",
         login_password: "",
       }
     },
+
+    created: function() {
+      if (Cookies.get("login")) {
+        window.location.href = 'index'
+      }
+    },
     
     methods: {
-      register() {
-      
+      register: function (evt) {
+        evt.preventDefault();
+        let vm = this;
+        vm.$refs.reg_result_fail.show = false;
+        vm.$refs.reg_result_success.show = false;
+        let new_account_name = vm.reg_username;
+        let email = vm.reg_email; 
+        let pswd = vm.reg_password;
+        let beta_key = "1337";
+
+
+        //check correct
+        let accounts = [new_account_name];
+        golos.api.getAccounts(accounts, function (err, result) {
+          if (!err) {
+            if (!result.length) {
+              let newKeys = golos.auth.generateKeys(new_account_name, pswd, ['owner', 'active', 'posting', 'memo']);
+              console.log('newKeys:', newKeys);
+
+              let xhr = new XMLHttpRequest();
+              xhr.open("POST", "http://localhost:3000", true);
+              xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+              let send_req = "purpose=add&new_account_name=" + new_account_name + "&owner=" + newKeys.owner + "&active=" + newKeys.active
+                + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email + "&beta_key=" + beta_key + "&email=" + email;
+              xhr.send(send_req);
+              xhr.onreadystatechange = function () {
+                console.log("readyState:", xhr.readyState);
+                // 4 = DONE
+                if (xhr.readyState == 4) {
+                  console.log("answer:", xhr.responseText);
+                  if (xhr.responseText == "(0) Now confirm email") {
+                    vm.$refs.reg_result_success.show = true;
+                    vm.$refs.reg_result_fail.show = false;
+                   // Cookies.set("login", new_account_name);
+                    let roles = ['posting'];
+                    let keys = golos.auth.getPrivateKeys(new_account_name, pswd, roles);
+                    
+                    
+                    console.log("newKeys.posting:", keys.posting);
+                    Cookies.set("posting_private", keys.posting);
+                    // setTimeout(function() { vm.$refs.signup_modal.hide() } , 500);
+                    // vm.login = new_account_name;
+                    // vm.logged_in = true;
+                  } else {
+                    vm.$refs.reg_result_success.show = false;
+                    vm.$refs.reg_result_fail.show = true;
+                  }
+                }
+              }
+            } else {
+              console.log("Логин занят!");
+            }
+          }
+          else console.error(err);
+        });
+        
+        // \check correct
+        
+        // request.post({url:'http://localhost:3000/', form: {my_key:'edited_value'}}, function(err,httpResponse,body){ /* ... */ })
       },
       
       login() {
@@ -246,14 +327,23 @@
   }
   
   #register {
-    margin: 5% 25% 5% 25%;
-    height: 80%;
+    margin: 5% 25% 0% 25%;
+    height: 85%;
     background: white;
     
     position: center;
     box-sizing: border-box;
     padding: 1%;
     width: 50%;
+  }
+
+  #register2 {
+    background: white;
+    
+    position: center;
+    box-sizing: border-box;
+    padding: 1%;
+    width: 90%;
   }
   
   .topbar {
