@@ -21,7 +21,7 @@
   import VideoBlock from './VideoBlock.vue'
   import {parseBody} from './parseBody.js'
   
-  var golos = require('golos-js')
+  let golos = require('golos-js');
   
   export default {
     name: 'Category',
