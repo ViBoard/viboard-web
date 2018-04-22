@@ -40,7 +40,7 @@
       console.log(vm.login, vm.code);
       
       let xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://localhost:3000", true);
+      xhr.open("POST", "https://viboard.me:3000", true);
       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       let send_req = "purpose=confirm&new_account_name=" + vm.login + "&confirm_key=" + vm.code;
       xhr.send(send_req);
@@ -52,7 +52,7 @@
           if (xhr.responseText == "(0) Created") {
             document.getElementById("confirm-div").innerHTML = "Подтверждено! Аккаунт создан";
             Cookies.set("login", vm.login);
-            setTimeout(window.location.replace("http://localhost:8080"), 1000);
+            setTimeout(window.location.replace("index"), 1000);
             //   vm.$refs.reg_result_success.show = true;
             //   vm.$refs.reg_result_fail.show = false;
             //   Cookies.set("login", new_account_name);

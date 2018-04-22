@@ -1,4 +1,4 @@
-const port = 3000;
+const port = 300;
 let viboard_WIF;
 let email_password = "";
 const viboard_name = "viboard";
@@ -129,7 +129,7 @@ app.listen(port, function () {
 
 function create_account(new_account_name, new_keys, responce) {
   console.log("Try to create account..");
-  let fee = '1.000 GOLOS';
+  let fee = '2.000 GOLOS';
   let owner = {
     weight_threshold: 1,
     account_auths: [],
@@ -164,6 +164,7 @@ function create_account(new_account_name, new_keys, responce) {
 }
 
 function send_email(login, code, email) {
+  console.log("Try to send email", login, code, email);
   nodemailer.createTestAccount((err, account) => {
     let transporter = nodemailer.createTransport({
       host: 'smtp.yandex.ru',

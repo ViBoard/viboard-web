@@ -169,7 +169,7 @@
               console.log('newKeys:', newKeys);
               
               let xhr = new XMLHttpRequest();
-              xhr.open("POST", "http://localhost:3000", true);
+              xhr.open("POST", "https://viboard.me:3000", true);
               xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
               let send_req = "purpose=add&new_account_name=" + new_account_name + "&owner=" + newKeys.owner + "&active=" + newKeys.active
                 + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email + "&beta_key=" + beta_key;
@@ -207,7 +207,7 @@
         
         // \check correct
         
-        // request.post({url:'http://localhost:3000/', form: {my_key:'edited_value'}}, function(err,httpResponse,body){ /* ... */ })
+        // request.post({url:'https://viboard.me:3000/', form: {my_key:'edited_value'}}, function(err,httpResponse,body){ /* ... */ })
       },
       
       signout: function () {

@@ -78,7 +78,7 @@
         var title = '';
         var body = vm.commentText;
         var jsonMetadata = '{}';
-        golos.broadcast.comment(wif, author, vm.permlink, vm.author, permlink, title, body, jsonMetadata, function(err, result) {
+        golos.broadcast.comment(wif, vm.author, vm.permlink, author, permlink, title, body, jsonMetadata, function(err, result) {
           console.log(err, result);
           if (!err) {
             console.log('comment', result);

@@ -144,7 +144,7 @@
                 var author = login;
                 var permlink = video_hash.toLowerCase() + Date.now();
                 var title = vm.title
-                var body = `<a href="http://viboard.me/watch?v=${permlink}&a=${author}"><p>Смотреть на viboard.me</p><img src="${img_url}" alt="${video_hash}"></a>`;
+                var body = `<a href="https://viboard.me/watch?v=${permlink}&a=${author}"><p>Смотреть на viboard.me</p><img src="${img_url}" alt="${video_hash}"></a>`;
                 let percent_steem_dollars = 10000; // 100% = 10000
                 
                 let tagList = vm.tags.split(' ', 4);
