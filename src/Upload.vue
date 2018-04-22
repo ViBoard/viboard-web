@@ -16,7 +16,7 @@
             <b-form-input id="video-title" type="text" v-model="title"/>
           </b-form-group>
 
-          <b-form-group label="Тэги:" description="Добавте теги (до четырех штук) через пробел">
+          <b-form-group label="Тэги:" description="Добавьте теги (до четырех штук) через пробел">
             <b-form-input id="video-tags" type="text" v-model="tags"/>
           </b-form-group>
 
@@ -74,8 +74,8 @@
         img_reader.onloadend = function () {
           const video = vm.videofile;
           try {
-            video_size = video.files[0].size;
-            video_reader.readAsArrayBuffer(video.files[0]);
+            video_size = video.size;
+            video_reader.readAsArrayBuffer(video);
           } catch (e) {
             vm.message = "Ошибка при чтении видео";
             vm.$refs.errors.show = true;
@@ -143,11 +143,11 @@
                 var parentPermlink = 'viboard-videos';
                 var author = login;
                 var permlink = video_hash.toLowerCase() + Date.now();
-                var title = vm.$refs.title.value;
+                var title = vm.title
                 var body = `<a href="http://viboard.me/watch?v=${permlink}&a=${author}"><p>Смотреть на viboard.me</p><img src="${img_url}" alt="${video_hash}"></a>`;
                 let percent_steem_dollars = 10000; // 100% = 10000
                 
-                let tagList = vm.$refs.tags.value.split(' ', 4);
+                let tagList = vm.tags.split(' ', 4);
                 tagList.unshift(parentPermlink);
                 console.log(tagList);
                 let jsonMetadata = {
@@ -247,8 +247,8 @@
         
         console.log(img);
         try {
-          img_size = img.files[0].size;
-          img_reader.readAsArrayBuffer(img.files[0]);
+          img_size = img.size;
+          img_reader.readAsArrayBuffer(img);
         } catch (e) {
           vm.message = "Ошибка при чтении превью";
           vm.$refs.errors.show = true;
