@@ -65,6 +65,8 @@
             // } else {
             //   vm.$refs.reg_result_success.show = false;
             //   vm.$refs.reg_result_fail.show = true;
+          } else if(xhr.responseText == "(-1) No data in DB") {
+            document.getElementById("confirm-div").innerHTML = "Ошибка. Аккаунт уже подтвержден, либо срок действия ссылки истёк";
           }
         }
       }

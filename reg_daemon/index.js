@@ -39,17 +39,22 @@ app.post("/", function (request, responce) {
     }
   } else if (request.body.purpose == "confirm") {
     console.log("Confirm..");
+    let is_confirmed = false;
     db.serialize(function () {
       db.each(`SELECT * FROM email_confirmation WHERE login = '${request.body.new_account_name}' AND confirm_key = '${request.body.confirm_key}'`, function (err, row) {
-        console.log("ROW:", row);
+        console.log("ROW:", row, row? true:false);
         let new_keys = [row.owner_key, row.active_key, row.posting_key, row.memo_key];
         create_account(request.body.new_account_name, new_keys, responce);
+        is_confirmed = false;
       });
       db.run(`DELETE FROM email_confirmation WHERE login = '${request.body.new_account_name}' AND confirm_key = '${request.body.confirm_key}'`, function (err, row) {
         console.log("Delete..", row)
       });
     });
-
+    if(!is_confirmed) {
+      responce.setHeader("Access-Control-Allow-Origin", "*");
+      responce.send("(-1) No data in DB");
+    }
   }
 });
 
