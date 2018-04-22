@@ -34,15 +34,12 @@
   import AppInner from './AppInner.vue'
   import VideoBlock from './VideoBlock.vue'
   import Navigation from './Navigation.vue'
-  import Category from './Category.vue'
-  import Comments from './Comments.vue'
-  import Upvotes from './Upvotes.vue'
   import 'bootstrap/dist/css/bootstrap.css'
   import 'bootstrap-vue/dist/bootstrap-vue.css'
   import BootstrapVue from 'bootstrap-vue'
   import Vue from 'vue'
 
-  Vue.use(BootstrapVue);  
+  Vue.use(BootstrapVue);
 
   export default {
     name: 'app',
