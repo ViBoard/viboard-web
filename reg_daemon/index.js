@@ -1,5 +1,4 @@
 const port = 3000;
-const beta_key = "1337";
 let viboard_WIF;
 let email_password = "";
 const viboard_name = "viboard";
@@ -19,42 +18,37 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.post("/", function (request, responce) {
+  responce.setHeader("Access-Control-Allow-Origin", "*");
+
   if (request.body.purpose == "add") {
-    if (beta_key == request.body.beta_key) {
-      let confirm_key = "6iuhrfu9hf3whs9";
-      db.serialize(function () {
-        let add = db.prepare(`INSERT INTO email_confirmation (login, email, owner_key, active_key, posting_key, memo_key, confirm_key) VALUES (
+    let confirm_key = "6iuhrfu9hf3whs9";
+    db.serialize(function () {
+      let add = db.prepare(`INSERT INTO email_confirmation (login, email, owner_key, active_key, posting_key, memo_key, confirm_key) VALUES (
       '${request.body.new_account_name}', '${request.body.email}', '${request.body.owner}',
         '${request.body.active}', '${request.body.posting}', '${request.body.memo }', '${confirm_key}')`);
-        add.run();
-        add.finalize();
-        send_email(request.body.new_account_name, confirm_key, request.body.email);
-      });
-      responce.setHeader("Access-Control-Allow-Origin", "*");
-      responce.send("(0) Now confirm email");
-      //create_account(request.body.new_account_name, new_keys, responce);
-    } else {
-      responce.setHeader("Access-Control-Allow-Origin", "*");
-      responce.send("(-1) Invalid beta key");
-    }
+      add.run();
+      add.finalize();
+      send_email(request.body.new_account_name, confirm_key, request.body.email);
+    });
+    responce.send("(0) Now confirm email");
   } else if (request.body.purpose == "confirm") {
     console.log("Confirm..");
-    let is_confirmed = false;
     db.serialize(function () {
-      db.each(`SELECT * FROM email_confirmation WHERE login = '${request.body.new_account_name}' AND confirm_key = '${request.body.confirm_key}'`, function (err, row) {
-        console.log("ROW:", row, row? true:false);
-        let new_keys = [row.owner_key, row.active_key, row.posting_key, row.memo_key];
-        create_account(request.body.new_account_name, new_keys, responce);
-        is_confirmed = false;
-      });
-      db.run(`DELETE FROM email_confirmation WHERE login = '${request.body.new_account_name}' AND confirm_key = '${request.body.confirm_key}'`, function (err, row) {
-        console.log("Delete..", row)
+      console.log("exisits?");
+      db.get(`SELECT * FROM email_confirmation WHERE login = '${request.body.new_account_name}' AND confirm_key = '${request.body.confirm_key}'`, function (err, row) {
+        if (row) {
+          console.log("ROW:", row, !!row);
+          let new_keys = [row.owner_key, row.active_key, row.posting_key, row.memo_key];
+          create_account(request.body.new_account_name, new_keys, responce);
+
+          db.run(`DELETE FROM email_confirmation WHERE login = '${request.body.new_account_name}' AND confirm_key = '${request.body.confirm_key}'`, function (err, row) {
+            console.log("Delete..")
+          });
+        } else {
+          responce.send("(-1) No data in DB");
+        }
       });
     });
-    if(!is_confirmed) {
-      responce.setHeader("Access-Control-Allow-Origin", "*");
-      responce.send("(-1) No data in DB");
-    }
   }
 });
 
@@ -126,12 +120,10 @@ function create_account(new_account_name, new_keys, responce) {
   golos.broadcast.accountCreate(viboard_WIF, fee, viboard_name, new_account_name, owner, active, posting, memoKey, jsonMetadata, function (err, result) {
     if (!err) {
       // console.log('accountCreate', result);
-      responce.setHeader("Access-Control-Allow-Origin", "*");
       responce.send("(0) Created");
     } else {
       console.error("Error! -> ", err.payload.error.data.code, err.payload.error.data.message);
       let answer = "(" + err.payload.error.data.code + ") " + err.payload.error.data.message;
-      responce.setHeader("Access-Control-Allow-Origin", "*");
       responce.send(answer);
     }
   });
