@@ -172,7 +172,7 @@
               xhr.open("POST", "http://localhost:3000", true);
               xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
               let send_req = "purpose=add&new_account_name=" + new_account_name + "&owner=" + newKeys.owner + "&active=" + newKeys.active
-                + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email + "&beta_key=" + beta_key + "&email=" + email;
+                + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email + "&beta_key=" + beta_key;
               xhr.send(send_req);
               xhr.onreadystatechange = function () {
                 console.log("readyState:", xhr.readyState);

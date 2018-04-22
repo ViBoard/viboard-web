@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-   <Navigation/>
+    <Navigation/>
     <AppInner>
       <plyr-video :poster="previewSrc"
                   :videos="this.videos"
@@ -8,7 +8,12 @@
                   :muted="muted"
                   :controls="customControls"
                   :crossorigin="true"/>
-
+      
+      <div class="video-header"> {{ title }}</div>
+      <div class="video-info">
+        <div class="video-author"> {{ author }}</div>
+        <div class="video-total"> {{ total }}</div>
+      </div>
       <Upvotes
         :author="author"
         :permlink="permlink"
@@ -37,9 +42,9 @@
   import 'bootstrap-vue/dist/bootstrap-vue.css'
   import BootstrapVue from 'bootstrap-vue'
   import Vue from 'vue'
-
+  
   Vue.use(BootstrapVue);
-
+  
   export default {
     name: 'app',
     
@@ -90,6 +95,23 @@
 </script>
 
 <style>
+  .video-header {
+    overflow: hidden;
+    font-size: 1.1em;
+    margin-top: 0.3em;
+  }
+  
+  .video-info {
+    font-size: 0.9em;
+    color: #888;
+  }
+  
+  .video-info div {
+    margin: 0;
+    padding: 0;
+    margin-top: 0.25em;
+  }
+  
   .plyr--video {
     width: 70%;
   }
