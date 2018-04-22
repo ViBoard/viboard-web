@@ -5,6 +5,7 @@ import Single from './Single.vue'
 import Upload from './Upload'
 import Embed from './Embed.vue'
 import Landing from './Landing.vue'
+import Confirm from './Confirm.vue'
 
 // пути к страницам
 const routes = {
@@ -14,6 +15,7 @@ const routes = {
   '/upload': Upload,
   '/embed': Embed,
   '/': Landing
+  '/confirm' : Confirm
 };
 
 
