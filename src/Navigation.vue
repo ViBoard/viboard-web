@@ -39,7 +39,7 @@
 
       </b-collapse>
 
-      <b-modal id="signup_modal" 
+      <b-modal id="signup_modal"
                ref="signup_modal"
                title="Регистрация"
                ok-title="Создать аккаунт"
@@ -67,7 +67,7 @@
         </b-form>
       </b-modal>
       
-      <b-modal id="login_modal" 
+      <b-modal id="login_modal"
                ref="login_modal"
                title="Вход"
                ok-title="Войти"
@@ -98,7 +98,7 @@
         <b-col id="sidebar" lg="3">
           <div v-for="item in SideLinksList">
             <a class="nav-link text-dark" :href="item.href">
-              <i :class="item.icon"></i> {{ item.text }} 
+              <i :class="item.icon"></i> {{ item.text }}
             </a>
           </div>
         </b-col>
@@ -124,7 +124,7 @@
   golos.config.set('websocket', 'wss://ws.golos.io');
   import Vue from 'vue'
 
-  Vue.use(BootstrapVue);  
+  Vue.use(BootstrapVue);
 
   export default {
     name: 'Navigation',
@@ -171,17 +171,17 @@
               console.log('newKeys:', newKeys);
               
               let xhr = new XMLHttpRequest();
-              xhr.open("POST", "http://viboard.me:3000", true);
+              xhr.open("POST", "http://localhost:3000", true);
               xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-              let send_req = "new_account_name=" + new_account_name + "&owner=" + newKeys.owner + "&active=" + newKeys.active
-                + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email + "&beta_key=" + beta_key;
+              let send_req = "purpose=add&new_account_name=" + new_account_name + "&owner=" + newKeys.owner + "&active=" + newKeys.active
+                + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email + "&beta_key=" + beta_key + "&email=" + email;
               xhr.send(send_req);
               xhr.onreadystatechange = function () {
                 console.log("readyState:", xhr.readyState);
                 // 4 = DONE
                 if (xhr.readyState == 4) {
                   console.log("answer:", xhr.responseText);
-                  if (xhr.responseText == "Created") {
+                  if (xhr.responseText == "Now confirm email") {
                     vm.$refs.reg_result_success.show = true;
                     vm.$refs.reg_result_fail.show = false;
                     Cookies.set("login", new_account_name);

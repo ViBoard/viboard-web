@@ -4,6 +4,7 @@ import New from './New.vue'
 import Single from './Single.vue'
 import Upload from './Upload'
 import Embed from './Embed.vue'
+import Confirm from './Confirm.vue'
 
 // пути к страницам
 const routes = {
@@ -12,6 +13,7 @@ const routes = {
   '/watch': Single,
   '/upload': Upload,
   '/embed': Embed,
+  '/confirm' : Confirm
 };
 
 
