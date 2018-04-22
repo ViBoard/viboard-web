@@ -16,7 +16,7 @@
           <b-form-group>
             <b-form-input vm=reg_password type="password" placeholder="Пароль" name="pswd" required/>
           </b-form-group>
-          <b-button variant="dark" @click="register">Зарегистрироваться</b-button>
+          <b-button variant="primary" @click="register">Зарегистрироваться</b-button>
 
         </b-form>
  
@@ -33,10 +33,10 @@
           <b-form-group>
             <b-form-input v-model="login_password" type="password" placeholder="Пароль" name="pswd" required/>
           </b-form-group>
-          <b-button variant="dark" @click="login">Войти</b-button>
+          <b-button variant="primary" @click="login">Войти</b-button>
         </b-form>
         
-        <b-button href="index" class="mt-3" variant="outline-dark">
+        <b-button href="index" class="mt-3" variant="outline-primary">
          Продолжить без регистрации 
         </b-button>
       </b-card>
@@ -49,12 +49,12 @@
     </b-navbar>
     
     <b-container fluid id="main">
-      <b-row class="d-lg-none" id="row1">
+      <b-row class="d-lg-none">
         <a href="index">
           <img src="./assets/logo.jpg"></img>
         </a>
       </b-row>
-      <b-row>
+      <b-row id="row1">
         <b-col lg=6 offset-lg=6>
           <h1>Новый взгляд на сферу видеоконтента</h1>
           <p>Добро пожаловать в мир, где зарабатывают на создании видеороликов, комментировании и оценке.</p>
@@ -118,7 +118,7 @@
           <b-form-group>
             <b-form-input vm=reg_password type="password" placeholder="Пароль" name="pswd" required/>
           </b-form-group>
-          <b-button variant="dark" @click="register">Зарегистрироваться</b-button>
+          <b-button variant="primary" @click="register">Зарегистрироваться</b-button>
 
         </b-form>
  
@@ -138,7 +138,7 @@
           <b-button variant="dark" @click="login">Войти</b-button>
         </b-form>
         
-        <b-button href="index" class="mt-3" variant="outline-dark">
+        <b-button href="index" class="mt-3" variant="outline-primary">
          Продолжить без регистрации 
         </b-button>
       </b-card>
@@ -368,5 +368,9 @@
   .row {
     padding: 10%;
     height: 100%;
+  }
+
+  b-row {
+    color: white;
   }
 </style>
