@@ -14,7 +14,7 @@ const routes = {
   '/watch': Single,
   '/upload': Upload,
   '/embed': Embed,
-  '/': Landing
+  '/': Landing,
   '/confirm' : Confirm
 };
 
