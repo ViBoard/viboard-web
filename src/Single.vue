@@ -8,7 +8,6 @@
                   :muted="muted"
                   :controls="customControls"
                   :crossorigin="true"/>
-   />
 
       <Upvotes
         :author="author"
