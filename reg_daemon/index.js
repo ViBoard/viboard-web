@@ -31,7 +31,7 @@ app.post("/", function (request, responce) {
         send_email(request.body.new_account_name, confirm_key, request.body.email);
       });
       responce.setHeader("Access-Control-Allow-Origin", "*");
-      responce.send("Now confirm email");
+      responce.send("(0) Now confirm email");
       //create_account(request.body.new_account_name, new_keys, responce);
     } else {
       responce.setHeader("Access-Control-Allow-Origin", "*");
@@ -44,6 +44,9 @@ app.post("/", function (request, responce) {
         console.log("ROW:", row);
         let new_keys = [row.owner_key, row.active_key, row.posting_key, row.memo_key];
         create_account(request.body.new_account_name, new_keys, responce);
+      });
+      db.run(`DELETE FROM email_confirmation WHERE login = '${request.body.new_account_name}' AND confirm_key = '${request.body.confirm_key}'`, function (err, row) {
+        console.log("Delete..", row)
       });
     });
 
@@ -93,7 +96,7 @@ app.listen(port, function () {
 
 function create_account(new_account_name, new_keys, responce) {
   console.log("Try to create account..");
-  let fee = '1.500 GOLOS';
+  let fee = '1.000 GOLOS';
   let owner = {
     weight_threshold: 1,
     account_auths: [],

@@ -2,43 +2,43 @@
   <div id="navigation">
     <b-navbar toggleable="lg" fixed="top" class="bg-white" id="header">
       <b-navbar-brand href="/" id="logo">
-          <img height="30" src="./assets/logo.jpg">
-        </b-navbar-brand>
-        <b-navbar-brand class="navbar-brand" href="/">
-          <img height="30">
-        </b-navbar-brand>
-
+        <img height="30" src="./assets/logo.jpg">
+      </b-navbar-brand>
+      <b-navbar-brand class="navbar-brand" href="/">
+        <img height="30">
+      </b-navbar-brand>
+      
       <b-navbar-toggle class="ml-auto" target="nav_collapse"></b-navbar-toggle>
-        <b-collapse is-nav id="nav_collapse">
-          <b-navbar-nav class="ml-auto" v-if="logged_in">
-            <b-nav-item href="/upload">
-                <span id="upload">Загрузить</span>
-            </b-nav-item>
-            <b-nav-item>
-                <span id="nickname" @click="nickname_click">{{login}}</span>
-            </b-nav-item>
-            <b-nav-item>
-                <span id="signout" @click="signout">Выйти</span>
-            </b-nav-item>
-          </b-navbar-nav>
-          <b-navbar-nav class="ml-auto" v-else>
-            <b-nav-item>
-                <span id="signup" v-b-modal.signup_modal>Регистрация</span>
-            </b-nav-item>
-            <b-nav-item>
-                <span id="signin" v-b-modal.login_modal>Вход</span>
-            </b-nav-item>
-          </b-navbar-nav>
-          <b-navbar-nav class="d-lg-none">
-            <div v-for="item in SideLinksList">
-                <a class="nav-link text-dark" :href="item.href">
-                  <i :class="item.icon"></i> {{ item.text }}
-                </a>
-            </div>
-          </b-navbar-nav>
-
+      <b-collapse is-nav id="nav_collapse">
+        <b-navbar-nav class="ml-auto" v-if="logged_in">
+          <b-nav-item href="/upload">
+            <span id="upload">Загрузить</span>
+          </b-nav-item>
+          <b-nav-item>
+            <span id="nickname" @click="nickname_click">{{login}}</span>
+          </b-nav-item>
+          <b-nav-item>
+            <span id="signout" @click="signout">Выйти</span>
+          </b-nav-item>
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto" v-else>
+          <b-nav-item>
+            <span id="signup" v-b-modal.signup_modal>Регистрация</span>
+          </b-nav-item>
+          <b-nav-item>
+            <span id="signin" v-b-modal.login_modal>Вход</span>
+          </b-nav-item>
+        </b-navbar-nav>
+        <b-navbar-nav class="d-lg-none">
+          <div v-for="item in SideLinksList">
+            <a class="nav-link text-dark" :href="item.href">
+              <i :class="item.icon"></i> {{ item.text }}
+            </a>
+          </div>
+        </b-navbar-nav>
+      
       </b-collapse>
-
+      
       <b-modal id="signup_modal"
                ref="signup_modal"
                title="Регистрация"
@@ -48,7 +48,7 @@
                cancel-variant="light"
                cancel-title="Отмена">
         <b-alert variant="success" ref="reg_result_success">
-          Успешно
+          Отлично! Теперь подтвердите Email
         </b-alert>
         <b-alert variant="danger" ref="reg_result_fail">Ошибка</b-alert>
         <b-form>
@@ -116,6 +116,7 @@
   import faHome from '@fortawesome/fontawesome-free-solid/faHome'
   import faFire from '@fortawesome/fontawesome-free-solid/faFire'
   import faTrophy from '@fortawesome/fontawesome-free-solid/faTrophy'
+  
   fontawesome.library.add(faHome)
   fontawesome.library.add(faFire)
   fontawesome.library.add(faTrophy)
@@ -123,9 +124,9 @@
   var Cookies = require('js-cookie');
   golos.config.set('websocket', 'wss://ws.golos.io');
   import Vue from 'vue'
-
+  
   Vue.use(BootstrapVue);
-
+  
   export default {
     name: 'Navigation',
     data: function () {
@@ -133,9 +134,9 @@
         logged_in: false,
         login: "pass",
         SideLinksList: [
-          { id: 0, text: 'Главное', href: '/', icon: 'fas fa-fw fa-home' },
-          { id: 1, text: 'Новое', href: 'new', icon: 'fas fa-fw fa-fire' },
-          { id: 2, text: 'Выбор редакции', href: '#', icon: 'fas fa-fw fa-trophy' },
+          {id: 0, text: 'Главное', href: '/', icon: 'fas fa-fw fa-home'},
+          {id: 1, text: 'Новое', href: 'new', icon: 'fas fa-fw fa-fire'},
+          {id: 2, text: 'Выбор редакции', href: '#', icon: 'fas fa-fw fa-trophy'},
         ],
       }
     },
@@ -181,14 +182,19 @@
                 // 4 = DONE
                 if (xhr.readyState == 4) {
                   console.log("answer:", xhr.responseText);
-                  if (xhr.responseText == "Now confirm email") {
+                  if (xhr.responseText == "(0) Now confirm email") {
                     vm.$refs.reg_result_success.show = true;
                     vm.$refs.reg_result_fail.show = false;
-                    Cookies.set("login", new_account_name);
-                    Cookies.set("posting_private", newKeys.posting);
-                    setTimeout(function() { vm.$refs.signup_modal.hide() } , 500);
-                    vm.login = new_account_name;
-                    vm.logged_in = true;
+                    // Cookies.set("login", new_account_name);
+                    let roles = ['posting'];
+                    let keys = golos.auth.getPrivateKeys(new_account_name, pswd, roles);
+                    
+                    
+                    console.log("newKeys.posting:", keys.posting);
+                    Cookies.set("posting_private", keys.posting);
+                    // setTimeout(function() { vm.$refs.signup_modal.hide() } , 500);
+                    // vm.login = new_account_name;
+                    // vm.logged_in = true;
                   } else {
                     vm.$refs.reg_result_success.show = false;
                     vm.$refs.reg_result_fail.show = true;
@@ -255,7 +261,9 @@
                 Cookies.set("login", login);
                 // Cookies.set("password", password, {});
                 Cookies.set("posting_private", keys.posting);
-                setTimeout(function() { vm.$refs.login_modal.hide() }, 500);
+                setTimeout(function () {
+                  vm.$refs.login_modal.hide()
+                }, 500);
                 vm.login = login;
                 vm.logged_in = true;
               } else {
@@ -297,11 +305,11 @@
     top: 8px;
     transform: translateX(-50%);
   }
-
+  
   .fas {
     margin-right: 3em;
   }
-
+  
   #header {
     -webkit-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
     -moz-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);

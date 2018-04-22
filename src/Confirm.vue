@@ -49,8 +49,10 @@
         // 4 = DONE
         if (xhr.readyState == 4) {
           console.log("answer:", xhr.responseText);
-          if (xhr.responseText == "Created") {
+          if (xhr.responseText == "(0) Created") {
             document.getElementById("confirm-div").innerHTML = "Подтверждено! Аккаунт создан";
+            Cookies.set("login", vm.login);
+            setTimeout(window.location.replace("http://localhost:8080"), 1000);
             //   vm.$refs.reg_result_success.show = true;
             //   vm.$refs.reg_result_fail.show = false;
             //   Cookies.set("login", new_account_name);
