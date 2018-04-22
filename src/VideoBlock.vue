@@ -124,13 +124,6 @@
     margin-top: 0.25em;
   }
   
-  .video-author {
-  }
-  
-  .video-total {
-    color: black;
-  }
-  
   .video-element {
     background-color: black;
     /*border: 1px solid black;*/

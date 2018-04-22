@@ -1,32 +1,33 @@
 <template>
   <div id="app">
-    <FixedElements/>
-    <Sidebar/>
-    <div id="box">
-      <div id="main">
-        <div id="alerts"></div>
-        <span class="input-title">Выберите видео:</span>
-        <input id="video-file" type="file" ref="videofile">
-        <hr>
-        
-        <span class="input-title">Выберите превью:</span>
-        <input id="img-file" type="file" ref="imgfile">
-        <hr>
-        
-        <span class="input-title">Название:</span>
-        <input id="video-title" type="text" ref="title">
-        <hr>
-        
-        <span class="input-title">Тэги:</span>
-        <input id="video-tags" type="text" ref="tags">
-        <hr>
-        <div id="errors">{{ message }}</div>
-        <div id="loader-wrap" v-if="spinning">
-          <div class="loader">Загрузка...</div>
-        </div>
-        <button id="upload" v-if="!spinning" ref="upload" @click="upload()"> Загрузить</button>
-      </div>
-    </div>
+    <Navigation/>
+    <AppInner>
+      <b-col lg=8 offset-lg=2>
+        <b-form>
+          <b-form-group label="Видео:">
+            <b-form-file placeholder="Выбрать файл..." id="video-file" type="file" v-model="videofile"/>
+          </b-form-group>
+
+          <b-form-group label="Превью:">
+            <b-form-file placeholder="Выбрать файл..." id="img-file" type="file" v-model="imgfile"/>
+          </b-form-group>
+
+          <b-form-group label="Название:">
+            <b-form-input id="video-title" type="text" v-model="title"/>
+          </b-form-group>
+
+          <b-form-group label="Тэги:" description="Добавте теги (до четырех штук) через пробел">
+            <b-form-input id="video-tags" type="text" v-model="tags"/>
+          </b-form-group>
+
+          <b-alert variant="danger" ref="errors">{{ message }}</b-alert>
+          <div id="loader-wrap" v-if="spinning">
+            <div class="loader">Загрузка...</div>
+          </div>
+          <b-button id="upload" v-if="!spinning" ref="upload" @click="upload" variant="dark"> Загрузить</b-button>
+        </b-form>
+      </b-col>
+    </AppInner>
   </div>
 </template>
 
@@ -35,42 +36,49 @@
   var ipfsAPI = require("ipfs-api");
   var golos = require("golos-js");
   var Cookies = require('js-cookie');
-  import FixedElements from './FixedElements.vue'
-  import Sidebar from "./Sidebar";
-  
+  import Navigation from './Navigation.vue'
+  import AppInner from './AppInner.vue'
   export default {
     name: 'app',
     components: {
-      Sidebar,
-      FixedElements,
+      Navigation,
+      AppInner,
     },
     
     data: function () {
       return {
+        videofile: null,
+        imgfile: null,
+        tags: "",
         spinning: false,
         message: "",
+        title: "",
       }
     },
     
     methods: {
       upload: function () {
+
         let vm = this;
         
         let img_size = 0;
         let video_size = 0;
         
+        vm.$refs.errors.show = false;
+
         const img_reader = new FileReader();
         const video_reader = new FileReader();
         
         vm.message = "";
         vm.spinning = true;
         img_reader.onloadend = function () {
-          const video = vm.$refs.videofile;
+          const video = vm.videofile;
           try {
             video_size = video.files[0].size;
             video_reader.readAsArrayBuffer(video.files[0]);
           } catch (e) {
             vm.message = "Ошибка при чтении видео";
+            vm.$refs.errors.show = true;
             vm.spinning = false;
             return;
           }
@@ -102,6 +110,7 @@
               if (err) {
                 console.error(err);
                 vm.message = "Ошибка при загрузке файлов";
+                vm.$refs.errors.show = true;
                 vm.spinning = false;
                 return
               }
@@ -113,7 +122,7 @@
                 img_url = `https://ipfs.io/ipfs/${result[0].hash}`;
               }
             }
-            
+
             
             ipfs.files.add(files_img, (err, result) => {
               confirm_ipfs_upload(err, result, "img");
@@ -194,7 +203,6 @@
                     let refBlockNum = taposBlock - 1 & 0xffff;
                     let refBlockPrefix = parseInt(hex, 16);
                     
-                    
                     let trx = {
                       "expiration": expire,
                       "extensions": [],
@@ -212,7 +220,6 @@
                     } catch (error) {
                       console.log(error);
                       return alert("Не удалось подписать транзакцию c постом. Откройте консоль браузера для просмотра подробностей" + error.message);
-                      
                     }
                     console.log(JSON.stringify(trxs));
                     
@@ -220,9 +227,10 @@
                       console.log(err, result);
                       
                       if (!err) {
-                        //window.location.replace(`/watch?v=${permlink}&a=${author}`);
+                        window.location.replace(`/watch?v=${permlink}&a=${author}`);
                       } else {
                         vm.message = "Ошибка при создании поста";
+                        vm.$refs.errors.show = true;
                         vm.spinning = false;
                         console.log(err);
                       }
@@ -235,13 +243,15 @@
             
           };
         };
-        console.log(this.$refs);
-        const img = this.$refs.imgfile;
+        const img = vm.imgfile;
+        
+        console.log(img);
         try {
           img_size = img.files[0].size;
           img_reader.readAsArrayBuffer(img.files[0]);
         } catch (e) {
           vm.message = "Ошибка при чтении превью";
+          vm.$refs.errors.show = true;
           vm.spinning = false;
           return;
         }
