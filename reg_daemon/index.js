@@ -17,32 +17,53 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+function getConfirmKey() {
+  let min = 100000000000000;
+  let max = 999999999999999;
+  return Math.round(Math.random() * (max - min) + min);
+}
+
 app.post("/", function (request, responce) {
   responce.setHeader("Access-Control-Allow-Origin", "*");
 
   if (request.body.purpose == "add") {
-    let confirm_key = "6iuhrfu9hf3whs9";
+    let confirm_key = getConfirmKey();
     db.serialize(function () {
-      let add = db.prepare(`INSERT INTO email_confirmation (login, email, owner_key, active_key, posting_key, memo_key, confirm_key) VALUES (
-      '${request.body.new_account_name}', '${request.body.email}', '${request.body.owner}',
-        '${request.body.active}', '${request.body.posting}', '${request.body.memo }', '${confirm_key}')`);
-      add.run();
-      add.finalize();
-      send_email(request.body.new_account_name, confirm_key, request.body.email);
+      db.get(`SELECT * FROM user_list WHERE email = '${request.body.email}'`, function (err, row) {
+        console.log("ROW check:", row, !!row);
+        if (!row) {
+          let add = db.prepare(`INSERT INTO email_confirmation (login, email, owner_key, active_key, posting_key, memo_key, confirm_key) VALUES (
+            '${request.body.new_account_name}', '${request.body.email}', '${request.body.owner}',
+              '${request.body.active}', '${request.body.posting}', '${request.body.memo }', '${confirm_key}')`);
+          add.run();
+          add.finalize();
+          send_email(request.body.new_account_name, confirm_key, request.body.email);
+          responce.send("(0) Now confirm email");
+        } else {
+          responce.send("(-1) Email already registered");
+        }
+      });
+
+
     });
-    responce.send("(0) Now confirm email");
   } else if (request.body.purpose == "confirm") {
     console.log("Confirm..");
+    let email = "";
     db.serialize(function () {
-      console.log("exisits?");
+      console.log("exisits?", request.body.new_account_name, request.body.confirm_key);
       db.get(`SELECT * FROM email_confirmation WHERE login = '${request.body.new_account_name}' AND confirm_key = '${request.body.confirm_key}'`, function (err, row) {
+        console.log("ROW:", row, !!row);
         if (row) {
-          console.log("ROW:", row, !!row);
+          email = row.email;
           let new_keys = [row.owner_key, row.active_key, row.posting_key, row.memo_key];
           create_account(request.body.new_account_name, new_keys, responce);
 
           db.run(`DELETE FROM email_confirmation WHERE login = '${request.body.new_account_name}' AND confirm_key = '${request.body.confirm_key}'`, function (err, row) {
-            console.log("Delete..")
+            console.log("Delete..");
+          });
+
+          db.run(`INSERT INTO user_list (login, email) VALUES ('${request.body.new_account_name}', '${email}')`, function (err, row) {
+            console.log("Insert new user..");
           });
         } else {
           responce.send("(-1) No data in DB");
@@ -80,6 +101,11 @@ app.listen(port, function () {
         " confirm_key test" +
         ")");
 
+      db.run("CREATE TABLE IF NOT EXISTS user_list (" +
+        " login text," +
+        " email text" +
+        ")");
+
       db.all("SELECT * from email_confirmation", function (err, rows) {
         console.log(rows);
       });
@@ -88,6 +114,14 @@ app.listen(port, function () {
       //   console.log(row.id + ": " + row.info);
       // });
     });
+
+    // db.serialize(function () {
+    //   db.run("CREATE TABLE IF NOT EXISTS user_list (" +
+    //     " login text," +
+    //     " email text," +
+    //     ")");
+    // });
+
 
     console.log("Ready..");
   });
@@ -136,13 +170,13 @@ function send_email(login, code, email) {
       port: 587, // 587 not secure
       secure: false, // true for 465, false for other ports
       auth: {
-        user: "info@viboard.me",
+        user: "confirm@viboard.me",
         pass: "cote-key"
       }
     });
 
     let mailOptions = {
-      from: '"Команда ViBoard" <info@viboard.me>', // sender address
+      from: '"Команда ViBoard" <confirm@viboard.me>', // sender address
       to: email, // list of receivers
       subject: 'Подтвердите электронную почту', // Subject line
       text: `Нажмите на эту ссылку, чтобы подтвердить почтовый адрес: https://viboard.me/confirm?name=${login}&code=${code}`, // plain text body
