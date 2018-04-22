@@ -95,7 +95,7 @@
       var vm = this;
       
       var query = {
-        select_tags: ['videotest'],
+        select_tags: ['viboard-videos'],
         limit: vm.nVideos * 3,
       };
       

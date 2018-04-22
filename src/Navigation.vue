@@ -61,9 +61,6 @@
           <b-form-group>
             <b-form-input id="pswd-reg" type="password" placeholder="Пароль" name="pswd" required/>
           </b-form-group>
-          <b-form-group>
-            <b-form-input id="beta-key-reg" type="text" placeholder="Код" name="beta-key" required/>
-          </b-form-group>
         </b-form>
       </b-modal>
       
