@@ -244,9 +244,11 @@
               
               let verifyResult = false;
               // If posting privkey
-              if (golos.auth.wifToPublic(password) == postingPubkey) {
-                Cookies.set("posting_private", password);
-                verifyResult = true;
+              if (golos.auth.isWif(password)) {
+                if (golos.auth.wifToPublic(password) == postingPubkey) {
+                  Cookies.set("posting_private", password);
+                  verifyResult = true;
+                }
               }
               // Main Password
               else {
