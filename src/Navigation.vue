@@ -117,8 +117,8 @@
   fontawesome.library.add(faHome)
   fontawesome.library.add(faFire)
   fontawesome.library.add(faTrophy)
-  var golos = require("golos-js");
-  var Cookies = require('js-cookie');
+  let golos = require("golos-js");
+  let Cookies = require('js-cookie');
   golos.config.set('websocket', 'wss://ws.golos.io');
   import Vue from 'vue'
   
@@ -139,8 +139,8 @@
     },
     
     created: function () {
-      var vm = this;
-      var temp_login = Cookies.get("login");
+      let vm = this;
+      let temp_login = Cookies.get("login");
       console.log('loggggg', temp_login);
       if (temp_login) {
         vm.login = temp_login;
@@ -217,47 +217,53 @@
       },
       
       nickname_click: function () {
-        var videolist = document.getElementsByClassName("videofoo");
+        let videolist = document.getElementsByClassName("videofoo");
         console.log("wqefsgdfd");
-        for (var i = 0; i < videolist.length; i++) {
+        for (let i = 0; i < videolist.length; i++) {
           videolist[i].style.height = 9 / 16 * videolist[i].offsetWidth;
           console.log(videolist[i].style.height, videolist[i].offsetWidth);
         }
       },
       
       auth: function (evt) {
-        evt.preventDefault()
-        var vm = this;
+        evt.preventDefault();
+        let vm = this;
         vm.$refs.auth_result_fail.show = false;
         vm.$refs.auth_result_success.show = false;
-        var login = document.getElementById("login-name").value;
-        var password = document.getElementById("login-pass").value;
-        var remember_me = document.getElementById("remember-me").checked;
+        let login = document.getElementById("login-name").value;
+        let password = document.getElementById("login-pass").value;
+        let remember_me = document.getElementById("remember-me").checked;
         
-        var accounts = [login];
+        let accounts = [login];
         golos.api.getAccounts(accounts, function (err, result) {
           console.log(err, result);
           if (!err) {
             result.forEach(function (item) {
-              var postingPubkey = item.posting.key_auths[0][0];
-              console.log('getAccounts', item.posting); // Костыль?
+              let postingPubkey = item.posting.key_auths[0][0];
+              //console.log('getAccounts', item.posting); // Костыль?
               
-              var auths = {
-                posting: [[postingPubkey]]
-              };
-              
-              var verifyResult = golos.auth.verify(login, password, auths);
-              console.log('verify', verifyResult);
-              
-              var roles = ['posting'];
-              var keys = golos.auth.getPrivateKeys(login, password, roles);
+              let verifyResult = false;
+              // If posting privkey
+              if (golos.auth.wifToPublic(password) == postingPubkey) {
+                Cookies.set("posting_private", password);
+                verifyResult = true;
+              }
+              // Main Password
+              else {
+                let auths = {posting: [[postingPubkey]]};
+                verifyResult = golos.auth.verify(login, password, auths);
+                console.log('verify', verifyResult);
+                let roles = ['posting'];
+                let keys = golos.auth.getPrivateKeys(login, password, roles);
+                if (verifyResult) {
+                  Cookies.set("posting_private", keys.posting);
+                }
+              }
               
               if (verifyResult) {
                 vm.$refs.auth_result_success.show = true;
                 vm.$refs.auth_result_fail.show = false;
                 Cookies.set("login", login);
-                // Cookies.set("password", password, {});
-                Cookies.set("posting_private", keys.posting);
                 setTimeout(function () {
                   vm.$refs.login_modal.hide()
                 }, 500);

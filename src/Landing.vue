@@ -17,9 +17,9 @@
             <b-form-input v-model=reg_password type="password" placeholder="Пароль" name="pswd" required/>
           </b-form-group>
           <b-button variant="primary" @click="register">Зарегистрироваться</b-button>
-
+        
         </b-form>
- 
+        
         <h4 class="card-title">Войти через <a href="https://golos.io">golos.io</a></h4>
         <b-alert variant="success" ref="auth_result_success">
           Успешно
@@ -37,7 +37,7 @@
         </b-form>
         
         <b-button href="index" class="mt-3" variant="outline-primary">
-         Продолжить без регистрации 
+          Продолжить без регистрации
         </b-button>
       </b-card>
     </b-navbar>
@@ -68,8 +68,10 @@
         <b-col>
           <h1>Блогеры зарабатывают</h1>
           <p>
-          В 2014 основатели Reddit предположили, что их площадка будет улучшена, если часть доходов будет возвращаться пользователям. Схема распределения была непрозрачной, не вызывала доверия, и так и не была принята сообществом. С приходом новой технологии такой подход стал осуществимым.
-На viboard авторы получают свою долю за видео, а зрители - за комментарии и оценки.
+            В 2014 основатели Reddit предположили, что их площадка будет улучшена, если часть доходов будет возвращаться
+            пользователям. Схема распределения была непрозрачной, не вызывала доверия, и так и не была принята
+            сообществом. С приходом новой технологии такой подход стал осуществимым.
+            На viboard авторы получают свою долю за видео, а зрители - за комментарии и оценки.
           </p>
         </b-col>
       </b-row>
@@ -80,7 +82,8 @@
         </b-col>
         <b-col>
           <h1>Пользователи свободны от рекламы</h1>
-          <p>Монетизация через рекламу уходит в прошлое, теперь вам не придется видеть назойливые рекламные вставки, пока вы смотрите видео любимого блогера.
+          <p>Монетизация через рекламу уходит в прошлое, теперь вам не придется видеть назойливые рекламные вставки,
+            пока вы смотрите видео любимого блогера.
             Ценность каждого видеоролика определяется сообществом.
           </p>
         </b-col>
@@ -90,59 +93,61 @@
         <b-col lg=6 offset-lg=6>
           <h1>Концентрируйтесь на контенте.</h1>
           <p>
-          Будучи свободным от рекламы, вы можете сосредоточиться на создании уникального контента.
+            Будучи свободным от рекламы, вы можете сосредоточиться на создании уникального контента.
           </p>
           <p>
-           Только сообщество решает, что достойно внимания.
+            Только сообщество решает, что достойно внимания.
           </p>
           <p>
             <strong>Создавайте качественный контент, теперь у вас есть возможность!</strong>
           </p>
-          <h4><b-link href="FAQ">Читать подробнее</b-link></h4>
+          <h4>
+            <b-link href="FAQ">Читать подробнее</b-link>
+          </h4>
         </b-col>
       </b-row>
       
       <b-row class="d-lg-none">
-      <b-card id="register2" title="Регистрация">
-        <b-alert variant="success" ref="reg_result_success">
-          Отлично! Теперь подтвердите Email
-        </b-alert>
-        <b-alert variant="danger" ref="reg_result_fail">Ошибка</b-alert>
-        <b-form>
-          <b-form-group>
-            <b-form-input v-model="reg_username" type="text" placeholder="Логин" name="login" required/>
-          </b-form-group>
-          <b-form-group>
-            <b-form-input v-model="reg_email" type="text" placeholder="Email" name="email" required/>
-          </b-form-group>
-          <b-form-group>
-            <b-form-input v-model=reg_password type="password" placeholder="Пароль" name="pswd" required/>
-          </b-form-group>
-          <b-button variant="primary" @click="register">Зарегистрироваться</b-button>
-
-        </b-form>
- 
-        <h4 class="card-title">Войти через <a href="https://golos.io">golos.io</a></h4>
-        <b-alert variant="success" ref="auth_result_success">
-          Успешно
-        </b-alert>
-        <b-alert variant="danger" ref="auth_result_fail">Ошибка</b-alert>
-        
-        <b-form>
-          <b-form-group>
-            <b-form-input v-model="login_username" type="text" placeholder="Логин" name="login" required/>
-          </b-form-group>
-          <b-form-group>
-            <b-form-input v-model="login_password" type="password" placeholder="Пароль" name="pswd" required/>
-          </b-form-group>
-          <b-button variant="dark" @click="login">Войти</b-button>
-        </b-form>
-        
-        <b-button href="index" class="mt-3" variant="outline-primary">
-         Продолжить без регистрации 
-        </b-button>
-      </b-card>
-   </b-row>
+        <b-card id="register2" title="Регистрация">
+          <b-alert variant="success" ref="reg_result_success">
+            Отлично! Теперь подтвердите Email
+          </b-alert>
+          <b-alert variant="danger" ref="reg_result_fail">Ошибка</b-alert>
+          <b-form>
+            <b-form-group>
+              <b-form-input v-model="reg_username" type="text" placeholder="Логин" name="login" required/>
+            </b-form-group>
+            <b-form-group>
+              <b-form-input v-model="reg_email" type="text" placeholder="Email" name="email" required/>
+            </b-form-group>
+            <b-form-group>
+              <b-form-input v-model=reg_password type="password" placeholder="Пароль" name="pswd" required/>
+            </b-form-group>
+            <b-button variant="primary" @click="register">Зарегистрироваться</b-button>
+          
+          </b-form>
+          
+          <h4 class="card-title">Войти через <a href="https://golos.io">golos.io</a></h4>
+          <b-alert variant="success" ref="auth_result_success">
+            Успешно
+          </b-alert>
+          <b-alert variant="danger" ref="auth_result_fail">Ошибка</b-alert>
+          
+          <b-form>
+            <b-form-group>
+              <b-form-input v-model="login_username" type="text" placeholder="Логин" name="login" required/>
+            </b-form-group>
+            <b-form-group>
+              <b-form-input v-model="login_password" type="password" placeholder="Пароль" name="pswd" required/>
+            </b-form-group>
+            <b-button variant="dark" @click="login">Войти</b-button>
+          </b-form>
+          
+          <b-button href="index" class="mt-3" variant="outline-primary">
+            Продолжить без регистрации
+          </b-button>
+        </b-card>
+      </b-row>
     </b-container fluid>
   
   </div>
@@ -189,8 +194,8 @@
         login_password: "",
       }
     },
-
-    created: function() {
+    
+    created: function () {
       if (Cookies.get("login")) {
         window.location.href = 'index'
       }
@@ -203,11 +208,11 @@
         vm.$refs.reg_result_fail.show = false;
         vm.$refs.reg_result_success.show = false;
         let new_account_name = vm.reg_username;
-        let email = vm.reg_email; 
+        let email = vm.reg_email;
         let pswd = vm.reg_password;
         let beta_key = "1337";
-
-
+        
+        
         //check correct
         let accounts = [new_account_name];
         golos.api.getAccounts(accounts, function (err, result) {
@@ -215,7 +220,7 @@
             if (!result.length) {
               let newKeys = golos.auth.generateKeys(new_account_name, pswd, ['owner', 'active', 'posting', 'memo']);
               console.log('newKeys:', newKeys);
-
+              
               let xhr = new XMLHttpRequest();
               xhr.open("POST", "https://viboard.me:3000", true);
               xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -230,7 +235,7 @@
                   if (xhr.responseText == "(0) Now confirm email") {
                     vm.$refs.reg_result_success.show = true;
                     vm.$refs.reg_result_fail.show = false;
-                   // Cookies.set("login", new_account_name);
+                    // Cookies.set("login", new_account_name);
                     let roles = ['posting'];
                     let keys = golos.auth.getPrivateKeys(new_account_name, pswd, roles);
                     
@@ -266,36 +271,41 @@
         var login = vm.login_username;
         var password = vm.login_password;
         
-        var accounts = [login];
+        let accounts = [login];
         golos.api.getAccounts(accounts, function (err, result) {
           console.log(err, result);
           if (!err) {
             result.forEach(function (item) {
-              var postingPubkey = item.posting.key_auths[0][0];
-              console.log('getAccounts', item.posting); // Костыль?
+              let postingPubkey = item.posting.key_auths[0][0];
+              //console.log('getAccounts', item.posting); // Костыль?
               
-              var auths = {
-                posting: [[postingPubkey]]
-              };
-              
-              var verifyResult = golos.auth.verify(login, password, auths);
-              console.log('verify', verifyResult);
-              
-              var roles = ['posting'];
-              var keys = golos.auth.getPrivateKeys(login, password, roles);
+              let verifyResult = false;
+              // If posting privkey
+              if (golos.auth.wifToPublic(password) == postingPubkey) {
+                Cookies.set("posting_private", password);
+                verifyResult = true;
+              }
+              // Main Password
+              else {
+                let auths = {posting: [[postingPubkey]]};
+                verifyResult = golos.auth.verify(login, password, auths);
+                console.log('verify', verifyResult);
+                let roles = ['posting'];
+                let keys = golos.auth.getPrivateKeys(login, password, roles);
+                if (verifyResult) {
+                  Cookies.set("posting_private", keys.posting);
+                }
+              }
               
               if (verifyResult) {
                 vm.$refs.auth_result_success.show = true;
                 vm.$refs.auth_result_fail.show = false;
                 Cookies.set("login", login);
-                // Cookies.set("password", password, {});
-                Cookies.set("posting_private", keys.posting);
                 setTimeout(function () {
                   vm.$refs.login_modal.hide()
                 }, 500);
                 vm.login = login;
                 vm.logged_in = true;
-                window.location.href = 'index'
               } else {
                 console.log(123);
                 vm.$refs.auth_result_success.show = false;
@@ -337,7 +347,7 @@
     padding: 1%;
     width: 50%;
   }
-
+  
   #register2 {
     background: white;
     
@@ -370,7 +380,7 @@
     padding: 10%;
     height: 100%;
   }
-
+  
   b-row {
     color: white;
   }
