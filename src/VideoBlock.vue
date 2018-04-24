@@ -1,20 +1,6 @@
 <template>
   <div class='video-block'>
     <a :href="controls ? '#' : getHref">
-      <!--<plyr-video :poster="previewSrc" :videos="this.videos" :subtitles="" :crossorigin="true"/>-->
-      
-      <!--<plyr-video>-->
-      <!--<video class="video-element"-->
-      <!--v-if="!isPreview"-->
-      <!--:autoplay="ap ? true : false"-->
-      <!--:muted="muted ? true : false"-->
-      <!--:controls="controls ? true : false"-->
-      <!--:src="src">-->
-      <!--</video>-->
-      <!--<div v-else class="video-element">-->
-      <!--<img :src="previewSrc"></img>-->
-      <!--</div>-->
-      <!--</plyr-video>-->
       <div v-if="isPreview" class="video-element">
         <img :src="previewSrc">
       </div>
@@ -30,7 +16,7 @@
              :controls="controls ? true : false"
              :src="src">
       </video>
-      
+    
     
     </a>
     <div class="video-header"> {{ title }}</div>
@@ -42,7 +28,9 @@
 </template>
 
 <script>
+  import {parseBody} from './parseBody.js'
   import {PlyrVideo} from 'vue-plyr'
+  import {getVideoContent} from './getVideoContent.js'
   // import 'vue-plyr/dist/vue-plyr.css'
   
   var golos = require('golos-js')
@@ -53,6 +41,8 @@
     components: {
       PlyrVideo,
     },
+    
+    mixins: [parseBody, getVideoContent],
     
     props: {
       permlink: {
@@ -104,22 +94,10 @@
     
     created: function () {
       let vm = this;
-      golos.api.getContent(vm.author, vm.permlink, function (err, result) {
-        if (!err) {
-          console.log(result);
-          vm.title = result.title;
-          vm.total = result.pending_payout_value;
-          var regexp = RegExp('<img src="(.*)" alt="(.*)"');
-          var parsed = regexp.exec(result.body);
-          vm.previewSrc = parsed[1];
-          var ipfs_id = parsed[2];
-          vm.src = "http://ipfs.io/ipfs/" + ipfs_id;
-          vm.videos.push({src: vm.src, format: 'mp4'});
-        } else {
-          console.log(err);
-        }
-      });
-      
+      vm.getVideoContent(vm)
+    },
+    
+    mounted: function () {
       var videolist = document.getElementsByClassName("video-element");
       for (var i = 0; i < videolist.length; i++) {
         videolist[i].style.height = 9 / 16 * videolist[i].offsetWidth;
@@ -146,14 +124,9 @@
     margin-top: 0.25em;
   }
   
-  .video-author {
-  }
-  
-  .video-total {
-    color: black;
-  }
-  
   .video-element {
+    background-color: black;
+    /*border: 1px solid black;*/
   }
   
   .video-element img {

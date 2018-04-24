@@ -4,15 +4,21 @@ import New from './New.vue'
 import Single from './Single.vue'
 import Upload from './Upload'
 import Embed from './Embed.vue'
+import Landing from './Landing.vue'
+import Confirm from './Confirm.vue'
+import FAQ from './FAQ.vue'
 
 // пути к страницам
 const routes = {
-  '/': Index,
+  '/index': Index,
   '/new': New,
   '/watch': Single,
   '/upload': Upload,
   '/embed': Embed,
-}
+  '/': Landing,
+  '/confirm' : Confirm,
+  '/FAQ' : FAQ
+};
 
 
 new Vue({
@@ -30,4 +36,4 @@ new Vue({
   },
 
   render(h) { return h(this.ViewComponent) }
-})
+});
