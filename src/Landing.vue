@@ -1,25 +1,10 @@
 <template>
   <div id=container>
     <b-navbar class="d-none d-lg-block" id="sidebar">
-      <b-card id="register" title="Регистрация">
-        <b-alert variant="success" ref="reg_result_success">
-          Отлично! Теперь подтвердите Email
-        </b-alert>
-        <b-alert variant="danger" ref="reg_result_fail">Ошибка</b-alert>
-        <b-form>
-          <b-form-group>
-            <b-form-input v-model="reg_username" type="text" placeholder="Логин" name="login" required/>
-          </b-form-group>
-          <b-form-group>
-            <b-form-input v-model="reg_email" type="text" placeholder="Email" name="email" required/>
-          </b-form-group>
-          <b-form-group>
-            <b-form-input v-model=reg_password type="password" placeholder="Пароль" name="pswd" required/>
-          </b-form-group>
-          <b-button variant="primary" @click="register">Зарегистрироваться</b-button>
+      <b-card id="register">
+        <h4 class="card-title">Регистрация</h4>
+        <RegistrationForm/>
 
-        </b-form>
- 
         <h4 class="card-title">Войти через <a href="https://golos.io">golos.io</a></h4>
         <b-alert variant="success" ref="auth_result_success">
           Успешно
@@ -108,19 +93,6 @@
           Отлично! Теперь подтвердите Email
         </b-alert>
         <b-alert variant="danger" ref="reg_result_fail">Ошибка</b-alert>
-        <b-form>
-          <b-form-group>
-            <b-form-input v-model="reg_username" type="text" placeholder="Логин" name="login" required/>
-          </b-form-group>
-          <b-form-group>
-            <b-form-input v-model="reg_email" type="text" placeholder="Email" name="email" required/>
-          </b-form-group>
-          <b-form-group>
-            <b-form-input v-model=reg_password type="password" placeholder="Пароль" name="pswd" required/>
-          </b-form-group>
-          <b-button variant="primary" @click="register">Зарегистрироваться</b-button>
-
-        </b-form>
  
         <h4 class="card-title">Войти через <a href="https://golos.io">golos.io</a></h4>
         <b-alert variant="success" ref="auth_result_success">
@@ -154,6 +126,7 @@
   import 'vue-plyr/dist/vue-plyr.css';
   import BootstrapVue from 'bootstrap-vue'
   import Vue from 'vue'
+  import RegistrationForm from './RegistrationForm.vue'
   
   var golos = require("golos-js");
   var Cookies = require('js-cookie');
@@ -179,12 +152,13 @@
   
   export default {
     name: 'Landing',
+
+    components: {
+      RegistrationForm,
+    },
+
     data: function () {
       return {
-        reg_username: "",
-        reg_email: "",
-        reg_password: "",
-        
         login_username: "",
         login_password: "",
       }
@@ -197,68 +171,6 @@
     },
     
     methods: {
-      register: function (evt) {
-        evt.preventDefault();
-        let vm = this;
-        vm.$refs.reg_result_fail.show = false;
-        vm.$refs.reg_result_success.show = false;
-        let new_account_name = vm.reg_username;
-        let email = vm.reg_email; 
-        let pswd = vm.reg_password;
-        let beta_key = "1337";
-
-
-        //check correct
-        let accounts = [new_account_name];
-        golos.api.getAccounts(accounts, function (err, result) {
-          if (!err) {
-            if (!result.length) {
-              let newKeys = golos.auth.generateKeys(new_account_name, pswd, ['owner', 'active', 'posting', 'memo']);
-              console.log('newKeys:', newKeys);
-
-              let xhr = new XMLHttpRequest();
-              xhr.open("POST", "https://viboard.me:3000", true);
-              xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-              let send_req = "purpose=add&new_account_name=" + new_account_name + "&owner=" + newKeys.owner + "&active=" + newKeys.active
-                + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email + "&beta_key=" + beta_key + "&email=" + email;
-              xhr.send(send_req);
-              xhr.onreadystatechange = function () {
-                console.log("readyState:", xhr.readyState);
-                // 4 = DONE
-                if (xhr.readyState == 4) {
-                  console.log("answer:", xhr.responseText);
-                  if (xhr.responseText == "(0) Now confirm email") {
-                    vm.$refs.reg_result_success.show = true;
-                    vm.$refs.reg_result_fail.show = false;
-                   // Cookies.set("login", new_account_name);
-                    let roles = ['posting'];
-                    let keys = golos.auth.getPrivateKeys(new_account_name, pswd, roles);
-                    
-                    
-                    console.log("newKeys.posting:", keys.posting);
-                    Cookies.set("posting_private", keys.posting);
-                    vm.message = "Отлично! Теперь подтвердите e-mail";
-                    // setTimeout(function() { vm.$refs.signup_modal.hide() } , 500);
-                    // vm.login = new_account_name;
-                    // vm.logged_in = true;
-                  } else {
-                    vm.$refs.reg_result_success.show = false;
-                    vm.$refs.reg_result_fail.show = true;
-                  }
-                }
-              }
-            } else {
-              console.log("Логин занят!");
-            }
-          }
-          else console.error(err);
-        });
-        
-        // \check correct
-        
-        // request.post({url:'https://viboard.me:3000/', form: {my_key:'edited_value'}}, function(err,httpResponse,body){ /* ... */ })
-      },
-      
       login() {
         var vm = this;
         vm.$refs.auth_result_fail.show = false;
