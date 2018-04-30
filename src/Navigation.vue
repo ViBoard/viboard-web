@@ -96,8 +96,8 @@
   fontawesome.library.add(faHome)
   fontawesome.library.add(faFire)
   fontawesome.library.add(faTrophy)
-  var golos = require("golos-js");
-  var Cookies = require('js-cookie');
+  let golos = require("golos-js");
+  let Cookies = require('js-cookie');
   golos.config.set('websocket', 'wss://ws.golos.io');
   import Vue from 'vue'
   
@@ -127,6 +127,7 @@
     
     created: function () {
       var temp_login = Cookies.get("login");
+      let vm = this;
       if (temp_login) {
         vm.login = temp_login;
         vm.logged_in = true;
