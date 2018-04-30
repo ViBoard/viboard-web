@@ -149,7 +149,7 @@
           xhr.open("POST", "https://viboard.me:3000", true);
           xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
           let send_req = "purpose=add&new_account_name=" + vm.username + "&owner=" + newKeys.owner + "&active=" + newKeys.active
-          + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + vm.email + "&beta_key=1337" + "&email=" + vm.email;
+          + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + vm.email;
           xhr.send(send_req);
         } catch (err) {
             vm.$emit('register_fail');
