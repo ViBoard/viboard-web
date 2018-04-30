@@ -16,6 +16,10 @@
             <b-form-input id="video-title" type="text" v-model="title"/>
           </b-form-group>
 
+          <b-form-group label="Описание:">
+            <b-form-textarea id="video-description" type="text" rows="5" v-model="description"/>
+          </b-form-group>
+
           <b-form-group label="Тэги:" description="Добавьте теги (до четырех штук) через пробел">
             <b-form-input id="video-tags" type="text" v-model="tags"/>
           </b-form-group>
@@ -44,7 +48,7 @@
       Navigation,
       AppInner,
     },
-    
+
     data: function () {
       return {
         videofile: null,
@@ -53,22 +57,23 @@
         spinning: false,
         message: "",
         title: "",
+        description: ""
       }
     },
-    
+
     methods: {
       upload: function () {
 
         let vm = this;
-        
+
         let img_size = 0;
         let video_size = 0;
-        
+
         vm.$refs.errors.show = false;
 
         const img_reader = new FileReader();
         const video_reader = new FileReader();
-        
+
         vm.message = "";
         vm.spinning = true;
         img_reader.onloadend = function () {
@@ -86,7 +91,7 @@
             const ipfs = ipfsAPI('viboard.me', 81, {protocol: 'https'});
             const img_buf = buffer.Buffer(img_reader.result);
             const video_buf = buffer.Buffer(video_reader.result);
-            
+
             let files_img = [
               {content: img_buf}
             ];
@@ -101,11 +106,11 @@
             };
             let options_img = {progress: progress_func_img};
             let options_video = {progress: progress_func_video};
-            
-            
+
+
             let img_url = undefined;
             let video_hash = undefined;
-            
+
             function confirm_ipfs_upload(err, result, file_type) {
               if (err) {
                 console.error(err);
@@ -115,7 +120,7 @@
                 return
               }
               console.log(result);
-              
+
               if (file_type == "video") {
                 video_hash = result[0].hash;
               } else if (file_type == "img") {
@@ -123,20 +128,20 @@
               }
             }
 
-            
+
             ipfs.files.add(files_img, (err, result) => {
               confirm_ipfs_upload(err, result, "img");
-              
+
               ipfs.files.add(files_video, (err, result) => {
                 confirm_ipfs_upload(err, result, "video");
-                
+
                 var login = Cookies.get("login");
                 var password = Cookies.get("posting_private");
-                
+
                 var auths = {
                   posting: [[golos.auth.wifToPublic(password)]] // golos.auth.wifToPublic(password)
                 };
-                
+
                 var verifyResult = golos.auth.verify(login, password, auths);
                 console.log('ver_res', verifyResult);
                 var wif = password;
@@ -144,9 +149,11 @@
                 var author = login;
                 var permlink = video_hash.toLowerCase() + Date.now();
                 var title = vm.title
-                var body = `<a href="https://viboard.me/watch?v=${permlink}&a=${author}"><p>Смотреть на viboard.me</p><img src="${img_url}" alt="${video_hash}"></a>`;
+                var description = vm.description
+                var body = `<a href="https://viboard.me/watch?v=${permlink}&a=${author}"><p>Смотреть на viboard.me</p><img src="${img_url}" alt="${video_hash}"></a><p>${description}</p>`;
+                console.log(body)
                 let percent_steem_dollars = 10000; // 100% = 10000
-                
+
                 let tagList = vm.tags.split(' ', 4);
                 tagList.unshift(parentPermlink);
                 console.log(tagList);
@@ -155,13 +162,13 @@
                   tags: tagList
                 };
                 console.log(jsonMetadata);
-                
+
                 let beneficiariesObj = [
                   [0, {
                     "beneficiaries": [{"account": "viboard", "weight": 1000}]
                   }]
                 ];
-                
+
                 let newTx = [
                   ["comment", {
                     "parent_author": "",
@@ -182,27 +189,27 @@
                     "extensions": beneficiariesObj
                   }]
                 ];
-                
+
                 let now = new Date().getTime() + 18e5;
                 let expire = new Date(now).toISOString().split('.')[0];
-                
+
                 golos.api.getDynamicGlobalProperties(function (e, g) {
                   if (e) return alert(tryAgain);
                   let taposBlock = g.head_block_number - 2;
-                  
+
                   golos.api.getBlockHeader(taposBlock, function (err, blockLink) {
                     if (err) return alert(tryAgain);
                     let blockid = blockLink.previous;
                     let n = [];
-                    
-                    
+
+
                     for (let i = 0; i < blockid.length; i += 2) {
                       n.push(blockid.substr(i, 2));
                     }
                     let hex = n[7] + n[6] + n[5] + n[4];
                     let refBlockNum = taposBlock - 1 & 0xffff;
                     let refBlockPrefix = parseInt(hex, 16);
-                    
+
                     let trx = {
                       "expiration": expire,
                       "extensions": [],
@@ -210,8 +217,8 @@
                       "ref_block_num": refBlockNum,
                       "ref_block_prefix": refBlockPrefix
                     };
-                    
-                    
+
+
                     let trxs = "";
                     try {
                       trxs = golos.auth.signTransaction(trx, {
@@ -222,10 +229,10 @@
                       return alert("Не удалось подписать транзакцию c постом. Откройте консоль браузера для просмотра подробностей" + error.message);
                     }
                     console.log(JSON.stringify(trxs));
-                    
+
                     golos.api.broadcastTransactionSynchronous(trxs, function (err, result) {
                       console.log(err, result);
-                      
+
                       if (!err) {
                         window.location.replace(`/watch?v=${permlink}&a=${author}`);
                       } else {
@@ -239,12 +246,12 @@
                 });
               }, false);
             }, false);
-            
-            
+
+
           };
         };
         const img = vm.imgfile;
-        
+
         console.log(img);
         try {
           img_size = img.size;
@@ -264,7 +271,7 @@
   #app {
     padding-top: 4em;
   }
-  
+
   #box {
     padding-top: 4em;
     height: 100%;
@@ -272,29 +279,29 @@
     margin-right: 10%;
     background: #ffffff;
   }
-  
+
   #main {
     height: 50%;
     width: 50%;
     margin-left: 25%;
     align-content: center;
-    
+
   }
-  
+
   .input-title {
     display: block;
     margin-top: 1em;
     font-size: 1.5em;
   }
-  
+
   #video-file, #img-file {
     margin-top: 0.75em;
   }
-  
+
   #loader-wrap {
     max-height: 3em;
   }
-  
+
   .loader,
   .loader:before,
   .loader:after {
@@ -306,7 +313,7 @@
     -webkit-animation: load7 1.8s infinite ease-in-out;
     animation: load7 1.8s infinite ease-in-out;
   }
-  
+
   .loader {
     color: #292929;
     font-size: 10px;
@@ -319,24 +326,24 @@
     -webkit-animation-delay: -0.16s;
     animation-delay: -0.16s;
   }
-  
+
   .loader:before,
   .loader:after {
     content: '';
     position: absolute;
     top: 0;
   }
-  
+
   .loader:before {
     left: -3.5em;
     -webkit-animation-delay: -0.32s;
     animation-delay: -0.32s;
   }
-  
+
   .loader:after {
     left: 3.5em;
   }
-  
+
   @-webkit-keyframes load7 {
     0%,
     80%,
@@ -347,7 +354,7 @@
       box-shadow: 0 2.5em 0 0;
     }
   }
-  
+
   @keyframes load7 {
     0%,
     80%,
