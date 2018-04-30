@@ -18,7 +18,7 @@
         :author="author"
         :permlink="permlink"
       />
-      <div class="video-description">{{description}}</div>
+        <div class="video-description" id="vid-descr"></div>
       <Comments id="comments"
                 :author="author"
                 :permlink="permlink"
