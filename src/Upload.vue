@@ -5,11 +5,47 @@
       <b-col lg=8 offset-lg=2>
         <b-form>
           <b-form-group label="Видео:">
-            <b-form-file placeholder="Выбрать файл..." id="video-file" type="file" v-model="videofile"/>
+            <b-form-file @input="set_preview_url" placeholder="Выбрать файл..." id="video-file" type="file" v-model="videofile"/>
           </b-form-group>
 
-          <b-form-group label="Превью:">
-            <b-form-file placeholder="Выбрать файл..." id="img-file" type="file" v-model="imgfile"/>
+         <b-form-group v-if="show_previews_row" label="Превью:">
+           <div v-if="!preview_file">
+             <table>
+               <tr>
+                 <td v-for="i in n_previews" style="padding: 0.2em">
+                   <video :class="{'embed-responsive': true, 'focused': preview_chosen == i - 1}" 
+                          tabindex="0" 
+                          :src="video_src"
+                          @click="preview_chosen = i - 1"
+                          @loadedmetadata="generate_previews(false)"
+                          :ref="'preview' + (i - 1)">
+                   </video>
+                 </td>
+               </tr>
+             </table>
+             <div class="d-flex align-items-center" style="margin-top: 0.7em">
+               <b-button variant="outline-dark" @click="generate_previews(true)">Выбрать другие</b-button>
+                <div style="margin-right: 0.5em; margin-left: 0.5em"> или </div>
+               <b-form-file placeholder="Выбрать файл..." 
+                            id="img-file" 
+                            type="file" 
+                            @input="preview_file_chosen"
+                            v-model="imgfile"/>
+             </div>
+           </div>
+           <div v-else>
+              <b-img :src="preview_file" class="embed-responsive"></b-img>
+              <div class="d-flex align-items-center" style="margin-top: 0.7em">
+                <b-button variant="outline-dark" @click="preview_file = null">Выбрать кадр</b-button>
+                <div style="margin-right: 0.5em; margin-left: 0.5em"> или </div>
+                <b-form-file placeholder="Выбрать файл..." 
+                            id="img-file" 
+                            type="file" 
+                            @input="preview_file_chosen"
+                            v-model="imgfile"/>
+              </div>
+            </div>
+            <canvas ref="canvas" style="display: none"></canvas>
           </b-form-group>
 
           <b-form-group label="Название:">
@@ -20,8 +56,15 @@
             <b-form-textarea id="video-description" type="text" rows="5" v-model="description"/>
           </b-form-group>
 
-          <b-form-group label="Тэги:" description="Добавьте теги (до четырех штук) через пробел">
-            <b-form-input id="video-tags" type="text" v-model="tags"/>
+          <b-form-group label="Тэги:">
+            <vue-tags-input
+                v-model="tag"
+                :tags="tags"
+                :addOnKey="[32]"
+                placeholder="До четырёх тэгов через пробел"
+                :maxTags="4"
+                class=""
+                @tags-changed="newTags => tags = newTags"/>
           </b-form-group>
 
           <b-alert variant="danger" ref="errors">{{ message }}</b-alert>
@@ -42,28 +85,56 @@
   var Cookies = require('js-cookie');
   import Navigation from './Navigation.vue'
   import AppInner from './AppInner.vue'
+  import VueTagsInput from '@johmun/vue-tags-input';
+
   export default {
     name: 'app',
     components: {
       Navigation,
       AppInner,
+      VueTagsInput,
     },
 
     data: function () {
       return {
         videofile: null,
         imgfile: null,
-        tags: "",
+        tag: '',
+        tags: [],
         spinning: false,
         message: "",
         title: "",
-        description: ""
+        description: "",
+        n_previews: 4,
+        video_src: "",
+        show_previews_row: false,
+        preview_chosen: 0,
+        preview_file: false,
       }
     },
 
     methods: {
-      upload: function () {
+      set_preview_url: function() {
+        var vm = this;
+        vm.video_src = URL.createObjectURL(vm.videofile);
+        vm.show_previews_row = true;
+       },
 
+      generate_previews: function(is_random) {
+        var vm = this; 
+        var default_previews = [0, 0.1, 0.5, 0.8];
+        var duration = vm.$refs.preview0[0].duration;
+        for (var i = 0; i < vm.n_previews; ++i) {
+          vm.$refs['preview' + i][0].currentTime = duration * (is_random ? Math.random() : default_previews[i]);
+        }
+      },
+
+      preview_file_chosen: function() {
+        var vm = this;
+        vm.preview_file = URL.createObjectURL(vm.imgfile); 
+      },
+ 
+      upload: function () {
         let vm = this;
 
         let img_size = 0;
@@ -145,7 +216,7 @@
                 var verifyResult = golos.auth.verify(login, password, auths);
                 console.log('ver_res', verifyResult);
                 var wif = password;
-                var parentPermlink = 'viboard-videos';
+                var parentPermlink = 'videotest';
                 var author = login;
                 var permlink = video_hash.toLowerCase() + Date.now();
                 var title = vm.title
@@ -154,7 +225,10 @@
                 console.log(body)
                 let percent_steem_dollars = 10000; // 100% = 10000
 
-                let tagList = vm.tags.split(' ', 4);
+                let tagList = [];
+                for (var i = 0; i < vm.tags.length; ++i) {
+                  tagList.push(vm.tags[i].text);
+                }
                 tagList.unshift(parentPermlink);
                 console.log(tagList);
                 let jsonMetadata = {
@@ -250,52 +324,40 @@
 
           };
         };
-        const img = vm.imgfile;
 
-        console.log(img);
-        try {
-          img_size = img.size;
-          img_reader.readAsArrayBuffer(img);
-        } catch (e) {
-          vm.message = "Ошибка при чтении превью";
-          vm.$refs.errors.show = true;
-          vm.spinning = false;
-          return;
+        var img;
+        if (vm.preview_file) {
+          img = vm.imgfile;
+          try {
+            img_size = img.size;
+            img_reader.readAsArrayBuffer(img);
+          } catch (e) {
+            console.log(e);
+            vm.message = "Ошибка при чтении превью";
+            vm.$refs.errors.show = true;
+            vm.spinning = false;
+            return;
+          }
+        } else {
+          var canvas = vm.$refs.canvas;
+          var ctx = canvas.getContext("2d");
+          var video = vm.$refs["preview" + vm.preview_chosen][0];
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          ctx.drawImage(video, 0, 0);
+          canvas.toBlob(function(blob) {
+            img_reader.readAsArrayBuffer(blob);
+          });
         }
-      }
+     }
     }
   }
 </script>
 
 <style>
-  #app {
-    padding-top: 4em;
-  }
-
-  #box {
-    padding-top: 4em;
-    height: 100%;
-    margin-left: 10%;
-    margin-right: 10%;
-    background: #ffffff;
-  }
-
-  #main {
-    height: 50%;
-    width: 50%;
-    margin-left: 25%;
-    align-content: center;
-
-  }
-
-  .input-title {
-    display: block;
-    margin-top: 1em;
-    font-size: 1.5em;
-  }
-
-  #video-file, #img-file {
-    margin-top: 0.75em;
+  .focused {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.4rem rgba(0, 123, 255, 0.4);
   }
 
   #loader-wrap {
