@@ -11,7 +11,7 @@ export const parseBody = {
       parsedDescription = parsedDescription.replace(/<br.?>/gi, "\n");
       console.log("pd:", parsedDescription);
       let description = parsedDescription.split(/(<a.*href="(.*)".*>(.*)<\/a>)/);
-      console.log("description:", description)
+      //console.log("description:", description)
 
       if (!parsed) {
         return undefined;
