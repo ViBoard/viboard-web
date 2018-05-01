@@ -4,7 +4,6 @@ export const parseBody = {
       let regexp = RegExp('<img src="(.*)" alt="(.*)"');
       let parsed = regexp.exec(body);
 
-
       let regexpDescription = RegExp('<a.*>.*</a>([^]*)');
       let parsedDescription = regexpDescription.exec(body)[1];
       parsedDescription = parsedDescription.replace(/<.?p>|<.?div>|<.?body>|<.?html>/gi, '');
@@ -12,7 +11,6 @@ export const parseBody = {
       console.log("pd:", parsedDescription);
       let description = parsedDescription.split(/(<a.*href="(.*)".*>(.*)<\/a>)/);
       //console.log("description:", description)
-
       if (!parsed) {
         return undefined;
       }

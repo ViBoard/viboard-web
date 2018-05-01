@@ -18,6 +18,7 @@
         :author="author"
         :permlink="permlink"
       />
+      <Similar/>
       <div class="video-description" id="vid-descr"></div>
       <Comments id="comments"
                 :author="author"
@@ -43,6 +44,7 @@
   import 'bootstrap-vue/dist/bootstrap-vue.css'
   import BootstrapVue from 'bootstrap-vue'
   import Vue from 'vue'
+  import Similar from './Similar.vue'
   
   Vue.use(BootstrapVue);
   
@@ -56,6 +58,7 @@
       VideoBlock,
       Navigation,
       AppInner,
+      Similar
     },
     
     mixins: [parseBody, getVideoContent],
@@ -71,8 +74,8 @@
         total: "",
         videos: [],
         customControls: ``,
-        
-        
+        tags: [],
+        contentGot: false,
         ap: false,
         muted: false,
         controls: true,
@@ -91,6 +94,18 @@
       vm.author = queries.a;
       vm.permlink = queries.v;
       vm.getVideoContent(vm);
+      let whileCheck = setInterval(function () {
+        if (vm.contentGot) {
+          console.log("this", vm.tags, vm.author);
+          Similar.kekule(vm.tags, vm.author);
+          clearInterval(whileCheck);
+          console.log("da")
+          
+        } else {
+          console.log("net")
+        }
+      }, 100);
+      
       console.log(vm.src, vm.ap)
       let i = 0;
       while (i < vm.description) {

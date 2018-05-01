@@ -42,54 +42,29 @@
       <b-modal id="signup_modal"
                ref="signup_modal"
                title="Регистрация"
-               ok-title="Создать аккаунт"
-               ok-variant="dark"
-               @ok="register"
+               :ok-title="reg_loading ? 'Загрузка...' : reg_finished ? 'OK' : 'Зарегистрироваться'"
+               :busy="reg_loading"
+               ok-variant="primary"
+               @ok="call_register"
                cancel-variant="light"
                cancel-title="Отмена">
-        <b-alert variant="success" ref="reg_result_success">
-          Отлично! Теперь подтвердите Email
-        </b-alert>
-        <b-alert variant="danger" ref="reg_result_fail">Ошибка</b-alert>
-        <b-form>
-          <b-form-group>
-            <b-form-input id="login-reg" type="text" placeholder="Логин" name="login" required/>
-          </b-form-group>
-          <b-form-group>
-            <b-form-input id="email-reg" type="text" placeholder="Email" name="email" required/>
-          </b-form-group>
-          <b-form-group>
-            <b-form-input id="pswd-reg" type="password" placeholder="Пароль" name="pswd" required/>
-          </b-form-group>
-        </b-form>
+        <RegistrationForm ref="registration_form"
+                          @register_success="register_success"
+                          @register_fail="register_fail"/>
       </b-modal>
       
       <b-modal id="login_modal"
                ref="login_modal"
                title="Вход"
                ok-title="Войти"
-               ok-variant="dark"
-               @ok="auth"
+               ok-variant="primary"
+               @ok="call_login"
                cancel-variant="light"
                cancel-title="Отмена">
-        <b-alert variant="success" ref="auth_result_success">
-          Успешно
-        </b-alert>
-        <b-alert variant="danger" ref="auth_result_fail">Ошибка</b-alert>
-        <b-form>
-          <b-form-group>
-            <b-form-input id="login-name" type="text" placeholder="Логин" name="login" required/>
-          </b-form-group>
-          <b-form-group>
-            <b-form-input id="login-pass" type="password" placeholder="Пароль" name="pswd" required/>
-          </b-form-group>
-          <b-form-group>
-            <b-form-checkbox id="remember-me" name="remember">Запомнить меня</b-form-checkbox>
-          </b-form-group>
-        </b-form>
+        <LoginForm ref="login_form"
+                       @login_success="login_success"/>
       </b-modal>
     </b-navbar>
-    </b-row>
     <div class="container-fluid position-fixed d-none d-lg-block bg-light" style="padding-top: 7em; height:100%">
       <b-row>
         <b-col id="sidebar" lg="3">
@@ -113,6 +88,9 @@
   import faHome from '@fortawesome/fontawesome-free-solid/faHome'
   import faFire from '@fortawesome/fontawesome-free-solid/faFire'
   import faTrophy from '@fortawesome/fontawesome-free-solid/faTrophy'
+
+  import RegistrationForm from './RegistrationForm.vue'
+  import LoginForm from './LoginForm.vue'
   
   fontawesome.library.add(faHome)
   fontawesome.library.add(faFire)
@@ -126,22 +104,29 @@
   
   export default {
     name: 'Navigation',
+
+    components: {
+      RegistrationForm,
+      LoginForm,
+    },
+
     data: function () {
       return {
         logged_in: false,
-        login: "pass",
+        login: "",
         SideLinksList: [
           {id: 0, text: 'Главное', href: '/', icon: 'fas fa-fw fa-home'},
           {id: 1, text: 'Новое', href: 'new', icon: 'fas fa-fw fa-fire'},
           {id: 2, text: 'Выбор редакции', href: '#', icon: 'fas fa-fw fa-trophy'},
         ],
+        reg_loading: false,
+        reg_finished: false,
       }
     },
     
     created: function () {
+      var temp_login = Cookies.get("login");
       let vm = this;
-      let temp_login = Cookies.get("login");
-      console.log('loggggg', temp_login);
       if (temp_login) {
         vm.login = temp_login;
         vm.logged_in = true;
@@ -149,156 +134,46 @@
     },
     
     methods: {
-      register: function (evt) {
-        evt.preventDefault();
-        let vm = this;
-        vm.$refs.reg_result_fail.show = false;
-        vm.$refs.reg_result_success.show = false;
-        let new_account_name = document.getElementById("login-reg").value;
-        let email = document.getElementById("email-reg").value;
-        let pswd = document.getElementById("pswd-reg").value;
-        let beta_key = document.getElementById("beta-key-reg").value;
-        
-        
-        //check correct
-        let accounts = [new_account_name];
-        golos.api.getAccounts(accounts, function (err, result) {
-          if (!err) {
-            if (!result.length) {
-              let newKeys = golos.auth.generateKeys(new_account_name, pswd, ['owner', 'active', 'posting', 'memo']);
-              console.log('newKeys:', newKeys);
-              
-              let xhr = new XMLHttpRequest();
-              xhr.open("POST", "https://viboard.me:3000", true);
-              xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-              let send_req = "purpose=add&new_account_name=" + new_account_name + "&owner=" + newKeys.owner + "&active=" + newKeys.active
-                + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email + "&beta_key=" + beta_key;
-              xhr.send(send_req);
-              xhr.onreadystatechange = function () {
-                console.log("readyState:", xhr.readyState);
-                // 4 = DONE
-                if (xhr.readyState == 4) {
-                  console.log("answer:", xhr.responseText);
-                  if (xhr.responseText == "(0) Now confirm email") {
-                    vm.$refs.reg_result_success.show = true;
-                    vm.$refs.reg_result_fail.show = false;
-                    // Cookies.set("login", new_account_name);
-                    let roles = ['posting'];
-                    let keys = golos.auth.getPrivateKeys(new_account_name, pswd, roles);
-                    
-                    
-                    console.log("newKeys.posting:", keys.posting);
-                    Cookies.set("posting_private", keys.posting);
-                    // setTimeout(function() { vm.$refs.signup_modal.hide() } , 500);
-                    // vm.login = new_account_name;
-                    // vm.logged_in = true;
-                  } else {
-                    vm.$refs.reg_result_success.show = false;
-                    vm.$refs.reg_result_fail.show = true;
-                  }
-                }
-              }
-            } else {
-              console.log("Логин занят!");
-            }
-          }
-          else console.error(err);
-        });
-        
-        // \check correct
-        
-        // request.post({url:'https://viboard.me:3000/', form: {my_key:'edited_value'}}, function(err,httpResponse,body){ /* ... */ })
+      call_register: function (evt) {
+        var vm = this;
+        if (!vm.reg_finished) {
+          vm.reg_loading = true;
+          evt.preventDefault();
+          vm.$refs.registration_form.register();
+        }
+      },
+
+      register_success: function() {
+        var vm = this;
+        vm.$refs.signup_modal.busy = false;
+        vm.reg_loading = false;
+        vm.reg_finished = true;
+      },
+
+      register_fail: function() {
+        var vm = this;
+        vm.reg_loading = false;
+        vm.reg_ok_title = "Зарегистрироваться";
       },
       
-      signout: function () {
+      call_login: function(evt) {
+        evt.preventDefault();
+        var vm = this;
+        vm.$refs.login_form.login();
+      },
+
+      login_success: function() {
+        var vm = this;
+        vm.$refs.login_modal.hide()
+        vm.logged_in = true;
+        vm.login = Cookies.get("login");
+      },
+
+      signout: function() {
         Cookies.remove("login");
         Cookies.remove("posting_private");
         this.logged_in = false;
-      },
-      
-      nickname_click: function () {
-        let videolist = document.getElementsByClassName("videofoo");
-        console.log("wqefsgdfd");
-        for (let i = 0; i < videolist.length; i++) {
-          videolist[i].style.height = 9 / 16 * videolist[i].offsetWidth;
-          console.log(videolist[i].style.height, videolist[i].offsetWidth);
-        }
-      },
-      
-      auth: function (evt) {
-        evt.preventDefault();
-        let vm = this;
-        vm.$refs.auth_result_fail.show = false;
-        vm.$refs.auth_result_success.show = false;
-        let login = document.getElementById("login-name").value;
-        let password = document.getElementById("login-pass").value;
-        let remember_me = document.getElementById("remember-me").checked;
-        
-        let accounts = [login];
-        golos.api.getAccounts(accounts, function (err, result) {
-          console.log(err, result);
-          if (!err) {
-            result.forEach(function (item) {
-              let postingPubkey = item.posting.key_auths[0][0];
-              //console.log('getAccounts', item.posting); // Костыль?
-              
-              let verifyResult = false;
-              // If posting privkey
-              if (golos.auth.isWif(password)) {
-                if (golos.auth.wifToPublic(password) == postingPubkey) {
-                  Cookies.set("posting_private", password);
-                  verifyResult = true;
-                }
-              }
-              // Main Password
-              else {
-                let auths = {posting: [[postingPubkey]]};
-                verifyResult = golos.auth.verify(login, password, auths);
-                console.log('verify', verifyResult);
-                let roles = ['posting'];
-                let keys = golos.auth.getPrivateKeys(login, password, roles);
-                if (verifyResult) {
-                  Cookies.set("posting_private", keys.posting);
-                }
-              }
-              
-              if (verifyResult) {
-                vm.$refs.auth_result_success.show = true;
-                vm.$refs.auth_result_fail.show = false;
-                Cookies.set("login", login);
-                setTimeout(function () {
-                  vm.$refs.login_modal.hide()
-                }, 500);
-                vm.login = login;
-                vm.logged_in = true;
-              } else {
-                console.log(123);
-                vm.$refs.auth_result_success.show = false;
-                vm.$refs.auth_result_fail.show = true;
-              }
-            });
-          }
-          else console.error(err);
-        });
-        
-        // var roles = ['owner', 'active', 'posting', 'memo'];
-        // var keys = golos.auth.getPrivateKeys(login, password, roles);
-        // console.log('getPrivateKeys', keys);
-        //
-        // var resultWifToPublic = golos.auth.wifToPublic(keys.posting, keys.postingPubkey);
-        // console.log('wifToPublic', resultWifToPublic);
-        
-        // var roles = ['owner', 'active', 'posting', 'memo'];
-        // console.log(login, password, remember_me);
-        // var pkey = golos.auth.getPrivateKeys(login, password, roles);
-        // console.log('postingPubkey', pkey);
-        // var resultWifIsValid = golos.auth.wifIsValid(pkey['posting'], pkey['postingPubkey']);
-        // console.log('wifIsValid', resultWifIsValid);
-        
-        
       }
-      
-      
     }
   }
 </script>
