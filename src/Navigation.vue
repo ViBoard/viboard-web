@@ -7,7 +7,7 @@
       <b-navbar-brand class="navbar-brand" href="/">
         <img height="30">
       </b-navbar-brand>
-      
+
       <b-navbar-toggle class="ml-auto" target="nav_collapse"></b-navbar-toggle>
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav class="ml-auto" v-if="logged_in">
@@ -36,9 +36,9 @@
             </a>
           </div>
         </b-navbar-nav>
-      
+
       </b-collapse>
-      
+
       <b-modal id="signup_modal"
                ref="signup_modal"
                title="Регистрация"
@@ -52,7 +52,7 @@
                           @register_success="register_success"
                           @register_fail="register_fail"/>
       </b-modal>
-      
+
       <b-modal id="login_modal"
                ref="login_modal"
                title="Вход"
@@ -92,7 +92,7 @@
 
   import RegistrationForm from './RegistrationForm.vue'
   import LoginForm from './LoginForm.vue'
-  
+
   fontawesome.library.add(faHome)
   fontawesome.library.add(faFire)
   fontawesome.library.add(faTrophy)
@@ -100,9 +100,9 @@
   let Cookies = require('js-cookie');
   golos.config.set('websocket', 'wss://ws.golos.io');
   import Vue from 'vue'
-  
+
   Vue.use(BootstrapVue);
-  
+
   export default {
     name: 'Navigation',
 
@@ -124,7 +124,7 @@
         reg_finished: false,
       }
     },
-    
+
     created: function () {
       var temp_login = Cookies.get("login");
       let vm = this;
@@ -133,7 +133,7 @@
         vm.logged_in = true;
       }
     },
-    
+
     methods: {
       call_register: function (evt) {
         var vm = this;
@@ -156,7 +156,7 @@
         vm.reg_loading = false;
         vm.reg_ok_title = "Зарегистрироваться";
       },
-       
+
       call_login: function(evt) {
         evt.preventDefault();
         var vm = this;
@@ -174,6 +174,15 @@
         Cookies.remove("login");
         Cookies.remove("posting_private");
         this.logged_in = false;
+      },
+
+      nickname_click: function () {
+        var videolist = document.getElementsByClassName("videofoo");
+        console.log("wqefsgdfd");
+        for (var i = 0; i < videolist.length; i++) {
+          videolist[i].style.height = 9 / 16 * videolist[i].offsetWidth;
+          console.log(videolist[i].style.height, videolist[i].offsetWidth);
+        }
       }
     }
   }
@@ -186,11 +195,11 @@
     top: 8px;
     transform: translateX(-50%);
   }
-  
+
   .fas {
     margin-right: 3em;
   }
-  
+
   #header {
     -webkit-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
     -moz-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);

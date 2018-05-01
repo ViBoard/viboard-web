@@ -7,6 +7,7 @@ import Embed from './Embed.vue'
 import Landing from './Landing.vue'
 import Confirm from './Confirm.vue'
 import FAQ from './FAQ.vue'
+import Personal from './Personal.vue'
 
 // пути к страницам
 const routes = {
@@ -17,7 +18,8 @@ const routes = {
   '/embed': Embed,
   '/': Index,
   '/confirm' : Confirm,
-  '/FAQ' : FAQ
+  '/FAQ' : FAQ,
+  '/personal': Personal
 };
 
 
