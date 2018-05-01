@@ -3,7 +3,7 @@ export const parseBody = {
     parseBody: function (body) {
       let regexp = RegExp('<img src="(.*)" alt="(.*)"');
       let parsed = regexp.exec(body);
-      let regexpDescription = RegExp('<a.*>.*</a><p>([^]*)</p>');
+      let regexpDescription = RegExp('<a.*>.*</a>([^]*)');
       let parsedDescription = regexpDescription.exec(body);
       console.log("pd:", parsedDescription)
       if (!parsed) {
