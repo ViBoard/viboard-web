@@ -19,7 +19,7 @@
         :permlink="permlink"
       />
       <Similar/>
-      <div class="video-description">{{description}}</div>
+      <div class="video-description" id="vid-descr"></div>
       <Comments id="comments"
                 :author="author"
                 :permlink="permlink"
@@ -76,8 +76,6 @@
         customControls: ``,
         tags: [],
         contentGot: false,
-        
-        
         ap: false,
         muted: false,
         controls: true,
@@ -109,6 +107,21 @@
       }, 100);
       
       console.log(vm.src, vm.ap)
+      let i = 0;
+      while (i < vm.description) {
+        let node = undefined;
+        if (vm.description[i].substring(0, 2) == "<a") {
+          node = document.createElement("a");
+          node.href = vm.description[i + 1];
+          let textnode = document.createTextNode(vm.description[i + 2]);
+          node.appendChild(textnode);
+        } else {
+          node = document.createTextNode(vm.description[i]);
+          
+        }
+        
+        document.getElementById("vid-descr").appendChild(node);
+      }
     }
   }
 </script>

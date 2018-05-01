@@ -11,6 +11,7 @@ export const getVideoContent = {
           console.log("parsed:", parsed);
           vm.previewSrc = parsed.previewSrc;
           vm.description = parsed.description;
+
           console.log(vm.previewSrc);
           vm.src = "https://ipfs.io/ipfs/" + parsed.ipfs_id;
           vm.videos.push({src: vm.src, format: 'mp4'});
