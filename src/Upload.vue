@@ -295,7 +295,7 @@
                 var verifyResult = golos.auth.verify(login, password, auths);
                 console.log('ver_res', verifyResult);
                 var wif = password;
-                var parentPermlink = 'videotest';
+                var parentPermlink = 'viboard-videos';
                 var author = login;
                 var permlink = video_hash.toLowerCase() + Date.now();
                 var title = vm.title
