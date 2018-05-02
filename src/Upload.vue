@@ -144,8 +144,17 @@
     methods: {
       set_preview_url: function() {
         var vm = this;
-        vm.video_src = URL.createObjectURL(vm.videofile);
-        vm.show_previews_row = true;
+        vm.$refs.errors.show = false;
+        vm.video_src = "";
+        vm.show_previews_row = false;
+        var mimeType = vm.videofile.type;
+        if (mimeType.split('/')[0]=='video') {
+          vm.video_src = URL.createObjectURL(vm.videofile);
+          vm.show_previews_row = true;
+        } else {
+          vm.$refs.errors.show = true;
+          vm.message = "Неподдерживаемый формат видео";
+        }
        },
 
       generate_previews: function(is_random) {
@@ -171,8 +180,18 @@
 
       choose_preview_file: function() {
         var vm = this;
-        vm.preview_file_chosen = true;
-        vm.preview_url = URL.createObjectURL(vm.imgfile); 
+        vm.$refs.errors.show = false;
+        vm.preview_file_chosen = false;
+
+        var mimeType = vm.imgfile.type;
+        if (mimeType.split('/')[0]=='image') {
+           vm.preview_file_chosen = true;
+           vm.preview_url = URL.createObjectURL(vm.imgfile); 
+        } else {
+          vm.$refs.errors.show = true;
+          vm.message = "Неподдерживаемый формат изображения";
+        }
+
       },
  
       upload: function () {
@@ -185,12 +204,6 @@
 
         vm.message = "";
 
-        if (!vm.title) {
-          vm.$refs.errors.show = true;
-          vm.message = "Название не может быть пустым";
-          return;
-        }
-
         if (!vm.video_src) {
           vm.$refs.errors.show = true;
           vm.message = "Необходимо выбрать превью"
@@ -200,6 +213,12 @@
         if (!vm.preview_url) {
           vm.$refs.errors.show = true;
           vm.message = "Необходимо выбрать превью"
+          return;
+        }
+
+        if (!vm.title) {
+          vm.$refs.errors.show = true;
+          vm.message = "Название не может быть пустым";
           return;
         }
 
