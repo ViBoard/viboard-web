@@ -18,7 +18,7 @@
         :author="author"
         :permlink="permlink"
       />
-      <Similar/>
+      <Similar ref="similar"/>
       <div class="video-description" id="vid-descr"></div>
       <Comments id="comments"
                 :author="author"
@@ -97,7 +97,7 @@
       let whileCheck = setInterval(function () {
         if (vm.contentGot) {
           console.log("this", vm.tags, vm.author);
-          Similar.kekule(vm.tags, vm.author);
+          vm.$refs.similar.kekule(vm.tags, vm.author);
           
           let i = 0;
           while (i < vm.description.length) {

@@ -1,7 +1,7 @@
 <template>
   <div id="similar-videos">
     <h3>Похожее</h3>
-    <div>
+    <div style="width:25%">
       <video-block
         v-for="item in videosList"
         :author="item.author"
@@ -19,6 +19,9 @@
 
 <script>
   import VideoBlock from './VideoBlock.vue'
+  import {getVideoContent} from './getVideoContent.js'
+  import {parseBody} from './parseBody.js'
+  import {beneficiaries} from "./beneficiaries";
   
   let golos = require('golos-js');
   
@@ -28,10 +31,7 @@
     data: function () {
       return {
         videosList: [],
-        videosCount: 5,
-        totalSelect: 10,
-        selectByAuthor: 3,
-        selectByTags: 7
+        
       }
     },
     
@@ -39,76 +39,102 @@
       VideoBlock,
     },
     
-    kekule: function (tags, author) {
-      let vm = this;
-      let videosListTotal = [];
-      
-      let videos_added = 0;
-      console.log("Similar tags:", tags, author);
-      let query = {
-        select_tags: ['viboard-videos'],
-        limit: vm.videosCount * 3,
-      };
-      golos.api.getDiscussionsByTrending(query, function (err, result) {
-        if (!err) {
-          for (let i = 0; i < result.length; ++i) {
-            let v = result[i];
-            if (vm.parseBody(v.body)) {
-              videosListTotal.push({id: i, permlink: v.permlink, author: v.author});
-              videos_added++;
-            }
-            if (videos_added == vm.selectByTags) {
-              break
-            }
-          }
-        }
-      });
-      
-      videos_added = 0;
-      query = {
-        select_authors: [author],
-        limit: vm.videosCount * 3,
-      };
-      golos.api.getDiscussionsByBlog(query, function (err, result) {
-        if (!err) {
-          for (let i = 0; i < result.length; ++i) {
-            let v = result[i];
-            if (vm.parseBody(v.body)) {
-              videosListTotal.push({id: i, permlink: v.permlink, author: v.author});
-              videos_added++;
-            }
-            if (videos_added == vm.selectByAuthor) {
-              break
-            }
-          }
-        }
-      });
-      console.log(videosListTotal);
-      
-      function shuffle(array) {
-        var currentIndex = array.length, temporaryValue, randomIndex;
+    mixins: [parseBody, getVideoContent, beneficiaries],
+    
+    methods: {
+      kekule: function (tags, author) {
+        let videosCount = 5;
+        let totalSelect = 10;
+        let selectByAuthor = 3;
+        let selectByTags = 7;
+        let vm = this;
+        let videosListTotal = [];
         
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
+        let getPromise = new Promise((resolve, reject) => {
+          let videos_added_tag = 0;
+          console.log("Similar tags:", tags, author);
+          let queryTag = {
+            select_tags: tags,
+            limit: selectByTags * 3,
+          };
+          golos.api.getDiscussionsByTrending(queryTag, function (err, result) {
+            if (!err) {
+              console.log("Tags:", result);
+              for (let i = 0; i < result.length; ++i) {
+                let v = result[i];
+                if (vm.parseBody(v.body) && vm.beneficiaries(v)) {
+                  videosListTotal.push({id: i, permlink: v.permlink, author: v.author});
+                  videos_added_tag++;
+                }
+                if (videos_added_tag == selectByTags) {
+                  break
+                }
+              }
+              
+              let videos_added_author = 0;
+              let queryAuthor = {
+                select_authors: [author],
+                limit: selectByAuthor * 3,
+              };
+              golos.api.getDiscussionsByBlog(queryAuthor, function (err, result) {
+                if (!err) {
+                  console.log("Author:", result);
+                  for (let i = 0; i < result.length; ++i) {
+                    let v = result[i];
+                    if (vm.parseBody(v.body) && vm.beneficiaries(v)) {
+                      videosListTotal.push({id: i, permlink: v.permlink, author: v.author});
+                      videos_added_author++;
+                    }
+                    if (videos_added_author == selectByAuthor) {
+                      break
+                    }
+                  }
+                  resolve();
+                } else {
+                  console.log(err);
+                  reject(err)
+                }
+              });
+            } else {
+              console.log(err);
+              reject(err)
+            }
+          });
           
-          // Pick a remaining element...
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex -= 1;
           
-          // And swap it with the current element.
-          temporaryValue = array[currentIndex];
-          array[currentIndex] = array[randomIndex];
-          array[randomIndex] = temporaryValue;
-        }
+        });
+        getPromise.then((successMessage) => {
+          console.log("successMessage:", successMessage);
+          console.log("before:", videosListTotal);
+          
+          function shuffle(array) {
+            let currentIndex = array.length, temporaryValue, randomIndex;
+            
+            // While there remain elements to shuffle...
+            while (0 !== currentIndex) {
+              
+              // Pick a remaining element...
+              randomIndex = Math.floor(Math.random() * currentIndex);
+              currentIndex -= 1;
+              
+              // And swap it with the current element.
+              temporaryValue = array[currentIndex];
+              array[currentIndex] = array[randomIndex];
+              array[randomIndex] = temporaryValue;
+            }
+            
+            return array;
+          }
+          
+          videosListTotal = shuffle(videosListTotal);
+          
+          for (let i = 0; i < videosCount; ++i) {
+            vm.videosList.push(videosListTotal[i]);
+          }
+          console.log("after:", vm.videosList);
+          
+        });
         
-        return array;
-      }
-      
-      videosListTotal = shuffle(videosListTotal);
-      console.log(videosListTotal);
-      
-      for (let i = 0; i < vm.videosCount; ++i) {
-        vm.videosList.push(videosListTotal[i]);
       }
     }
   }
