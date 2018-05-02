@@ -9,14 +9,14 @@
           </b-form-group>
 
          <b-form-group v-if="show_previews_row" label="Превью:">
-           <div v-if="!preview_file">
+           <div v-if="!preview_file_chosen">
              <table>
                <tr>
                  <td v-for="i in n_previews" style="padding: 0.2em">
-                   <video :class="{'embed-responsive': true, 'focused': preview_chosen == i - 1}" 
+                   <video :class="{'embed-responsive': true, 'focused': preview_frame_chosen == i - 1}" 
                           tabindex="0" 
                           :src="video_src"
-                          @click="preview_chosen = i - 1"
+                          @click="choose_preview_frame(i - 1)"
                           @loadedmetadata="generate_previews(false)"
                           :ref="'preview' + (i - 1)">
                    </video>
@@ -29,25 +29,24 @@
                <b-form-file placeholder="Выбрать файл..." 
                             id="img-file" 
                             type="file" 
-                            @input="preview_file_chosen"
+                            @input="choose_preview_file"
                             v-model="imgfile"/>
              </div>
            </div>
            <div v-else>
-              <b-img :src="preview_file" class="embed-responsive"></b-img>
+              <b-img :src="preview_url" class="embed-responsive"></b-img>
               <div class="d-flex align-items-center" style="margin-top: 0.7em">
                 <b-button variant="outline-dark" @click="preview_file = null">Выбрать кадр</b-button>
                 <div style="margin-right: 0.5em; margin-left: 0.5em"> или </div>
                 <b-form-file placeholder="Выбрать файл..." 
                             id="img-file" 
                             type="file" 
-                            @input="preview_file_chosen"
+                            @input="choose_preview_file"
                             v-model="imgfile"/>
               </div>
             </div>
-            <canvas ref="canvas" style="display: none"></canvas>
           </b-form-group>
-
+          <canvas ref="canvas" style="display: none"></canvas>
           <b-form-group label="Название:">
             <b-form-input id="video-title" type="text" v-model="title"/>
           </b-form-group>
@@ -73,6 +72,25 @@
           </div>
           <b-button id="upload" v-if="!spinning" ref="upload" @click="upload" variant="dark"> Загрузить</b-button>
         </b-form>
+        <div v-if="video_src" style="margin-top: 5em; margin-bottom: 2em">
+          <h5>Как будет выглядеть пост:</h5>
+          <div class="d-flex">
+            <div>
+              <h6><strong>viboard.me</strong></h6>
+              <SinglePreview :author="login"
+                             :previewSrc="preview_url"
+                             :title="title"
+                             :description="description"/>
+            </div>
+            <div>
+              <h6><strong>golos.io</strong></h6>
+              <GolosPreview :author="login"
+                            :previewSrc="preview_url"
+                            :title="title"
+                            :description="description"/>
+            </div>
+          </div>
+        </div>
       </b-col>
     </AppInner>
   </div>
@@ -86,6 +104,8 @@
   import Navigation from './Navigation.vue'
   import AppInner from './AppInner.vue'
   import VueTagsInput from '@johmun/vue-tags-input';
+  import SinglePreview from './SinglePreview.vue';
+  import GolosPreview from './GolosPreview.vue';
 
   export default {
     name: 'app',
@@ -93,6 +113,8 @@
       Navigation,
       AppInner,
       VueTagsInput,
+      SinglePreview,
+      GolosPreview,
     },
 
     data: function () {
@@ -108,9 +130,15 @@
         n_previews: 4,
         video_src: "",
         show_previews_row: false,
-        preview_chosen: 0,
-        preview_file: false,
+        preview_frame_chosen: null,
+        preview_file_chosen: false,
+        preview_url: "",
+        login: "",
       }
+    },
+
+    created: function() {
+      this.login = Cookies.get('login');
     },
 
     methods: {
@@ -129,9 +157,22 @@
         }
       },
 
-      preview_file_chosen: function() {
+      choose_preview_frame: function(index) {
         var vm = this;
-        vm.preview_file = URL.createObjectURL(vm.imgfile); 
+        vm.preview_frame_chosen = index;
+        var canvas = vm.$refs.canvas;
+        var ctx = canvas.getContext("2d");
+        var video = vm.$refs["preview" + index][0];
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0);
+        vm.preview_url = canvas.toDataURL();
+      },
+
+      choose_preview_file: function() {
+        var vm = this;
+        vm.preview_file_chosen = true;
+        vm.preview_url = URL.createObjectURL(vm.imgfile); 
       },
  
       upload: function () {
@@ -142,10 +183,29 @@
 
         vm.$refs.errors.show = false;
 
+        vm.message = "";
+
+        if (!vm.title) {
+          vm.$refs.errors.show = true;
+          vm.message = "Название не может быть пустым";
+          return;
+        }
+
+        if (!vm.video_src) {
+          vm.$refs.errors.show = true;
+          vm.message = "Необходимо выбрать превью"
+          return;
+        }
+
+        if (!vm.preview_url) {
+          vm.$refs.errors.show = true;
+          vm.message = "Необходимо выбрать превью"
+          return;
+        }
+
         const img_reader = new FileReader();
         const video_reader = new FileReader();
 
-        vm.message = "";
         vm.spinning = true;
         img_reader.onloadend = function () {
           const video = vm.videofile;
@@ -339,13 +399,7 @@
             return;
           }
         } else {
-          var canvas = vm.$refs.canvas;
-          var ctx = canvas.getContext("2d");
-          var video = vm.$refs["preview" + vm.preview_chosen][0];
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          ctx.drawImage(video, 0, 0);
-          canvas.toBlob(function(blob) {
+          vm.$refs.canvas.toBlob(function(blob) {
             img_reader.readAsArrayBuffer(blob);
           });
         }
