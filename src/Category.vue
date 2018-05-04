@@ -5,6 +5,7 @@
       <video-block
         v-for="item in videosList"
         :author="item.author"
+        :link="item.link"
         :permlink="item.permlink"
         :ap="ap"
         :muted="true"
@@ -22,7 +23,7 @@
   import {parseBody} from './parseBody.js'
 
   let golos = require('golos-js');
-
+  let Cookies = require('js-cookie');
   export default {
     name: 'Category',
 
@@ -41,7 +42,8 @@
             'hot',
             'trending',
             'new',
-            'personal'
+            'personal',
+            'lenta'
           ].indexOf(value) !== -1
         },
       },
@@ -112,7 +114,12 @@
                 if (v.beneficiaries[0].account == "viboard" && v.beneficiaries[0].weight >= 1000) {
                   console.log("norm")
                   if (vm.parseBody(v.body)) {
-                    vm.videosList.push({id: i, permlink: v.permlink, author: v.author})
+                    vm.videosList.push({
+                      id: i,
+                      permlink: v.permlink,
+                      author: v.author,
+                      link: "/personal?author=" + v.author
+                    });
                     videos_added++;
                   }
                   if (videos_added == vm.nVideos) {
@@ -132,7 +139,12 @@
             for (var i = 0; i < result.length; ++i) {
               var v = result[i];
               if (vm.parseBody(v.body)) {
-                vm.videosList.push({id: i, permlink: v.permlink, author: v.author})
+                vm.videosList.push({
+                  id: i,
+                  permlink: v.permlink,
+                  author: v.author,
+                  link: "/personal?author=" + v.author
+                });
                 videos_added++;
               }
               if (videos_added == vm.nVideos) {
@@ -149,7 +161,12 @@
             for (var i = 0; i < result.length; ++i) {
               var v = result[i];
               if (vm.parseBody(v.body)) {
-                vm.videosList.push({id: i, permlink: v.permlink, author: v.author});
+                vm.videosList.push({
+                  id: i,
+                  permlink: v.permlink,
+                  author: v.author,
+                  link: "/personal?author=" + v.author
+                });
                 videos_added++;
               }
               if (videos_added == vm.nVideos) {
@@ -171,12 +188,61 @@
             for (var i = 0; i < result.length; ++i) {
               var v = result[i];
               if (vm.parseBody(v.body)) {
-                vm.videosList.push({id: i, permlink: v.permlink, author: v.author});
+                vm.videosList.push({
+                  id: i,
+                  permlink: v.permlink,
+                  author: v.author,
+                  link: "/personal?author=" + v.author
+                });
               }
             }
           }
           console.log(err);
         });
+      } else if (vm.method == "lenta") {
+
+        let temp_login = Cookies.get("login");
+        if (temp_login) {
+          let people=[];
+          let getPromise = new Promise((resolve, reject) => {
+            golos.api.getFollowing(temp_login, '', null, 100, function (err, result) {
+              if (!err) {
+                result.forEach(function (item) {
+                  if (item['what'][0] === 'blog') {
+                    people.push(item['following']);
+                  }
+                });
+                resolve();
+              }
+              else console.error("ОШИБКА АПИ ПРИ ПОЛУЧЕНИИ ПОДПИСОК", err);
+            });
+          });
+
+          getPromise.then((successMessage) => {
+            let query = {
+              select_authors: people,
+              select_tags: ['viboard-videos'],
+              limit: 100
+            };
+
+            golos.api.getDiscussionsByBlog(query, function (err, result) {
+              if (!err) {
+                for (var i = 0; i < result.length; ++i) {
+                  var v = result[i];
+                  if (vm.parseBody(v.body)) {
+                    vm.videosList.push({
+                      id: i,
+                      permlink: v.permlink,
+                      author: v.author,
+                      link: "/personal?author=" + v.author
+                    });
+                  }
+                }
+              }
+              console.log(err);
+            });
+          });
+        }
       }
     }
   }

@@ -8,7 +8,7 @@ import Landing from './Landing.vue'
 import Confirm from './Confirm.vue'
 import FAQ from './FAQ.vue'
 import Personal from './Personal.vue'
-
+import Lenta from './Lenta'
 // пути к страницам
 const routes = {
   '/index': Index,
@@ -19,7 +19,8 @@ const routes = {
   '/': Index,
   '/confirm' : Confirm,
   '/FAQ' : FAQ,
-  '/personal': Personal
+  '/personal': Personal,
+  '/lenta': Lenta
 };
 
 

@@ -15,7 +15,7 @@
             <span id="upload">Загрузить</span>
           </b-nav-item>
           <b-nav-item>
-            <span id="nickname" @click="nickname_click">{{login}}</span>
+            <a :href="link"><span id="nickname" @click="nickname_click" >{{login}}</span></a>
           </b-nav-item>
           <b-nav-item>
             <span id="signout" @click="signout">Выйти</span>
@@ -74,6 +74,14 @@
               <i :class="item.icon"></i> {{ item.text }}
             </a>
           </div>
+          <b-col id="subs">
+            <h5>Ваши подписки</h5>
+            <div v-for="item in SubsList">
+              <a class="nav-link text-dark" :href="item.href">
+                {{ item.text }}
+              </a>
+            </div>
+          </b-col>
         </b-col>
       </b-row>
     </div>
@@ -93,9 +101,9 @@
   import RegistrationForm from './RegistrationForm.vue'
   import LoginForm from './LoginForm.vue'
 
-  fontawesome.library.add(faHome)
-  fontawesome.library.add(faFire)
-  fontawesome.library.add(faTrophy)
+  fontawesome.library.add(faHome);
+  fontawesome.library.add(faFire);
+  fontawesome.library.add(faTrophy);
   let golos = require("golos-js");
   let Cookies = require('js-cookie');
   golos.config.set('websocket', 'wss://ws.golos.io');
@@ -119,18 +127,35 @@
           {id: 0, text: 'Главное', href: '/', icon: 'fas fa-fw fa-home'},
           {id: 1, text: 'Новое', href: 'new', icon: 'fas fa-fw fa-fire'},
           {id: 2, text: 'Выбор редакции', href: '#', icon: 'fas fa-fw fa-trophy'},
+          {id: 3, text: 'Лента', href: '/lenta', icon: 'fas fa-fw fa-home' }
         ],
+        SubsList: [],
         reg_loading: false,
         reg_finished: false,
+        link: ""
       }
     },
 
     created: function () {
-      var temp_login = Cookies.get("login");
+      let temp_login = Cookies.get("login");
       let vm = this;
+
       if (temp_login) {
         vm.login = temp_login;
+        vm.link = "/personal?author="+temp_login;
         vm.logged_in = true;
+
+        golos.api.getFollowing(temp_login, '', null, 100, function(err, result) {
+          if (! err) {
+            let id = 0;
+            result.forEach(function(item) {
+              if(item['what'][0] === 'blog') {
+                vm.SubsList.push({id: id, text: item['following'], href: '/personal?author=' + item['following']});
+              }
+            });
+          }
+          else console.error("ОШИБКА АПИ ПРИ ПОЛУЧЕНИИ ПОДПИСОК", err);
+        });
       }
     },
 
@@ -165,7 +190,7 @@
 
       login_success: function() {
         var vm = this;
-        vm.$refs.login_modal.hide()
+        vm.$refs.login_modal.hide();
         vm.logged_in = true;
         vm.login = Cookies.get("login");
       },
@@ -204,5 +229,9 @@
     -webkit-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
     -moz-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
     box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+  }
+
+  #subs {
+    margin-top: 2em;
   }
 </style>

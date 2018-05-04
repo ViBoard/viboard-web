@@ -2,16 +2,15 @@
   <div id="app">
     <Navigation/>
     <AppInner>
-      <img src="./assets/test_hat.jpg" id="hat" class="img-fluid">
-      <div id="header" class="info">
-          <img src="./assets/test_hat.jpg" id="avatar" class="rounded-circle">
+      <img :src="imghat" id="hat" class="img-fluid">
+      <div id="personal_header" class="info">
+          <img :src="imglogo" id="avatar" class="rounded-circle">
           <div id="info_block">
             <p id="nick">{{nickname}} </p>
             <p id="subscribers">{{subscribers}} подписчиков</p>
           </div>
-          <button type="button" class="btn btn-light btn-lg" v-if="own">Настройки</button>
-          <button type="button" class="btn btn-light btn-lg" v-if="yet && !own" v-on:click="subs(1)">Отписаться</button>
-          <button type="button" class="btn btn-light btn-lg" v-on:click="subs(0)" v-if="!yet && !own">Подписаться</button>
+          <button type="button" class="btn btn-light btn-lg butt" v-if="yet && !own" v-on:click="subs(1)">Отписаться</button>
+          <button type="button" class="btn btn-light btn-lg butt" v-on:click="subs(0)" v-if="!yet && !own">Подписаться</button>
       </div>
       <Category title=""
                 gridClass="grid-big"
@@ -45,40 +44,105 @@
         nickname: "nickname",
         subscribers: 0,
         own: false,
-        yet: false
+        yet: false,
+
+        imghat: "../data/ava.png",
+        imglogo: "../data/hat.png"
       }
     },
 
     created: function() {
-      var vm = this;
-
+      let vm = this;
       let account = url.searchParams.get("author");
       vm.nickname = account;
-
-      golos.api.getFollowCount(account, function(err, result) {
-        if (!err) {
-          vm.subscribers = result['follower_count'];
-        }
-        else console.error(err);
-      });
-
-      if (Cookies.get("login") == account) {
+      if (Cookies.get("login") === account) {
         vm.own = true
       }
 
-      golos.api.getFollowers(account, '', null, 100, function(err, result) {
-        //console.log(err, result);
-        if (! err) {
+      golos.api.getAccounts([account], function(err, result) {
+        if (!err) {
           result.forEach(function(item) {
-            console.log('getFollowers', item);
-            if(item['follower'] == Cookies.get("login")) {
-              console.log(item['follower'], " ", Cookies.get("login") );
-              vm.yet = true;
+            if (item['json_metadata'] !== "") {
+              function tryImage(URL) {
+                let tester = new Image();
+                tester.onerror=imageNotFound();
+                tester.src=URL;
+              }
+
+              function imageNotFound() {
+                vm.imglogo = "../data/hat.png";
+              }
+
+              let obj = JSON.parse(item['json_metadata']);
+              if(obj['profile']['cover_image'] !== undefined) {
+                if(obj['profile']['cover_image'] !== "") {
+                  try {
+                    vm.imghat = obj['profile']['cover_image'];
+                    tryImage(obj['profile']['profile_image']);
+                  }
+                  catch (e) {
+                    console.log("ОШИБКА ЗАГРУЗКИ ШАПКИ", e);
+                  }
+                }
+              }
+              if(obj['profile']['profile_image'] !== undefined) {
+                if(obj['profile']['profile_image'] !== "") {
+                  try {
+                    vm.imglogo = obj['profile']['profile_image'];
+                    tryImage(obj['profile']['profile_image']);
+                  }
+                  catch (e) {
+                    console.log("ОШИБКА ЗАГРУЗКА АВАТАРКИ", e);
+                  }
+                }
+              }
             }
           });
         }
-        else console.error(err);
+        else console.error("ОШИБКА АПИ ПРИ ПОЛУЧЕНИИ ДАННЫХ ПОЛЬЗОВАТЕЛЯ", err);
       });
+
+      let num = 0;
+      let getPromise = new Promise((resolve, reject) => {
+        golos.api.getFollowCount(account, function (err, result) {
+          if (!err) {
+            vm.subscribers = result['follower_count'];
+            num = result['follower_count'];
+            resolve();
+          }
+          else {
+            console.error("ОШИБКА АПИ ПРИ ПОЛУЧЕНИИ КОЛИЧЕСТВА ПОЛЬЗОВАТЕЛЕЙ", err);
+            reject(err);
+          }
+        });
+      });
+
+      let BreakException = {};
+      getPromise.then((successMessage) => {
+        let last = '';
+        for (let i = 0, p = Promise.resolve(); i < num; i+= 100) {
+          p = p.then((successMessage) => new Promise(resolve => {
+              golos.api.getFollowers(account, last, null, 100, function (err, result) {
+                last=result[result.length-1]['follower'];
+                if (!err) {
+                  try {
+                    result.forEach(function (item) {
+                      if (item['follower'] === Cookies.get("login") && item['what'][0] === 'blog') {
+                        vm.yet = true;
+                        throw BreakException;
+                      }
+                    });
+                    resolve();
+                  } catch (e) {
+                    if (e !== BreakException) throw e;
+                  }
+                }
+                else console.error("ОШИБКА АПИ ПРИ ПОЛУЧЕНИИ ПОДПИСЧИКОВ", err);
+              });
+            }
+          ));
+        }
+      })
     },
 
     methods: {
@@ -89,7 +153,7 @@
           const following = url.searchParams.get("author");
           const wif = Cookies.get("posting_private");
           let json;
-          if(flag==0) {
+          if(flag===0) {
             json = JSON.stringify(
               ['follow', {
                 follower: follower,
@@ -107,23 +171,27 @@
               }]
             );
           }
-          golos.broadcast.customJson(
-            wif,[],[follower],
-            'follow',
-            json,
-            (err,result)=> {
-              console.log(err,result);
-            }
-          );
 
-          console.log('before ', vm.yet);
-          vm.yet = !vm.yet;
-          console.log('after ', vm.yet);
+          let getPromise = new Promise((resolve, reject) => {
+            golos.broadcast.customJson(
+              wif,[],[follower],
+              'follow',
+              json,
+              (err,result)=> {
+                resolve();
+              }
+            );
+          });
+
+          getPromise.then((successMessage) => {
+            vm.yet = !vm.yet;
+            location.reload();
+          });
         }
         else {
           alert("Сначала войдите!");
         }
-      }
+      },
     }
   }
 
@@ -134,6 +202,12 @@
   #hat {
     height: 20%;
     width: 100%;
+  }
+
+  #personal_header {
+    -webkit-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+    -moz-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+    box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
   }
 
   .info {
@@ -162,7 +236,7 @@
     font-size: 1.25em;
   }
 
-  .btn {
+  .butt {
     flex: 10%;
     margin-top: 0.4em;
     margin-right: 30px;

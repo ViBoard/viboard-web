@@ -8,10 +8,10 @@
                   :muted="muted"
                   :controls="customControls"
                   :crossorigin="true"/>
-      
+
       <div class="video-header"> {{ title }}</div>
       <div class="video-info">
-        <div class="video-author"> {{ author }}</div>
+        <a :href="link"><div class="video-author"> {{ author }}</div></a>
         <div class="video-total"> {{ total }}</div>
       </div>
       <Upvotes
@@ -34,7 +34,7 @@
   import {PlyrVideo} from 'vue-plyr'
   import {getVideoContent} from './getVideoContent.js'
   import {parseBody} from './parseBody.js'
-  
+
   import AppInner from './AppInner.vue'
   import VideoBlock from './VideoBlock.vue'
   import Navigation from './Navigation.vue'
@@ -42,12 +42,12 @@
   import 'bootstrap-vue/dist/bootstrap-vue.css'
   import BootstrapVue from 'bootstrap-vue'
   import Vue from 'vue'
-  
+
   Vue.use(BootstrapVue);
-  
+
   export default {
     name: 'app',
-    
+
     components: {
       Comments,
       Upvotes,
@@ -56,12 +56,13 @@
       Navigation,
       AppInner,
     },
-    
+
     mixins: [parseBody, getVideoContent],
-    
+
     data: function () {
       return {
         author: "",
+        link: "",
         permlink: "",
         src: "",
         previewSrc: "",
@@ -69,24 +70,25 @@
         total: "",
         videos: [],
         customControls: ``,
-        
-        
+
+
         ap: false,
         muted: false,
         controls: true,
       };
     },
-    
+
     computed: {
       getHref: function () {
         return 'watch?v=' + this.permlink + '&a=' + this.author
       }
     },
-    
+
     created: function () {
       let vm = this;
       let queries = queryString.parse(location.search);
       vm.author = queries.a;
+      vm.link = "/personal?author="+queries.a;
       vm.permlink = queries.v;
       vm.getVideoContent(vm);
       console.log(vm.src, vm.ap)
@@ -100,26 +102,26 @@
     font-size: 1.1em;
     margin-top: 0.3em;
   }
-  
+
   .video-info {
     font-size: 0.9em;
     color: #888;
   }
-  
+
   .video-info div {
     margin: 0;
     padding: 0;
     margin-top: 0.25em;
   }
-  
+
   .plyr--video {
     width: 70%;
   }
-  
+
   #comments {
     margin-top: 3em;
   }
-  
+
   video {
     width: 100%;
     height: 80%;
