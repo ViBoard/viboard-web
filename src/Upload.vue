@@ -140,7 +140,7 @@
     created: function() {
       this.login = Cookies.get('login');
     },
-
+    
     methods: {
       set_preview_url: function() {
         var vm = this;
@@ -403,7 +403,6 @@
 
           };
         };
-
         var img;
         if (vm.preview_file) {
           img = vm.imgfile;
@@ -428,6 +427,36 @@
 </script>
 
 <style>
+  #app {
+    padding-top: 4em;
+  }
+
+  #box {
+    padding-top: 4em;
+    height: 100%;
+    margin-left: 10%;
+    margin-right: 10%;
+    background: #ffffff;
+  }
+
+  #main {
+    height: 50%;
+    width: 50%;
+    margin-left: 25%;
+    align-content: center;
+
+  }
+
+  .input-title {
+    display: block;
+    margin-top: 1em;
+    font-size: 1.5em;
+  }
+
+  #video-file, #img-file {
+    margin-top: 0.75em;
+  }
+
   .focused {
     border-color: #80bdff;
     box-shadow: 0 0 0 0.4rem rgba(0, 123, 255, 0.4);

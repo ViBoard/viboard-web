@@ -7,7 +7,7 @@
       <b-navbar-brand class="navbar-brand" href="/">
         <img height="30">
       </b-navbar-brand>
-      
+
       <b-navbar-toggle class="ml-auto" target="nav_collapse"></b-navbar-toggle>
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav class="ml-auto" v-if="logged_in">
@@ -15,7 +15,7 @@
             <span id="upload">Загрузить</span>
           </b-nav-item>
           <b-nav-item>
-            <span id="nickname" @click="nickname_click">{{login}}</span>
+            <a :href="link"><span id="nickname" @click="nickname_click" >{{login}}</span></a>
           </b-nav-item>
           <b-nav-item>
             <span id="signout" @click="signout">Выйти</span>
@@ -36,9 +36,9 @@
             </a>
           </div>
         </b-navbar-nav>
-      
+
       </b-collapse>
-      
+
       <b-modal id="signup_modal"
                ref="signup_modal"
                title="Регистрация"
@@ -52,7 +52,7 @@
                           @register_success="register_success"
                           @register_fail="register_fail"/>
       </b-modal>
-      
+
       <b-modal id="login_modal"
                ref="login_modal"
                title="Вход"
@@ -73,6 +73,14 @@
               <i :class="item.icon"></i> {{ item.text }}
             </a>
           </div>
+          <b-col id="subs">
+            <h5>Ваши подписки</h5>
+            <div v-for="item in SubsList">
+              <a class="nav-link text-dark" :href="item.href">
+                {{ item.text }}
+              </a>
+            </div>
+          </b-col>
         </b-col>
       </b-row>
     </div>
@@ -91,17 +99,17 @@
 
   import RegistrationForm from './RegistrationForm.vue'
   import LoginForm from './LoginForm.vue'
-  
-  fontawesome.library.add(faHome)
-  fontawesome.library.add(faFire)
-  fontawesome.library.add(faTrophy)
+
+  fontawesome.library.add(faHome);
+  fontawesome.library.add(faFire);
+  fontawesome.library.add(faTrophy);
   let golos = require("golos-js");
   let Cookies = require('js-cookie');
   golos.config.set('websocket', 'wss://ws.golos.io');
   import Vue from 'vue'
-  
+
   Vue.use(BootstrapVue);
-  
+
   export default {
     name: 'Navigation',
 
@@ -118,21 +126,38 @@
           {id: 0, text: 'Главное', href: '/', icon: 'fas fa-fw fa-home'},
           {id: 1, text: 'Новое', href: 'new', icon: 'fas fa-fw fa-fire'},
           {id: 2, text: 'Выбор редакции', href: '#', icon: 'fas fa-fw fa-trophy'},
+          {id: 3, text: 'Лента', href: '/lenta', icon: 'fas fa-fw fa-home' }
         ],
+        SubsList: [],
         reg_loading: false,
         reg_finished: false,
+        link: ""
       }
     },
-    
+
     created: function () {
-      var temp_login = Cookies.get("login");
+      let temp_login = Cookies.get("login");
       let vm = this;
+
       if (temp_login) {
         vm.login = temp_login;
+        vm.link = "/personal?author="+temp_login;
         vm.logged_in = true;
+
+        golos.api.getFollowing(temp_login, '', null, 100, function(err, result) {
+          if (! err) {
+            let id = 0;
+            result.forEach(function(item) {
+              if(item['what'][0] === 'blog') {
+                vm.SubsList.push({id: id, text: item['following'], href: '/personal?author=' + item['following']});
+              }
+            });
+          }
+          else console.error("ОШИБКА АПИ ПРИ ПОЛУЧЕНИИ ПОДПИСОК", err);
+        });
       }
     },
-    
+
     methods: {
       call_register: function (evt) {
         var vm = this;
@@ -164,7 +189,7 @@
 
       login_success: function() {
         var vm = this;
-        vm.$refs.login_modal.hide()
+        vm.$refs.login_modal.hide();
         vm.logged_in = true;
         vm.login = Cookies.get("login");
       },
@@ -173,6 +198,15 @@
         Cookies.remove("login");
         Cookies.remove("posting_private");
         this.logged_in = false;
+      },
+
+      nickname_click: function () {
+        var videolist = document.getElementsByClassName("videofoo");
+        console.log("wqefsgdfd");
+        for (var i = 0; i < videolist.length; i++) {
+          videolist[i].style.height = 9 / 16 * videolist[i].offsetWidth;
+          console.log(videolist[i].style.height, videolist[i].offsetWidth);
+        }
       }
     }
   }
@@ -185,14 +219,18 @@
     top: 8px;
     transform: translateX(-50%);
   }
-  
+
   .fas {
     margin-right: 3em;
   }
-  
+
   #header {
     -webkit-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
     -moz-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
     box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+  }
+
+  #subs {
+    margin-top: 2em;
   }
 </style>
