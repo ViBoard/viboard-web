@@ -65,7 +65,6 @@
                        @login_success="login_success"/>
       </b-modal>
     </b-navbar>
-    </b-row>
     <div class="container-fluid position-fixed d-none d-lg-block bg-light" style="padding-top: 7em; height:100%">
       <b-row>
         <b-col id="sidebar" lg="3">
@@ -181,7 +180,7 @@
         vm.reg_loading = false;
         vm.reg_ok_title = "Зарегистрироваться";
       },
-
+      
       call_login: function(evt) {
         evt.preventDefault();
         var vm = this;

@@ -18,6 +18,8 @@
         :author="author"
         :permlink="permlink"
       />
+      <Similar ref="similar"/>
+      <div class="video-description" id="vid-descr"></div>
       <Comments id="comments"
                 :author="author"
                 :permlink="permlink"
@@ -42,7 +44,8 @@
   import 'bootstrap-vue/dist/bootstrap-vue.css'
   import BootstrapVue from 'bootstrap-vue'
   import Vue from 'vue'
-
+  import Similar from './Similar.vue'
+  
   Vue.use(BootstrapVue);
 
   export default {
@@ -55,6 +58,7 @@
       VideoBlock,
       Navigation,
       AppInner,
+      Similar
     },
 
     mixins: [parseBody, getVideoContent],
@@ -67,11 +71,12 @@
         src: "",
         previewSrc: "",
         title: "",
+        description: "",
         total: "",
         videos: [],
         customControls: ``,
-
-
+        tags: [],
+        contentGot: false,
         ap: false,
         muted: false,
         controls: true,
@@ -91,6 +96,32 @@
       vm.link = "/personal?author="+queries.a;
       vm.permlink = queries.v;
       vm.getVideoContent(vm);
+      let whileCheck = setInterval(function () {
+        if (vm.contentGot) {
+          console.log("this", vm.tags, vm.author);
+          vm.$refs.similar.kekule(vm.tags, vm.author);
+          
+          let i = 0;
+          while (i < vm.description.length) {
+            let node = undefined;
+            if (vm.description[i].substring(0, 2) == "<a") {
+              node = document.createElement("a");
+              node.href = vm.description[i + 1];
+              let textnode = document.createTextNode(vm.description[i + 2]);
+              node.appendChild(textnode);
+              i+=3;
+            } else {
+              node = document.createTextNode(vm.description[i]);
+              i+=1;
+            }
+            
+            document.getElementById("vid-descr").appendChild(node);
+          }
+          clearInterval(whileCheck);
+          
+        }
+      }, 100);
+      
       console.log(vm.src, vm.ap)
     }
   }
@@ -101,6 +132,11 @@
     overflow: hidden;
     font-size: 1.1em;
     margin-top: 0.3em;
+  }
+
+  .video-description {
+    word-wrap: break-word;
+    white-space: pre-wrap;
   }
 
   .video-info {

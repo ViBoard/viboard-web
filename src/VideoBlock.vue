@@ -87,6 +87,7 @@
         total: "",
         videos: [],
         customControls: ``,
+        tags: ""
       }
     },
 
