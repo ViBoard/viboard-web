@@ -7,7 +7,8 @@ import Embed from './Embed.vue'
 import Landing from './Landing.vue'
 import Confirm from './Confirm.vue'
 import FAQ from './FAQ.vue'
-
+import Personal from './Personal.vue'
+import Lenta from './Lenta'
 // пути к страницам
 const routes = {
   '/index': Index,
@@ -17,7 +18,9 @@ const routes = {
   '/embed': Embed,
   '/': Index,
   '/confirm' : Confirm,
-  '/FAQ' : FAQ
+  '/FAQ' : FAQ,
+  '/personal': Personal,
+  '/lenta': Lenta
 };
 
 
