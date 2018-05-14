@@ -143,7 +143,9 @@
           videosListTotal = shuffle(getUnique(videosListTotal));
           
           for (let i = 0; i < videosCount; ++i) {
-            vm.videosList.push(videosListTotal[i]);
+            if (videosListTotal[i]) {
+              vm.videosList.push(videosListTotal[i]);
+            }
           }
           console.log("after:", vm.videosList);
           
