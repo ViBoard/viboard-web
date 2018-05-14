@@ -61,6 +61,7 @@
           <b-form-group>
             <b-form-input id="pswd-reg" type="password" placeholder="Пароль" name="pswd" required/>
           </b-form-group>
+	<div class="g-recaptcha" data-sitekey="6LcUeVMUAAAAAJogwdxvfVdWUuhCc6C8j2HsO4kz"></div>
         </b-form>
       </b-modal>
       
@@ -157,7 +158,6 @@
         let new_account_name = document.getElementById("login-reg").value;
         let email = document.getElementById("email-reg").value;
         let pswd = document.getElementById("pswd-reg").value;
-        let beta_key = document.getElementById("beta-key-reg").value;
         
         
         //check correct
@@ -172,7 +172,7 @@
               xhr.open("POST", "https://viboard.me:3000", true);
               xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
               let send_req = "purpose=add&new_account_name=" + new_account_name + "&owner=" + newKeys.owner + "&active=" + newKeys.active
-                + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email + "&beta_key=" + beta_key;
+                + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + email;
               xhr.send(send_req);
               xhr.onreadystatechange = function () {
                 console.log("readyState:", xhr.readyState);

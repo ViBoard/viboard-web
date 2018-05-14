@@ -18,8 +18,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 function getConfirmKey() {
-  let min = 100000000000000;
-  let max = 999999999999999;
+  let min = 1000000000000;
+  let max = 9999999999999;
   return Math.round(Math.random() * (max - min) + min);
 }
 
