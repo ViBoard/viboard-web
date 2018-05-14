@@ -180,7 +180,7 @@
         vm.reg_loading = false;
         vm.reg_ok_title = "Зарегистрироваться";
       },
-      
+
       call_login: function(evt) {
         evt.preventDefault();
         var vm = this;
@@ -192,12 +192,14 @@
         vm.$refs.login_modal.hide();
         vm.logged_in = true;
         vm.login = Cookies.get("login");
+        location.reload();
       },
 
       signout: function() {
         Cookies.remove("login");
         Cookies.remove("posting_private");
         this.logged_in = false;
+        location.reload();
       },
 
       nickname_click: function () {
