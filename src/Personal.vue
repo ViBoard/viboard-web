@@ -73,7 +73,6 @@
                 vm.imglogo = "../data/hat.png";
               }
 
-              let obj = JSON.parse(item['json_metadata']);
               if(obj['profile']['cover_image'] !== undefined) {
                 if(obj['profile']['cover_image'] !== "") {
                   try {
