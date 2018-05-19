@@ -9,19 +9,23 @@
       </b-navbar-brand>
 
       <b-navbar-toggle class="ml-auto" target="nav_collapse"></b-navbar-toggle>
-      <b-collapse is-nav id="nav_collapse">
-        <b-navbar-nav class="ml-auto" v-if="logged_in">
-          <b-nav-item href="/upload">
-            <span id="upload">Загрузить</span>
-          </b-nav-item>
-          <b-nav-item>
-            <a :href="link"><span id="nickname" @click="nickname_click" >{{login}}</span></a>
-          </b-nav-item>
-          <b-nav-item>
-            <span id="signout" @click="signout">Выйти</span>
-          </b-nav-item>
-        </b-navbar-nav>
-        <b-navbar-nav class="ml-auto" v-else>
+      <b-collapse is-nav id="nav_collapse" v-if="logged_in">
+          <b-navbar-nav>
+            <b-nav-item>
+              <a :href="link"><span id="nickname" @click="nickname_click" >{{login}}</span></a>
+            </b-nav-item>
+          </b-navbar-nav>
+          <b-navbar-nav class="ml-auto">
+            <b-nav-item class="ml-auto" href="/upload">
+              <span id="upload">Загрузить видео на golos.io</span>
+            </b-nav-item>
+            <b-nav-item class="ml-auto">
+              <span id="signout" @click="signout">Выйти</span>
+            </b-nav-item>
+          </b-navbar-nav class="ml-auto">
+      </b-collapse>
+      <b-collapse is-nav id="nav_collapse" v-else>
+        <b-navbar-nav class="ml-auto">
           <b-nav-item>
             <span id="signup" v-b-modal.signup_modal>Регистрация</span>
           </b-nav-item>
@@ -29,6 +33,8 @@
             <span id="signin" v-b-modal.login_modal>Вход</span>
           </b-nav-item>
         </b-navbar-nav>
+      </b-collapse>
+      <b-collapse is-nav id="nav_collapse"
         <b-navbar-nav class="d-lg-none">
           <div v-for="item in SideLinksList">
             <a class="nav-link text-dark" :href="item.href">
@@ -36,8 +42,8 @@
             </a>
           </div>
         </b-navbar-nav>
-
       </b-collapse>
+
 
       <b-modal id="signup_modal"
                ref="signup_modal"
@@ -180,7 +186,7 @@
         vm.reg_loading = false;
         vm.reg_ok_title = "Зарегистрироваться";
       },
-      
+
       call_login: function(evt) {
         evt.preventDefault();
         var vm = this;
@@ -232,5 +238,22 @@
 
   #subs {
     margin-top: 2em;
+  }
+
+  #upload {
+    border-radius: 10px;
+    border: 1.5px solid #0275dB;
+    color: #0c7ad9;
+    padding: 8px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  #signout {
+      border-radius: 10px;
+      border: 1.5px solid #d8d8d8;
+      padding: 8px;
+      padding-left: 30px;
+      padding-right: 30px;
   }
 </style>
