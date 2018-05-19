@@ -38,6 +38,13 @@
           {{ password_feedback }}
         </div>
       </b-form-group>
+      <b-form-group>
+        <div class="g-recaptcha" id="g-recaptcha-response" data-sitekey="6LcUeVMUAAAAAJogwdxvfVdWUuhCc6C8j2HsO4kz"></div>
+        <div class="invalid-feedback">
+          {{ captcha_feedback }}
+        </div>
+      </b-form-group>
+
     </b-form>
   </div>
 </template>
@@ -64,6 +71,7 @@
         password_is_valid: false,
         password_is_invalid: false,
         password_feedback: "",
+	captcha_feedback: ""
       }
     },
 
@@ -148,8 +156,9 @@
         try {
           xhr.open("POST", "https://viboard.me:3000", true);
           xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+          let recaptcha = document.getElementById("g-recaptcha-response").value;
           let send_req = "purpose=add&new_account_name=" + vm.username + "&owner=" + newKeys.owner + "&active=" + newKeys.active
-          + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + vm.email;
+          + "&posting=" + newKeys.posting + "&memo=" + newKeys.memo + "&email=" + vm.email + "&g-recaptcha-response=" + recaptcha;
           xhr.send(send_req);
         } catch (err) {
             vm.$emit('register_fail');
@@ -180,6 +189,8 @@
               vm.$refs.fail.show = false;
               vm.email_feedback = "Аккаунт с этим адресом уже зарегистрирован";
               vm.$emit('register_fail');
+            } else if (xhr.responseText == "(-1) Error captcha verifying") {
+              vm.captcha_feedback = "Проверка каптчи не пройдена";
             } else {
               vm.$emit('register_fail');
               vm.$refs.fail.show = true;

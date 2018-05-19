@@ -1,5 +1,6 @@
 const port = 300;
 let viboard_WIF;
+let reCAPTCHA;
 let email_password = "";
 const viboard_name = "viboard";
 
@@ -9,24 +10,39 @@ let sqlite3 = require('sqlite3').verbose();
 let express = require("express");
 const bodyParser = require("body-parser");
 const nodemailer = require('nodemailer');
+var Recaptcha = require('express-recaptcha').Recaptcha;
+var recaptcha;
+reCAPTCHA = "6LcUeVMUAAAAAMcK8p-N-4RbLJIrFuKIIc_FY_oy";
+recaptcha = new Recaptcha('6LcUeVMUAAAAAJogwdxvfVdWUuhCc6C8j2HsO4kz', reCAPTCHA);
+
 
 let db = new sqlite3.Database('email_confirmation.sqlite');
 let app = express();
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 function getConfirmKey() {
-  let min = 100000000000000;
-  let max = 999999999999999;
+  let min = 1000000000000;
+  let max = 9999999999999;
   return Math.round(Math.random() * (max - min) + min);
 }
 
-app.post("/", function (request, responce) {
+app.get('/', function(req, res){
+  res.render('login', { captcha:recaptcha.render() });
+});
+
+app.post("/", recaptcha.middleware.verify, function (request, responce) {
   responce.setHeader("Access-Control-Allow-Origin", "*");
+  //console.log(request.body);
 
   if (request.body.purpose == "add") {
+    if(!request.recaptcha.error) {
+      responce.send("(0) Captcha verified");
+    } else {
+      responce.send("(-1) Error captcha verifying");
+      return;
+    }
+
     let confirm_key = getConfirmKey();
     db.serialize(function () {
       db.get(`SELECT * FROM user_list WHERE email = '${request.body.email}'`, function (err, row) {
@@ -81,6 +97,14 @@ app.listen(port, function () {
     viboard_WIF = data.toString('utf8').trim();
     console.log("WIF got!");
   });
+  //fs.readFile("../secret_files/reCAPTCHA", ["utf8"], function (err, data) {
+  //  if (err) {
+  //    return console.log(err);
+  //  }
+  //  reCAPTCHA = data.toString('utf8').trim();
+  //  recaptcha = new Recaptcha('6LcUeVMUAAAAAJogwdxvfVdWUuhCc6C8j2HsO4kz', reCAPTCHA);
+  //  console.log("reCAPTCHA got!");
+  //});
   fs.readFile("../secret_files/info_mail_password", ["utf8"], function (err, data) {
     if (err) {
       return console.log(err);
