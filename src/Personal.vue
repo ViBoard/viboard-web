@@ -63,33 +63,45 @@
         if (!err) {
           result.forEach(function(item) {
             if (item['json_metadata'] !== "") {
-              function tryImage(URL) {
+              function tryHat(URL) {
                 let tester = new Image();
-                tester.onerror=imageNotFound();
+                tester.onerror=HatNotFound();
                 tester.src=URL;
               }
 
-              function imageNotFound() {
-                vm.imglogo = "../data/hat.png";
+              function HatNotFound() {
+                vm.imghat = "../data/hat.png";
               }
 
               let obj = JSON.parse(item['json_metadata']);
+              console.log("OBJ ",obj);
               if(obj['profile']['cover_image'] !== undefined) {
                 if(obj['profile']['cover_image'] !== "") {
                   try {
+                    tryHat(obj['profile']['cover_image']);
                     vm.imghat = obj['profile']['cover_image'];
-                    tryImage(obj['profile']['profile_image']);
                   }
                   catch (e) {
                     console.log("ОШИБКА ЗАГРУЗКИ ШАПКИ", e);
                   }
                 }
               }
+
+              function tryAva(URL) {
+                let tester = new Image();
+                tester.onerror=AvaNotFound();
+                tester.src=URL;
+              }
+
+              function AvaNotFound() {
+                vm.imglogo = "../data/ava.png";
+              }
+
               if(obj['profile']['profile_image'] !== undefined) {
                 if(obj['profile']['profile_image'] !== "") {
                   try {
+                    tryAva(obj['profile']['profile_image']);
                     vm.imglogo = obj['profile']['profile_image'];
-                    tryImage(obj['profile']['profile_image']);
                   }
                   catch (e) {
                     console.log("ОШИБКА ЗАГРУЗКА АВАТАРКИ", e);
