@@ -125,7 +125,7 @@
         SideLinksList: [
           {id: 0, text: 'Главное', href: '/', icon: 'fas fa-fw fa-home'},
           {id: 1, text: 'Новое', href: 'new', icon: 'fas fa-fw fa-fire'},
-          {id: 2, text: 'Выбор редакции', href: '#', icon: 'fas fa-fw fa-trophy'},
+          //{id: 2, text: 'Выбор редакции', href: '#', icon: 'fas fa-fw fa-trophy'},
           {id: 3, text: 'Лента', href: '/lenta', icon: 'fas fa-fw fa-home' }
         ],
         SubsList: [],
@@ -180,7 +180,7 @@
         vm.reg_loading = false;
         vm.reg_ok_title = "Зарегистрироваться";
       },
-      
+
       call_login: function(evt) {
         evt.preventDefault();
         var vm = this;
