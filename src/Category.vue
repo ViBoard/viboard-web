@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="category mb-5">
     <h3> {{ title }} </h3>
     <div :class="gridClass">
@@ -218,7 +218,6 @@
               select_tags: ['viboard-videos'],
               limit: 100
             };
-
             golos.api.getDiscussionsByBlog(query, function (err, result) {
               if (!err) {
                 for (var i = 0; i < result.length; ++i) {

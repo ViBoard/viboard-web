@@ -2,13 +2,13 @@
   <div id="app">
     <Navigation/>
     <AppInner>
+      <Similar id="simi" ref="similar"/>
       <plyr-video :poster="previewSrc"
                   :videos="this.videos"
                   :autoplay="ap"
                   :muted="muted"
                   :controls="customControls"
                   :crossorigin="true"/>
-
       <div class="video-header"> {{ title }}</div>
       <div class="video-info">
         <a :href="link"><div class="video-author"> {{ author }}</div></a>
@@ -18,6 +18,7 @@
         :author="author"
         :permlink="permlink"
       />
+
       <Similar ref="similar" :video_id="video_id"/>
       <div class="video-description" id="vid-descr"></div>
       <Comments id="comments"
@@ -159,6 +160,12 @@
 
   #comments {
     margin-top: 3em;
+  }
+
+  #simi {
+    float:right;
+    width:25%;
+    margin-right:25px;
   }
 
   video {
