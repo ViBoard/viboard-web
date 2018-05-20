@@ -30,6 +30,10 @@
       Category,
       AppInner,
     },
+
+    created: function() {
+      document.title = 'Главная';
+    }
   }
 
 </script>

@@ -2,33 +2,44 @@
   <div id="navigation">
     <b-navbar toggleable="lg" fixed="top" class="bg-white" id="header">
       <b-navbar-brand href="/" id="logo">
-        <img height="30" src="./assets/logo.jpg">
-      </b-navbar-brand>
-      <b-navbar-brand class="navbar-brand" href="/">
-        <img height="30">
+        <img height="40" src="./assets/logo.jpg">
       </b-navbar-brand>
 
+
       <b-navbar-toggle class="ml-auto" target="nav_collapse"></b-navbar-toggle>
-      <b-collapse is-nav id="nav_collapse">
-        <b-navbar-nav class="ml-auto" v-if="logged_in">
-          <b-nav-item href="/upload">
-            <span id="upload">Загрузить</span>
+      <b-collapse is-nav id="nav_collapse" v-if="logged_in">
+          <b-navbar-nav>
+            <b-navbar-brand :href="link">
+              <img :src="imglogo" height="30" id="avatar-nav" class="rounded-circle">
+            </b-navbar-brand>
+            <b-nav-item vertical class="w-100">
+              <a><span id="nickname" @click="nickname_click" >{{login}}</span></a>
+              <div class="video-total"> <b>{{ total }}</b></div>
+            </b-nav-item>
+          </b-navbar-nav>
+          <b-navbar-nav class="ml-auto">
+            <b-nav-item class="ml-auto" href="/upload">
+              <span id="nav-upload">Загрузить видео на golos.io</span>
+            </b-nav-item>
+            <b-nav-item class="ml-auto">
+              <span class="sign" @click="signout">Выйти</span>
+            </b-nav-item>
+          </b-navbar-nav class="ml-auto">
+      </b-collapse>
+      <b-collapse is-nav id="nav_collapse" v-else>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item class="ml-auto" href="/upload">
+            <span id="nav-upload">Загрузить видео на golos.io</span>
           </b-nav-item>
           <b-nav-item>
-            <a :href="link"><span id="nickname" @click="nickname_click" >{{login}}</span></a>
+            <span class="sign" v-b-modal.signup_modal>Регистрация</span>
           </b-nav-item>
           <b-nav-item>
-            <span id="signout" @click="signout">Выйти</span>
+            <span class="sign" v-b-modal.login_modal>Вход</span>
           </b-nav-item>
         </b-navbar-nav>
-        <b-navbar-nav class="ml-auto" v-else>
-          <b-nav-item>
-            <span id="signup" v-b-modal.signup_modal>Регистрация</span>
-          </b-nav-item>
-          <b-nav-item>
-            <span id="signin" v-b-modal.login_modal>Вход</span>
-          </b-nav-item>
-        </b-navbar-nav>
+      </b-collapse>
+      <b-collapse is-nav id="nav_collapse"
         <b-navbar-nav class="d-lg-none">
           <div v-for="item in SideLinksList">
             <a class="nav-link text-dark" :href="item.href">
@@ -36,8 +47,8 @@
             </a>
           </div>
         </b-navbar-nav>
-
       </b-collapse>
+
 
       <b-modal id="signup_modal"
                ref="signup_modal"
@@ -131,7 +142,9 @@
         SubsList: [],
         reg_loading: false,
         reg_finished: false,
-        link: ""
+        link: "",
+        total: "",
+        imglogo: "../data/ava.png"
       }
     },
 
@@ -156,6 +169,37 @@
             });
           }
           else console.error("ОШИБКА АПИ ПРИ ПОЛУЧЕНИИ ПОДПИСОК", err);
+        });
+
+        golos.api.getAccounts([temp_login], function(err, result) {
+          if (!err) {
+            vm.total = result[0]['balance'];
+            result.forEach(function(item) {
+              if (item['json_metadata'] !== "") {
+                function tryAva(URL) {
+                  let tester = new Image();
+                  tester.onerror=AvaNotFound();
+                  tester.src=URL;
+                }
+                function AvaNotFound() {
+                  vm.imglogo = "../data/ava.png";
+                }
+                let obj = JSON.parse(item['json_metadata']);
+                if(obj['profile']['profile_image'] !== undefined) {
+                  if(obj['profile']['profile_image'] !== "") {
+                    try {
+                      tryAva(obj['profile']['profile_image']);
+                      vm.imglogo = obj['profile']['profile_image'];
+                    }
+                    catch (e) {
+                      console.log("ОШИБКА ЗАГРУЗКА АВАТАРКИ", e);
+                    }
+                  }
+                }
+              }
+            });
+          }
+          else console.error("ОШИБКА АПИ ПРИ ПОЛУЧЕНИИ ДАННЫХ ПОЛЬЗОВАТЕЛЯ", err);
         });
       }
     },
@@ -218,7 +262,7 @@
   #logo {
     position: fixed;
     left: 50%;
-    top: 8px;
+    top: 12px;
     transform: translateX(-50%);
   }
 
@@ -230,6 +274,7 @@
     -webkit-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
     -moz-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
     box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+    height: 70px;
   }
 
   #subs {
@@ -238,5 +283,28 @@
 
   .sub {
     padding-top: 0em;
+  }
+
+  #nav-upload {
+    border-radius: 10px;
+    border: 1.5px solid #0275dB;
+    color: #0c7ad9;
+    padding: 8px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  #avatar-nav {
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+  }
+
+  .sign {
+      border-radius: 10px;
+      border: 1.5px solid #d8d8d8;
+      padding: 8px;
+      padding-left: 30px;
+      padding-right: 30px;
   }
 </style>
