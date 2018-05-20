@@ -5,6 +5,7 @@ export const getVideoContent = {
       golos.api.getContent(vm.author, vm.permlink, function (err, result) {
         if (!err) {
           vm.title = result.title;
+          vm.video_id = result.id;
           vm.total = result.pending_payout_value;
           // console.log("Tags:", JSON.parse(result.json_metadata).tags);
           let parsed = vm.parseBody(result.body);

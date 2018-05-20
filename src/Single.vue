@@ -18,7 +18,7 @@
         :author="author"
         :permlink="permlink"
       />
-      <Similar ref="similar"/>
+      <Similar ref="similar" :video_id="video_id"/>
       <div class="video-description" id="vid-descr"></div>
       <Comments id="comments"
                 :author="author"
@@ -80,6 +80,7 @@
         ap: false,
         muted: false,
         controls: true,
+        video_id: ""
       };
     },
 

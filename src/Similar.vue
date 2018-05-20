@@ -39,6 +39,11 @@
       VideoBlock,
     },
     
+    props: {
+      video_id: {
+      },
+    },
+    
     mixins: [parseBody, getVideoContent, beneficiaries],
     
     methods: {
@@ -62,7 +67,7 @@
               console.log("Tags:", result);
               for (let i = 0; i < result.length; ++i) {
                 let v = result[i];
-                if (vm.parseBody(v.body) && vm.beneficiaries(v)) {
+                if (vm.parseBody(v.body) && vm.beneficiaries(v) && v.id!=vm.video_id) {
                   videosListTotal.push({id: i, permlink: v.permlink, author: v.author});
                   videos_added_tag++;
                 }
@@ -81,7 +86,7 @@
                   console.log("Author:", result);
                   for (let i = 0; i < result.length; ++i) {
                     let v = result[i];
-                    if (vm.parseBody(v.body) && vm.beneficiaries(v)) {
+                    if (vm.parseBody(v.body) && vm.beneficiaries(v) && v.id!=vm.video_id) {
                       videosListTotal.push({id: i, permlink: v.permlink, author: v.author});
                       videos_added_author++;
                     }
