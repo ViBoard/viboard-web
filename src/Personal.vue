@@ -75,6 +75,7 @@
 
               let obj = JSON.parse(item['json_metadata']);
               console.log("OBJ ",obj);
+              
               if(obj['profile']['cover_image'] !== undefined) {
                 if(obj['profile']['cover_image'] !== "") {
                   try {
