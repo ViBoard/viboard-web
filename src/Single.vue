@@ -2,13 +2,13 @@
   <div id="app">
     <Navigation/>
     <AppInner>
+      <Similar id="simi" ref="similar"/>
       <plyr-video :poster="previewSrc"
                   :videos="this.videos"
                   :autoplay="ap"
                   :muted="muted"
                   :controls="customControls"
                   :crossorigin="true"/>
-
       <div class="video-header"> {{ title }}</div>
       <div class="video-info">
         <a :href="link"><div class="video-author"> {{ author }}</div></a>
@@ -18,7 +18,7 @@
         :author="author"
         :permlink="permlink"
       />
-      <Similar ref="similar"/>
+
       <div class="video-description" id="vid-descr"></div>
       <Comments id="comments"
                 :author="author"
@@ -45,7 +45,7 @@
   import BootstrapVue from 'bootstrap-vue'
   import Vue from 'vue'
   import Similar from './Similar.vue'
-  
+
   Vue.use(BootstrapVue);
 
   export default {
@@ -100,7 +100,7 @@
         if (vm.contentGot) {
           console.log("this", vm.tags, vm.author);
           vm.$refs.similar.kekule(vm.tags, vm.author);
-          
+
           let i = 0;
           while (i < vm.description.length) {
             let node = undefined;
@@ -114,14 +114,14 @@
               node = document.createTextNode(vm.description[i]);
               i+=1;
             }
-            
+
             document.getElementById("vid-descr").appendChild(node);
           }
           clearInterval(whileCheck);
-          
+
         }
       }, 100);
-      
+
       console.log(vm.src, vm.ap)
     }
   }
@@ -156,6 +156,12 @@
 
   #comments {
     margin-top: 3em;
+  }
+
+  #simi {
+    float:right;
+    width:25%;
+    margin-right:25px;
   }
 
   video {
