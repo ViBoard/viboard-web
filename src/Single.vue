@@ -45,7 +45,7 @@
   import BootstrapVue from 'bootstrap-vue'
   import Vue from 'vue'
   import Similar from './Similar.vue'
-  
+
   Vue.use(BootstrapVue);
 
   export default {
@@ -92,15 +92,17 @@
     created: function () {
       let vm = this;
       let queries = queryString.parse(location.search);
+
       vm.author = queries.a;
       vm.link = "/personal?author="+queries.a;
       vm.permlink = queries.v;
       vm.getVideoContent(vm);
       let whileCheck = setInterval(function () {
         if (vm.contentGot) {
+          document.title = vm.title;
           console.log("this", vm.tags, vm.author);
           vm.$refs.similar.kekule(vm.tags, vm.author);
-          
+
           let i = 0;
           while (i < vm.description.length) {
             let node = undefined;
@@ -114,14 +116,14 @@
               node = document.createTextNode(vm.description[i]);
               i+=1;
             }
-            
+
             document.getElementById("vid-descr").appendChild(node);
           }
           clearInterval(whileCheck);
-          
+
         }
       }, 100);
-      
+
       console.log(vm.src, vm.ap)
     }
   }

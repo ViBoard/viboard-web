@@ -24,6 +24,9 @@
       Category,
       AppInner,
     },
+    created: function() {
+      document.title = 'Лента';
+    }
   }
 
 </script>

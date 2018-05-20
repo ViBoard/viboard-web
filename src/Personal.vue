@@ -55,6 +55,8 @@
       let vm = this;
       let account = url.searchParams.get("author");
       vm.nickname = account;
+      document.title = account;
+
       if (Cookies.get("login") === account) {
         vm.own = true
       }
