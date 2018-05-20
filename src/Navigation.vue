@@ -74,9 +74,8 @@
             </a>
           </div>
           <b-col id="subs">
-            <h5>Ваши подписки</h5>
             <div v-for="item in SubsList">
-              <a class="nav-link text-dark" :href="item.href">
+              <a class="nav-link text-dark sub" :href="item.href">
                 {{ item.text }}
               </a>
             </div>
@@ -96,6 +95,7 @@
   import faHome from '@fortawesome/fontawesome-free-solid/faHome'
   import faFire from '@fortawesome/fontawesome-free-solid/faFire'
   import faTrophy from '@fortawesome/fontawesome-free-solid/faTrophy'
+  import faUser from '@fortawesome/fontawesome-free-solid/faUser'
 
   import RegistrationForm from './RegistrationForm.vue'
   import LoginForm from './LoginForm.vue'
@@ -103,6 +103,7 @@
   fontawesome.library.add(faHome);
   fontawesome.library.add(faFire);
   fontawesome.library.add(faTrophy);
+  fontawesome.library.add(faUser);
   let golos = require("golos-js");
   let Cookies = require('js-cookie');
   golos.config.set('websocket', 'wss://ws.golos.io');
@@ -125,8 +126,7 @@
         SideLinksList: [
           {id: 0, text: 'Главное', href: '/', icon: 'fas fa-fw fa-home'},
           {id: 1, text: 'Новое', href: 'new', icon: 'fas fa-fw fa-fire'},
-          {id: 2, text: 'Выбор редакции', href: '#', icon: 'fas fa-fw fa-trophy'},
-          {id: 3, text: 'Лента', href: '/lenta', icon: 'fas fa-fw fa-home' }
+          //{id: 2, text: 'Выбор редакции', href: '#', icon: 'fas fa-fw fa-trophy'},
         ],
         SubsList: [],
         reg_loading: false,
@@ -144,9 +144,11 @@
         vm.link = "/personal?author="+temp_login;
         vm.logged_in = true;
 
+
         golos.api.getFollowing(temp_login, '', null, 100, function(err, result) {
           if (! err) {
             let id = 0;
+            vm.SideLinksList.push({id: 3, text: "Подписки", href: "", icon: 'fas fa-fw fa-user'});
             result.forEach(function(item) {
               if(item['what'][0] === 'blog') {
                 vm.SubsList.push({id: id, text: item['following'], href: '/personal?author=' + item['following']});
@@ -180,7 +182,7 @@
         vm.reg_loading = false;
         vm.reg_ok_title = "Зарегистрироваться";
       },
-      
+
       call_login: function(evt) {
         evt.preventDefault();
         var vm = this;
@@ -231,6 +233,10 @@
   }
 
   #subs {
-    margin-top: 2em;
+    margin-left: 0.7em;
+  }
+
+  .sub {
+    padding-top: 0em;
   }
 </style>
