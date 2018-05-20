@@ -1,6 +1,7 @@
 <template>
     <div class="category mb-5">
-        <h3> {{ title }} </h3>
+        <br>
+        <h5> {{ title }} </h5>
         <div :class="gridClass">
             <video-block
                 v-for="item in videosList"
