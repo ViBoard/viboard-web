@@ -1,12 +1,12 @@
 <template>
-  <div id="app">
-    Embed stuff
-  </div>
+    <div id="app">
+        Embed stuff
+    </div>
 </template>
 
 <script>
-  export default {
-    name: 'app',
-  }
+    export default {
+        name: 'app',
+    }
 
 </script>
