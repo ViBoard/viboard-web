@@ -19,6 +19,7 @@
         :permlink="permlink"
       />
 
+      <Similar ref="similar" :video_id="video_id"/>
       <div class="video-description" id="vid-descr"></div>
       <Comments id="comments"
                 :author="author"
@@ -80,6 +81,7 @@
         ap: false,
         muted: false,
         controls: true,
+        video_id: ""
       };
     },
 
@@ -92,12 +94,14 @@
     created: function () {
       let vm = this;
       let queries = queryString.parse(location.search);
+
       vm.author = queries.a;
       vm.link = "/personal?author="+queries.a;
       vm.permlink = queries.v;
       vm.getVideoContent(vm);
       let whileCheck = setInterval(function () {
         if (vm.contentGot) {
+          document.title = vm.title;
           console.log("this", vm.tags, vm.author);
           vm.$refs.similar.kekule(vm.tags, vm.author);
 

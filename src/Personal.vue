@@ -55,6 +55,8 @@
       let vm = this;
       let account = url.searchParams.get("author");
       vm.nickname = account;
+      document.title = account;
+
       if (Cookies.get("login") === account) {
         vm.own = true
       }
@@ -75,6 +77,7 @@
 
               let obj = JSON.parse(item['json_metadata']);
               console.log("OBJ ",obj);
+              
               if(obj['profile']['cover_image'] !== undefined) {
                 if(obj['profile']['cover_image'] !== "") {
                   try {

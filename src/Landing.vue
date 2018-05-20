@@ -9,7 +9,7 @@
           Успешно
         </b-alert>
         <b-alert variant="danger" ref="auth_result_fail">Ошибка</b-alert>
-        
+
         <b-form>
           <b-form-group>
             <b-form-input v-model="login_username" type="text" placeholder="Логин" name="login" required/>
@@ -19,19 +19,19 @@
           </b-form-group>
           <b-button variant="primary" @click="login">Войти</b-button>
         </b-form>
-        
+
         <b-button href="index" class="mt-3" variant="outline-primary">
           Продолжить без регистрации
         </b-button>
       </b-card>
     </b-navbar>
-    
+
     <b-navbar fixed="top" class="topbar d-none d-lg-block">
       <div class="container-fluid">
         <img src="./assets/logo-wide.png" width="40%">
       </div>
     </b-navbar>
-    
+
     <b-container fluid id="main">
       <b-row class="d-lg-none">
         <a href="index">
@@ -44,7 +44,7 @@
           <p>Добро пожаловать в мир, где зарабатывают на создании видеороликов, комментировании и оценке.</p>
         </b-col>
       </b-row>
-      
+
       <b-row id="row2">
         <b-col>
           <img src="./assets/shutup.gif">
@@ -59,7 +59,7 @@
           </p>
         </b-col>
       </b-row>
-      
+
       <b-row id="row3">
         <b-col>
           <img src="./assets/adblock.jpg">
@@ -72,7 +72,7 @@
           </p>
         </b-col>
       </b-row>
-      
+
       <b-row id="row4">
         <b-col lg=6 offset-lg=6>
           <h1>Концентрируйтесь на контенте.</h1>
@@ -90,20 +90,20 @@
           </h4>
         </b-col>
       </b-row>
-      
+
       <b-row class="d-lg-none">
       <b-card id="register2" title="Регистрация">
         <b-alert variant="success" ref="reg_result_success">
           Отлично! Теперь подтвердите Email
         </b-alert>
         <b-alert variant="danger" ref="reg_result_fail">Ошибка</b-alert>
- 
+
         <h4 class="card-title">Войти через <a href="https://golos.io">golos.io</a></h4>
         <b-alert variant="success" ref="auth_result_success">
           Успешно
         </b-alert>
         <b-alert variant="danger" ref="auth_result_fail">Ошибка</b-alert>
-        
+
         <b-form>
           <b-form-group>
             <b-form-input v-model="login_username" type="text" placeholder="Логин" name="login" required/>
@@ -113,14 +113,14 @@
           </b-form-group>
           <b-button variant="dark" @click="login">Войти</b-button>
         </b-form>
-        
+
         <b-button href="index" class="mt-3" variant="outline-primary">
-         Продолжить без регистрации 
+         Продолжить без регистрации
         </b-button>
       </b-card>
    </b-row>
     </b-container fluid>
-  
+
   </div>
 </template>
 
@@ -131,17 +131,17 @@
   import BootstrapVue from 'bootstrap-vue'
   import Vue from 'vue'
   import RegistrationForm from './RegistrationForm.vue'
-  
+
   var golos = require("golos-js");
   var Cookies = require('js-cookie');
-  
+
   Vue.use(BootstrapVue);
-  
+
   var prevScrollpos = window.pageYOffset;
   window.onscroll = function () {
     var currentScrollPos = window.pageYOffset;
     var distanceFromBottom = document.body.scrollHeight - window.innerHeight - window.scrollY
-    
+
     if (prevScrollpos < 100 || distanceFromBottom < 200) {
       document.getElementById("sidebar").style.left = "0";
     } else {
@@ -149,11 +149,11 @@
     }
     prevScrollpos = currentScrollPos;
   };
-  
+
   function ShowSidebar() {
     document.getElementById('sidebar').style.display = "block";
   }
-  
+
   export default {
     name: 'Landing',
 
@@ -167,13 +167,14 @@
         login_password: "",
       }
     },
-    
+
     created: function () {
       if (Cookies.get("login")) {
         window.location.href = 'index'
       }
+      document.title = 'Viboard';
     },
-    
+
     methods: {
       login() {
         var vm = this;
@@ -181,7 +182,7 @@
         vm.$refs.auth_result_success.show = false;
         var login = vm.login_username;
         var password = vm.login_password;
-        
+
         let accounts = [login];
         golos.api.getAccounts(accounts, function (err, result) {
           console.log(err, result);
@@ -189,7 +190,7 @@
             result.forEach(function (item) {
               let postingPubkey = item.posting.key_auths[0][0];
               //console.log('getAccounts', item.posting); // Костыль?
-              
+
               let verifyResult = false;
               // If posting privkey
               if (golos.auth.isWif(password)) {
@@ -209,7 +210,7 @@
                   Cookies.set("posting_private", keys.posting);
                 }
               }
-              
+
               if (verifyResult) {
                 vm.$refs.auth_result_success.show = true;
                 vm.$refs.auth_result_fail.show = false;
@@ -235,11 +236,11 @@
 
 
 <style>
-  
+
   #sidebar {
     line-height: 26px;
     overflow: auto;
-    
+
     position: fixed;
     left: 0;
     top: 0;
@@ -249,27 +250,27 @@
     float: left;
     z-index: 1000;
   }
-  
+
   #register {
     margin: 5% 25% 0% 25%;
     height: 85%;
     background: white;
-    
+
     position: center;
     box-sizing: border-box;
     padding: 1%;
     width: 50%;
   }
-  
+
   #register2 {
     background: white;
-    
+
     position: center;
     box-sizing: border-box;
     padding: 1%;
     width: 90%;
   }
-  
+
   .topbar {
     float: right;
     margin-left: 50%;
@@ -277,23 +278,23 @@
     padding-top: 40px;
     display: block;
   }
-  
+
   .login {
     color: white;
     background-color: blue;
     float: right;
     margin-right: 10%;
   }
-  
+
   #main {
     margin-top: 5%;
   }
-  
+
   .row {
     padding: 10%;
     height: 100%;
   }
-  
+
   b-row {
     color: white;
   }

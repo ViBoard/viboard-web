@@ -23,6 +23,9 @@
       Navigation,
       Category,
       AppInner,
+    },
+    created: function() {
+      document.title = 'Новое';
     }
   }
 

@@ -13,8 +13,8 @@
              <table>
                <tr>
                  <td v-for="i in n_previews" style="padding: 0.2em">
-                   <video :class="{'embed-responsive': true, 'focused': preview_frame_chosen == i - 1}" 
-                          tabindex="0" 
+                   <video :class="{'embed-responsive': true, 'focused': preview_frame_chosen == i - 1}"
+                          tabindex="0"
                           :src="video_src"
                           @click="choose_preview_frame(i - 1)"
                           @loadedmetadata="generate_previews(false)"
@@ -26,9 +26,9 @@
              <div class="d-flex align-items-center" style="margin-top: 0.7em">
                <b-button variant="outline-dark" @click="generate_previews(true)">Выбрать другие</b-button>
                 <div style="margin-right: 0.5em; margin-left: 0.5em"> или </div>
-               <b-form-file placeholder="Выбрать файл..." 
-                            id="img-file" 
-                            type="file" 
+               <b-form-file placeholder="Выбрать файл..."
+                            id="img-file"
+                            type="file"
                             @input="choose_preview_file"
                             v-model="imgfile"/>
              </div>
@@ -38,9 +38,9 @@
               <div class="d-flex align-items-center" style="margin-top: 0.7em">
                 <b-button variant="outline-dark" @click="preview_file = null">Выбрать кадр</b-button>
                 <div style="margin-right: 0.5em; margin-left: 0.5em"> или </div>
-                <b-form-file placeholder="Выбрать файл..." 
-                            id="img-file" 
-                            type="file" 
+                <b-form-file placeholder="Выбрать файл..."
+                            id="img-file"
+                            type="file"
                             @input="choose_preview_file"
                             v-model="imgfile"/>
               </div>
@@ -139,8 +139,9 @@
 
     created: function() {
       this.login = Cookies.get('login');
+      document.title = "Загрузить";
     },
-    
+
     methods: {
       set_preview_url: function() {
         var vm = this;
@@ -158,7 +159,7 @@
        },
 
       generate_previews: function(is_random) {
-        var vm = this; 
+        var vm = this;
         var default_previews = [0, 0.1, 0.5, 0.8];
         var duration = vm.$refs.preview0[0].duration;
         for (var i = 0; i < vm.n_previews; ++i) {
@@ -186,14 +187,14 @@
         var mimeType = vm.imgfile.type;
         if (mimeType.split('/')[0]=='image') {
            vm.preview_file_chosen = true;
-           vm.preview_url = URL.createObjectURL(vm.imgfile); 
+           vm.preview_url = URL.createObjectURL(vm.imgfile);
         } else {
           vm.$refs.errors.show = true;
           vm.message = "Неподдерживаемый формат изображения";
         }
 
       },
- 
+
       upload: function () {
         let vm = this;
 
