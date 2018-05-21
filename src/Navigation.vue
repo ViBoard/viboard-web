@@ -19,14 +19,14 @@
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
                     <b-button class="nav-button" variant="outline-primary" href="/upload"> Загрузить видео на golos.io </b-button>
-                    <b-button class="nav-button" variant="outline-secondary" @click="signout"> Выйти </b-button>
+                    <b-button class="nav-link" variant="link" @click="signout"> Выйти </b-button>
                 </b-navbar-nav>
             </b-collapse>
             <b-collapse is-nav id="nav_collapse" v-else>
                 <b-navbar-nav class="ml-auto">
                     <b-button class="nav-button" variant="outline-primary" v-b-modal.login_modal> Загрузить видео на golos.io </b-button>
-                    <b-button class="nav-button" variant="outline-secondary" v-b-modal.signup_modal>Регистрация</b-button>
-                    <b-button class="nav-button" variant="outline-secondary" v-b-modal.login_modal>Войти</b-button>
+                    <b-button class="nav-link" variant="link" v-b-modal.signup_modal>Регистрация</b-button>
+                    <b-button class="nav-link" variant="link" v-b-modal.login_modal>Войти</b-button>
                 </b-navbar-nav>
             </b-collapse>
             <b-collapse is-nav id="nav_collapse"
