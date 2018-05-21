@@ -32,7 +32,7 @@
     var Cookies = require('js-cookie')
     export default {
         name: 'RegistrationForm',
-        
+
         data: function () {
             return {
                 username: "",
@@ -45,7 +45,7 @@
                 password_feedback: "",
             }
         },
-        
+
         methods: {
             login: function () {
                 let vm = this
@@ -54,7 +54,7 @@
                 vm.password_is_invalid = false
                 var login = vm.username
                 var password = vm.password
-                
+
                 var accounts = [login]
                 golos.api.getAccounts(accounts, function (err, result) {
                     console.log(err, result)
@@ -67,17 +67,17 @@
                             result.forEach(function (item) {
                                 var postingPubkey = item.posting.key_auths[0][0]
                                 //console.log('getAccounts', item.posting); // Костыль?
-                                
+
                                 var auths = {
                                     posting: [[postingPubkey]],
                                 }
-                                
+
                                 var verifyResult = golos.auth.verify(login, password, auths)
                                 console.log('verify', verifyResult)
-                                
+
                                 var roles = ['posting']
                                 var keys = golos.auth.getPrivateKeys(login, password, roles)
-                                
+
                                 if (verifyResult) {
                                     Cookies.set("login", login)
                                     Cookies.set("posting_private", keys.posting)
