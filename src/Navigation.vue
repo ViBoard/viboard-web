@@ -4,8 +4,8 @@
             <b-navbar-brand href="/" id="logo">
                 <img height="40" src="./assets/logo.jpg">
             </b-navbar-brand>
-            
-            
+
+
             <b-navbar-toggle class="ml-auto" target="nav_collapse"></b-navbar-toggle>
             <b-collapse is-nav id="nav_collapse" v-if="logged_in">
                 <b-navbar-nav>
@@ -18,25 +18,15 @@
                     </b-nav-item>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
-                    <b-nav-item class="ml-auto" href="/upload">
-                        <span id="nav-upload">Загрузить видео на golos.io</span>
-                    </b-nav-item>
-                    <b-nav-item class="ml-auto">
-                        <span class="sign" @click="signout">Выйти</span>
-                    </b-nav-item>
-                </b-navbar-nav class="ml-auto">
+                    <b-button class="nav-button" variant="outline-primary" href="/upload"> Загрузить видео на golos.io </b-button>
+                    <b-button class="nav-button" variant="outline-secondary" @click="signout"> Выйти </b-button>
+                </b-navbar-nav>
             </b-collapse>
             <b-collapse is-nav id="nav_collapse" v-else>
                 <b-navbar-nav class="ml-auto">
-                    <b-nav-item class="ml-auto" href="/upload">
-                        <span id="nav-upload">Загрузить видео на golos.io</span>
-                    </b-nav-item>
-                    <b-nav-item>
-                        <span class="sign" v-b-modal.signup_modal>Регистрация</span>
-                    </b-nav-item>
-                    <b-nav-item>
-                        <span class="sign" v-b-modal.login_modal>Вход</span>
-                    </b-nav-item>
+                    <b-button class="nav-button" variant="outline-primary" v-b-modal.login_modal> Загрузить видео на golos.io </b-button>
+                    <b-button class="nav-button" variant="outline-secondary" v-b-modal.signup_modal>Регистрация</b-button>
+                    <b-button class="nav-button" variant="outline-secondary" v-b-modal.login_modal>Войти</b-button>
                 </b-navbar-nav>
             </b-collapse>
             <b-collapse is-nav id="nav_collapse"
@@ -48,8 +38,8 @@
                 </div>
             </b-navbar-nav>
             </b-collapse>
-            
-            
+
+
             <b-modal id="signup_modal"
                      ref="signup_modal"
                      title="Регистрация"
@@ -63,7 +53,7 @@
                                   @register_success="register_success"
                                   @register_fail="register_fail"/>
             </b-modal>
-            
+
             <b-modal id="login_modal"
                      ref="login_modal"
                      title="Вход"
@@ -107,10 +97,10 @@
     import faFire from '@fortawesome/fontawesome-free-solid/faFire'
     import faTrophy from '@fortawesome/fontawesome-free-solid/faTrophy'
     import faUser from '@fortawesome/fontawesome-free-solid/faUser'
-    
+
     import RegistrationForm from './RegistrationForm.vue'
     import LoginForm from './LoginForm.vue'
-    
+
     fontawesome.library.add(faHome)
     fontawesome.library.add(faFire)
     fontawesome.library.add(faTrophy)
@@ -119,17 +109,17 @@
     let Cookies = require('js-cookie')
     golos.config.set('websocket', 'wss://ws.golos.io')
     import Vue from 'vue'
-    
+
     Vue.use(BootstrapVue)
-    
+
     export default {
         name: 'Navigation',
-        
+
         components: {
             RegistrationForm,
             LoginForm,
         },
-        
+
         data: function () {
             return {
                 logged_in: false,
@@ -147,17 +137,17 @@
                 imglogo: "../data/ava.png",
             }
         },
-        
+
         created: function () {
             let temp_login = Cookies.get("login")
             let vm = this
-            
+
             if (temp_login) {
                 vm.login = temp_login
                 vm.link = "/personal?author=" + temp_login
                 vm.logged_in = true
-                
-                
+
+
                 golos.api.getFollowing(temp_login, '', null, 100, function (err, result) {
                     if (!err) {
                         let id = 0
@@ -174,7 +164,7 @@
                     }
                     else console.error("ОШИБКА АПИ ПРИ ПОЛУЧЕНИИ ПОДПИСОК", err)
                 })
-                
+
                 golos.api.getAccounts([temp_login], function (err, result) {
                     if (!err) {
                         vm.total = result[0]['balance']
@@ -185,11 +175,11 @@
                                     tester.onerror = AvaNotFound()
                                     tester.src = URL
                                 }
-                                
+
                                 function AvaNotFound() {
                                     vm.imglogo = "../data/ava.png"
                                 }
-                                
+
                                 let obj = JSON.parse(item['json_metadata'])
                                 if (obj['profile']['profile_image'] !== undefined) {
                                     if (obj['profile']['profile_image'] !== "") {
@@ -209,7 +199,7 @@
                 })
             }
         },
-        
+
         methods: {
             call_register: function (evt) {
                 var vm = this
@@ -219,39 +209,39 @@
                     vm.$refs.registration_form.register()
                 }
             },
-            
+
             register_success: function () {
                 var vm = this
                 vm.$refs.signup_modal.busy = false
                 vm.reg_loading = false
                 vm.reg_finished = true
             },
-            
+
             register_fail: function () {
                 var vm = this
                 vm.reg_loading = false
                 vm.reg_ok_title = "Зарегистрироваться"
             },
-            
+
             call_login: function (evt) {
                 evt.preventDefault()
                 var vm = this
                 vm.$refs.login_form.login()
             },
-            
+
             login_success: function () {
                 var vm = this
                 vm.$refs.login_modal.hide()
                 vm.logged_in = true
                 vm.login = Cookies.get("login")
             },
-            
+
             signout: function () {
                 Cookies.remove("login")
                 Cookies.remove("posting_private")
                 this.logged_in = false
             },
-            
+
             nickname_click: function () {
                 var videolist = document.getElementsByClassName("videofoo")
                 console.log("wqefsgdfd")
@@ -271,41 +261,36 @@
         top: 12px;
         transform: translateX(-50%);
     }
-    
+
     .fas {
         margin-right: 3em;
     }
-    
+
     #header {
         -webkit-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
         -moz-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
         box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
         height: 70px;
     }
-    
+
+    .nav-button {
+        margin-right: 1em;
+    }
+
     #subs {
         margin-left: 0.7em;
     }
-    
+
     .sub {
         padding-top: 0em;
     }
-    
-    #nav-upload {
-        border-radius: 10px;
-        border: 1.5px solid #0275DB;
-        color: #0C7AD9;
-        padding: 8px;
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-    
+
     #avatar-nav {
         width: 50px;
         height: 50px;
         margin-left: 10px;
     }
-    
+
     .sign {
         border-radius: 10px;
         border: 1.5px solid #D8D8D8;
