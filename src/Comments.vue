@@ -91,6 +91,7 @@
 
       sendComment: function() {
         var vm = this;
+        vm.errorMessage = "";
         var wif = Cookies.get("posting_private");
         var author = Cookies.get("login");
         var permlink = 're-' + vm.author + '-' + vm.permlink + '-' + Date.now();
@@ -114,6 +115,8 @@
               vm.errorMessage = "вы можете комментировать не чаще чем раз в 20 секунд";
             } else if (err.message.includes("abs_rshares >")) {
               vm.errorMessage = "недостаточно силы голоса";
+            } else if (err.message.includes("permlink.size() < STEEMIT_MAX_PERMLINK_LENGTH")) {
+              vm.errorMessage = "вы превысили максимальную вложенность комментариев";
             } else {
               vm.errorMessage = "ошибка";
             }
