@@ -2,27 +2,27 @@
     <div id="app">
         <Navigation/>
         <AppInner>
-                <Similar id="simi" ref="similar" :video_id="video_id" />
-                <plyr-video :poster="previewSrc"
-                            :videos="this.videos"
-                            :autoplay="ap"
-                            :muted="muted"
-                            :controls="customControls"
-                            :crossorigin="true"/>
-                <div class="video-header"> {{ title }}</div>
-                <div class="video-info">
-                    <a :href="link">
-                        <div class="video-author"> {{ author }}</div>
-                    </a>
-                    <div class="video-total"> {{ total }}</div>
-                </div>
-                <Upvotes
-                    :author="author"
-                    :permlink="permlink"
-                />
-
-                <div class="video-description" id="vid-descr"></div>
-
+            <Similar id="simi" ref="similar" :video_id="video_id"/>
+            <plyr-video :poster="previewSrc"
+                        :videos="this.videos"
+                        :autoplay="ap"
+                        :muted="muted"
+                        :controls="customControls"
+                        :crossorigin="true"/>
+            <div class="video-header"> {{ title }}</div>
+            <div class="video-info">
+                <a :href="link">
+                    <div class="video-author"> {{ author }}</div>
+                </a>
+                <div class="video-total"> {{ total }}</div>
+            </div>
+            <Upvotes
+                :author="author"
+                :permlink="permlink"
+            />
+            
+            <div class="video-description" id="vid-descr"></div>
+            
             <Comments id="comments"
                       :author="author"
                       :permlink="permlink"
@@ -39,7 +39,7 @@
     import {PlyrVideo} from 'vue-plyr'
     import {getVideoContent} from './getVideoContent.js'
     import {parseBody} from './parseBody.js'
-
+    
     import AppInner from './AppInner.vue'
     import VideoBlock from './VideoBlock.vue'
     import Navigation from './Navigation.vue'
@@ -48,12 +48,12 @@
     import BootstrapVue from 'bootstrap-vue'
     import Vue from 'vue'
     import Similar from './Similar.vue'
-
+    
     Vue.use(BootstrapVue)
-
+    
     export default {
         name: 'app',
-
+        
         components: {
             Comments,
             Upvotes,
@@ -63,9 +63,9 @@
             AppInner,
             Similar,
         },
-
+        
         mixins: [parseBody, getVideoContent],
-
+        
         data: function () {
             return {
                 author: "",
@@ -86,17 +86,17 @@
                 video_id: "",
             }
         },
-
+        
         computed: {
             getHref: function () {
                 return 'watch?v=' + this.permlink + '&a=' + this.author
             },
         },
-
+        
         created: function () {
             let vm = this
             let queries = queryString.parse(location.search)
-
+            
             vm.author = queries.a
             vm.link = "/personal?author=" + queries.a
             vm.permlink = queries.v
@@ -106,7 +106,7 @@
                     document.title = vm.title
                     console.log("this", vm.tags, vm.author)
                     vm.$refs.similar.kekule(vm.tags, vm.author)
-
+                    
                     let i = 0
                     while (i < vm.description.length) {
                         let node = undefined
@@ -120,14 +120,14 @@
                             node = document.createTextNode(vm.description[i])
                             i += 1
                         }
-
+                        
                         document.getElementById("vid-descr").appendChild(node)
                     }
                     clearInterval(whileCheck)
-
+                    
                 }
             }, 100)
-
+            
             console.log(vm.src, vm.ap)
         },
     }
@@ -139,39 +139,39 @@
         font-size: 1.1em;
         margin-top: 0.3em;
     }
-
+    
     .video-description {
         word-wrap: break-word;
         white-space: pre-wrap;
     }
-
+    
     .video-info {
         font-size: 0.9em;
         color: #888888;
     }
-
+    
     .video-info div {
         margin: 0;
         padding: 0;
         margin-top: 0.25em;
     }
-
+    
     .plyr--video {
         width: 70%;
         max-width: 1000px;
     }
-
+    
     #comments {
         margin-top: 3em;
     }
-
+    
     #simi {
         float: right;
         width: 25%;
         margin-right: 100px;
         max-width: 500px;
     }
-
+    
     video {
         width: 100%;
         height: 80%;
