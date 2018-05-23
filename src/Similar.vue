@@ -1,6 +1,5 @@
 <template>
     <div id="similar-videos">
-        <h3>Похожее</h3>
         <div>
             <video-block
                 v-for="item in videosList"
@@ -22,29 +21,29 @@
     import {getVideoContent} from './getVideoContent.js'
     import {parseBody} from './parseBody.js'
     import {beneficiaries} from "./beneficiaries"
-    
+
     let golos = require('golos-js')
-    
+
     export default {
         name: "Similar",
-        
+
         data: function () {
             return {
                 videosList: [],
-                
+
             }
         },
-        
+
         components: {
             VideoBlock,
         },
-        
+
         props: {
             video_id: {},
         },
-        
+
         mixins: [parseBody, getVideoContent, beneficiaries],
-        
+
         methods: {
             kekule: function (tags, author) {
                 let videosCount = 5
@@ -53,7 +52,7 @@
                 let selectByTags = 7
                 let vm = this
                 let videosListTotal = []
-                
+
                 let getPromise = new Promise((resolve, reject) => {
                     let videos_added_tag = 0
                     console.log("Similar tags:", tags, author)
@@ -74,7 +73,7 @@
                                     break
                                 }
                             }
-                            
+
                             let videos_added_author = 0
                             let queryAuthor = {
                                 select_authors: [author],
@@ -104,32 +103,32 @@
                             reject(err)
                         }
                     })
-                    
-                    
+
+
                 })
                 getPromise.then((successMessage) => {
                     console.log("successMessage:", successMessage)
                     console.log("before:", videosListTotal)
-                    
+
                     function shuffle(array) {
                         let currentIndex = array.length, temporaryValue, randomIndex
-                        
+
                         // While there remain elements to shuffle...
                         while (0 !== currentIndex) {
-                            
+
                             // Pick a remaining element...
                             randomIndex = Math.floor(Math.random() * currentIndex)
                             currentIndex -= 1
-                            
+
                             // And swap it with the current element.
                             temporaryValue = array[currentIndex]
                             array[currentIndex] = array[randomIndex]
                             array[randomIndex] = temporaryValue
                         }
-                        
+
                         return array
                     }
-                    
+
                     function getUnique(arr) {
                         let i = 0,
                             current,
@@ -143,18 +142,18 @@
                         }
                         return unique
                     }
-                    
+
                     videosListTotal = shuffle(getUnique(videosListTotal))
-                    
+
                     for (let i = 0; i < videosCount; ++i) {
                         if (videosListTotal[i]) {
                             vm.videosList.push(videosListTotal[i])
                         }
                     }
                     console.log("after:", vm.videosList)
-                    
+
                 })
-                
+
             },
         },
     }

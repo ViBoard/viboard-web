@@ -168,7 +168,7 @@
     #simi {
         float: right;
         width: 25%;
-        margin-right: 25px;
+        margin-right: 100px;
         max-width: 500px;
     }
 
