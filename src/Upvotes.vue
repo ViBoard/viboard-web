@@ -148,6 +148,7 @@
     created: function() {
       this.update();
     }
+    }
 </script>
 
 <style>
