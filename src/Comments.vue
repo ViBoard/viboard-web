@@ -128,7 +128,8 @@
 
     created:  function() {
       this.update();
-    }
+    },
+  }
 </script>
 
 <style>
@@ -141,16 +142,16 @@
         border-left: 2px solid #D8D8D8;
         margin-left: 0.7em;
     }
-    
+
     .comment-author {
         padding-bottom: 0.3em;
         font-weight: bolder;
     }
-    
+
     .comment-body {
         padding-left: 1em;
     }
-    
+
     .reply, .reply-send, .reply-close {
         display: inline-block;
         padding-left: 0.3em;
@@ -159,7 +160,7 @@
         cursor: pointer;
         margin-bottom: 1em;
     }
-    
+
     .reply-form {
         margin-bottom: 2em;
     }
