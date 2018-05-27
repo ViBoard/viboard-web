@@ -11,32 +11,34 @@ import Personal from './Personal.vue'
 import Lenta from './Lenta'
 // пути к страницам
 const routes = {
-  '/index': Index,
-  '/new': New,
-  '/watch': Single,
-  '/upload': Upload,
-  '/embed': Embed,
-  '/': Index,
-  '/confirm' : Confirm,
-  '/FAQ' : FAQ,
-  '/personal': Personal,
-  '/lenta': Lenta
-};
+    '/index': Index,
+    '/new': New,
+    '/watch': Single,
+    '/upload': Upload,
+    '/embed': Embed,
+    '/': Index,
+    '/confirm': Confirm,
+    '/FAQ': FAQ,
+    '/personal': Personal,
+    '/lenta': Lenta,
+}
 
 
 new Vue({
-  // элемент на странице, в который рендерится приложение
-  el: '#app',
-
-  data: {
-    currentRoute: window.location.pathname,
-  },
-
-  computed: {
-    ViewComponent() {
-      return routes[this.currentRoute]
-    }
-  },
-
-  render(h) { return h(this.ViewComponent) }
-});
+    // элемент на странице, в который рендерится приложение
+    el: '#app',
+    
+    data: {
+        currentRoute: window.location.pathname,
+    },
+    
+    computed: {
+        ViewComponent() {
+            return routes[this.currentRoute]
+        },
+    },
+    
+    render(h) {
+        return h(this.ViewComponent)
+    },
+})
