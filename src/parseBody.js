@@ -17,7 +17,7 @@ export const parseBody = {
             let description = []
             if (parsedDescription) {
                 parsedDescription = parsedDescription[1]
-                parsedDescription = parsedDescription.replace(/<.?p>|<.?div>|<.?body>|<.?html>/gi, '')
+                                        parsedDescription = parsedDescription.replace(/<.?p>|<.?div>|<.?body>|<.?html>/gi, '')
                 parsedDescription = parsedDescription.replace(/<br.?>/gi, "\n")
                 // console.log("pd:", parsedDescription);
                 description = parsedDescription.split(/(<a.*href="(.*)".*>(.*)<\/a>)/)

@@ -9,10 +9,10 @@
                     <p id="nick">{{nickname}} </p>
                     <p id="subscribers">{{subscribers}} подписчиков</p>
                 </div>
-                <button type="button" class="btn btn-light btn-lg butt" v-if="yet && !own" v-on:click="subs(1)">
+                <button type="button" class="btn btn-light btn-lg butt" v-if="done && yet && !own" v-on:click="subs(1)">
                     Отписаться
                 </button>
-                <button type="button" class="btn btn-light btn-lg butt" v-on:click="subs(0)" v-if="!yet && !own">
+                <button type="button" class="btn btn-light btn-lg butt" v-on:click="subs(0)" v-if="done && !yet && !own">
                     Подписаться
                 </button>
             </div>
@@ -49,6 +49,7 @@
                 subscribers: 0,
                 own: false,
                 yet: false,
+                done: false,
                 
                 imghat: "../data/ava.png",
                 imglogo: "../data/hat.png",
@@ -147,17 +148,19 @@
                                     try {
                                         result.forEach(function (item) {
                                             if (item['follower'] === Cookies.get("login") && item['what'][0] === 'blog') {
-                                                vm.yet = true
+                                                vm.yet = true;
+                                                vm.done = true;
                                                 throw BreakException
                                             }
-                                        })
+                                        });
+                                        vm.done = true;
                                         resolve()
                                     } catch (e) {
                                         if (e !== BreakException) throw e
                                     }
                                 }
                                 else console.error("ОШИБКА АПИ ПРИ ПОЛУЧЕНИИ ПОДПИСЧИКОВ", err)
-                            })
+                            });
                         },
                     ))
                 }
@@ -204,6 +207,7 @@
                     
                     getPromise.then((successMessage) => {
                         vm.yet = !vm.yet
+                        vm.done = true;
                         location.reload()
                     })
                 }
