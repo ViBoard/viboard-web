@@ -3,13 +3,13 @@
     <b-container>
       <b-row>
         <b-col>
-          <plyr-video :poster="previewSrc"
-                      :videos="this.videos"
-                      :autoplay="ap"
-                      :muted="muted"
-                      :controls="customControls"
-                      :crossorigin="true"/>
-
+            <plyr-video id="video-container"
+                        :poster="previewSrc"
+                        :videos="this.videos"
+                        :autoplay="ap"
+                        :muted="muted"
+                        :controls="customControls"
+                        :crossorigin="true"/>
           <div class="video-header"> {{ title }}</div>
           <div class="video-info">
             <a :href="link"><div class="video-author"> {{ author }}</div></a>
@@ -166,6 +166,12 @@
 
   #similar-small {
     width: 40%;
+  }
+  
+  #video-container {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
   }
 </style>
 

@@ -293,7 +293,7 @@
 
     .nav-button {
         margin-right: 1em;
-    }v
+    }
 
     #subs {
         margin-left: 0.7em;
@@ -330,6 +330,11 @@
         background-color: #fff;
         position: fixed;
         top: 0;
+        right: 20%;
+        padding: 3em;
+        -webkit-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+        -moz-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+        box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
       }
     }
 
