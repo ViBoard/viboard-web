@@ -160,7 +160,7 @@
                 golos.api.getFollowing(temp_login, '', null, 100, function (err, result) {
                     if (!err) {
                         let id = 0
-                        vm.SideLinksList.push({id: 3, text: "Подписки", href: "", icon: 'fas fa-fw fa-user'})
+                        vm.SideLinksList.push({id: 3, text: "Подписки", href: "/lenta", icon: 'fas fa-fw fa-user'})
                         result.forEach(function (item) {
                             if (item['what'][0] === 'blog') {
                                 vm.SubsList.push({
@@ -249,6 +249,7 @@
                 Cookies.remove("login")
                 Cookies.remove("posting_private")
                 this.logged_in = false
+                location.reload();
             },
 
             nickname_click: function () {

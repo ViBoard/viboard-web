@@ -167,6 +167,5 @@
   #similar-small {
     width: 40%;
   }
-
-
 </style>
+

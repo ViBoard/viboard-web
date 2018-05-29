@@ -27,17 +27,19 @@ const routes = {
 new Vue({
     // элемент на странице, в который рендерится приложение
     el: '#app',
-    
+
     data: {
-        currentRoute: window.location.pathname,
+
+
+           currentRoute: window.location.pathname,
     },
-    
+
     computed: {
         ViewComponent() {
             return routes[this.currentRoute]
         },
     },
-    
+
     render(h) {
         return h(this.ViewComponent)
     },
