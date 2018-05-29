@@ -1,31 +1,40 @@
 <template>
-  <div id="app">
-    <Navigation/>
-    <AppInner>
-      <plyr-video :poster="previewSrc"
-                  :videos="this.videos"
-                  :autoplay="ap"
-                  :muted="muted"
-                  :controls="customControls"
-                  :crossorigin="true"/>
+  <Navigation>
+    <b-container>
+      <b-row>
+        <b-col>
+          <plyr-video :poster="previewSrc"
+                      :videos="this.videos"
+                      :autoplay="ap"
+                      :muted="muted"
+                      :controls="customControls"
+                      :crossorigin="true"/>
 
-      <div class="video-header"> {{ title }}</div>
-      <div class="video-info">
-        <a :href="link"><div class="video-author"> {{ author }}</div></a>
-        <div class="video-total"> {{ total }}</div>
-      </div>
-      <Upvotes
-        :author="author"
-        :permlink="permlink"
-      />
-      <Similar ref="similar"/>
-      <div class="video-description" id="vid-descr"></div>
-      <Comments id="comments"
-                :author="author"
-                :permlink="permlink"
-      />
-    </AppInner>
-  </div>
+          <div class="video-header"> {{ title }}</div>
+          <div class="video-info">
+            <a :href="link"><div class="video-author"> {{ author }}</div></a>
+            <div class="video-total"> {{ total }}</div>
+          </div>
+          <Upvotes
+            :author="author"
+            :permlink="permlink"
+          />
+          <div class="video-description" id="vid-descr"></div>
+          <div class="d-lg-none">
+            <h4>Похожие видео:</h4>
+            <Similar ref="similar1" id="similar-small"/>
+          </div>
+          <Comments id="comments"
+                    :author="author"
+                    :permlink="permlink"
+          />
+        </b-col>
+        <b-col cols="3" class="d-none d-lg-block">
+          <Similar ref="similar2"/>
+        </b-col>
+      </b-row>
+    </b-container>
+  </Navigation>
 </template>
 
 <script>
@@ -99,7 +108,8 @@
       let whileCheck = setInterval(function () {
         if (vm.contentGot) {
           console.log("this", vm.tags, vm.author);
-          vm.$refs.similar.kekule(vm.tags, vm.author);
+          vm.$refs.similar1.kekule(vm.tags, vm.author);
+          vm.$refs.similar2.kekule(vm.tags, vm.author);
 
           let i = 0;
           while (i < vm.description.length) {
@@ -150,16 +160,13 @@
     margin-top: 0.25em;
   }
 
-  .plyr--video {
-    width: 70%;
-  }
-
   #comments {
     margin-top: 3em;
   }
 
-  video {
-    width: 100%;
-    height: 80%;
+  #similar-small {
+    width: 40%;
   }
+
+
 </style>

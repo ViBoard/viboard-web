@@ -1,99 +1,96 @@
 <template>
-  <div id="app">
-    <Navigation/>
-    <AppInner>
-      <b-col lg=8 offset-lg=2>
-        <b-form>
-          <b-form-group label="Видео:">
-            <b-form-file @input="set_preview_url" placeholder="Выбрать файл..." id="video-file" type="file" v-model="videofile"/>
-          </b-form-group>
+  <Navigation>
+    <b-col lg=8 offset-lg=2>
+      <b-form>
+        <b-form-group label="Видео:">
+          <b-form-file @input="set_preview_url" placeholder="Выбрать файл..." id="video-file" type="file" v-model="videofile"/>
+        </b-form-group>
 
-         <b-form-group v-if="show_previews_row" label="Превью:">
-           <div v-if="!preview_file_chosen">
-             <table>
-               <tr>
-                 <td v-for="i in n_previews" style="padding: 0.2em">
-                   <video :class="{'embed-responsive': true, 'focused': preview_frame_chosen == i - 1}"
-                          tabindex="0"
-                          :src="video_src"
-                          @click="choose_preview_frame(i - 1)"
-                          @loadedmetadata="generate_previews(false)"
-                          :ref="'preview' + (i - 1)">
-                   </video>
-                 </td>
-               </tr>
-             </table>
-             <div class="d-flex align-items-center" style="margin-top: 0.7em">
-               <b-button variant="outline-dark" @click="generate_previews(true)">Выбрать другие</b-button>
-                <div style="margin-right: 0.5em; margin-left: 0.5em"> или </div>
-               <b-form-file placeholder="Выбрать файл..."
-                            id="img-file"
-                            type="file"
-                            @input="choose_preview_file"
-                            v-model="imgfile"/>
-             </div>
+       <b-form-group v-if="show_previews_row" label="Превью:">
+         <div v-if="!preview_file_chosen">
+           <table>
+             <tr>
+               <td v-for="i in n_previews" style="padding: 0.2em">
+                 <video :class="{'embed-responsive': true, 'focused': preview_frame_chosen == i - 1}"
+                        tabindex="0"
+                        :src="video_src"
+                        @click="choose_preview_frame(i - 1)"
+                        @loadedmetadata="generate_previews(false)"
+                        :ref="'preview' + (i - 1)">
+                 </video>
+               </td>
+             </tr>
+           </table>
+           <div class="d-flex align-items-center" style="margin-top: 0.7em">
+             <b-button variant="outline-dark" @click="generate_previews(true)">Выбрать другие</b-button>
+              <div style="margin-right: 0.5em; margin-left: 0.5em"> или </div>
+             <b-form-file placeholder="Выбрать файл..."
+                          id="img-file"
+                          type="file"
+                          @input="choose_preview_file"
+                          v-model="imgfile"/>
            </div>
-           <div v-else>
-              <b-img :src="preview_url" class="embed-responsive"></b-img>
-              <div class="d-flex align-items-center" style="margin-top: 0.7em">
-                <b-button variant="outline-dark" @click="preview_file = null">Выбрать кадр</b-button>
-                <div style="margin-right: 0.5em; margin-left: 0.5em"> или </div>
-                <b-form-file placeholder="Выбрать файл..."
-                            id="img-file"
-                            type="file"
-                            @input="choose_preview_file"
-                            v-model="imgfile"/>
-              </div>
+         </div>
+         <div v-else>
+            <b-img :src="preview_url" class="embed-responsive"></b-img>
+            <div class="d-flex align-items-center" style="margin-top: 0.7em">
+              <b-button variant="outline-dark" @click="preview_file = null">Выбрать кадр</b-button>
+              <div style="margin-right: 0.5em; margin-left: 0.5em"> или </div>
+              <b-form-file placeholder="Выбрать файл..."
+                          id="img-file"
+                          type="file"
+                          @input="choose_preview_file"
+                          v-model="imgfile"/>
             </div>
-          </b-form-group>
-          <canvas ref="canvas" style="display: none"></canvas>
-          <b-form-group label="Название:">
-            <b-form-input id="video-title" type="text" v-model="title"/>
-          </b-form-group>
-
-          <b-form-group label="Описание:">
-            <b-form-textarea id="video-description" type="text" rows="5" v-model="description"/>
-          </b-form-group>
-
-          <b-form-group label="Тэги:">
-            <vue-tags-input
-                v-model="tag"
-                :tags="tags"
-                :addOnKey="[32]"
-                placeholder="До четырёх тэгов через пробел"
-                :maxTags="4"
-                class=""
-                @tags-changed="newTags => tags = newTags"/>
-          </b-form-group>
-
-          <b-alert variant="danger" ref="errors">{{ message }}</b-alert>
-          <div id="loader-wrap" v-if="spinning">
-            <div class="loader">Загрузка...</div>
           </div>
-          <b-button id="upload" v-if="!spinning" ref="upload" @click="upload" variant="dark"> Загрузить</b-button>
-        </b-form>
-        <div v-if="video_src" style="margin-top: 5em; margin-bottom: 2em">
-          <h5>Как будет выглядеть пост:</h5>
-          <div class="d-flex">
-            <div>
-              <h6><strong>viboard.me</strong></h6>
-              <SinglePreview :author="login"
-                             :previewSrc="preview_url"
-                             :title="title"
-                             :description="description"/>
-            </div>
-            <div>
-              <h6><strong>golos.io</strong></h6>
-              <GolosPreview :author="login"
-                            :previewSrc="preview_url"
-                            :title="title"
-                            :description="description"/>
-            </div>
+        </b-form-group>
+        <canvas ref="canvas" style="display: none"></canvas>
+        <b-form-group label="Название:">
+          <b-form-input id="video-title" type="text" v-model="title"/>
+        </b-form-group>
+
+        <b-form-group label="Описание:">
+          <b-form-textarea id="video-description" type="text" rows="5" v-model="description"/>
+        </b-form-group>
+
+        <b-form-group label="Тэги:">
+          <vue-tags-input
+              v-model="tag"
+              :tags="tags"
+              :addOnKey="[32]"
+              placeholder="До четырёх тэгов через пробел"
+              :maxTags="4"
+              class=""
+              @tags-changed="newTags => tags = newTags"/>
+        </b-form-group>
+
+        <b-alert variant="danger" ref="errors">{{ message }}</b-alert>
+        <div id="loader-wrap" v-if="spinning">
+          <div class="loader">Загрузка...</div>
+        </div>
+        <b-button id="upload" v-if="!spinning" ref="upload" @click="upload" variant="dark"> Загрузить</b-button>
+      </b-form>
+      <div v-if="video_src" style="margin-top: 5em; margin-bottom: 2em">
+        <h5>Как будет выглядеть пост:</h5>
+        <div class="d-flex">
+          <div>
+            <h6><strong>viboard.me</strong></h6>
+            <SinglePreview :author="login"
+                           :previewSrc="preview_url"
+                           :title="title"
+                           :description="description"/>
+          </div>
+          <div>
+            <h6><strong>golos.io</strong></h6>
+            <GolosPreview :author="login"
+                          :previewSrc="preview_url"
+                          :title="title"
+                          :description="description"/>
           </div>
         </div>
-      </b-col>
-    </AppInner>
-  </div>
+      </div>
+    </b-col>
+  </Navigation>
 </template>
 
 <script>

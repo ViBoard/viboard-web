@@ -1,34 +1,29 @@
 <template>
-    <div id="app">
-        <Navigation/>
-        <AppInner>
-            <Category title="Популярное"
-                      gridClass="grid-big"
-                      :nVideos="3"
-                      :ap="true"
-                      method="hot"
-            />
-            <Category title="Актуальное"
-                      gridClass="grid-medium"
-                      :nVideos="3"
-                      :isPreview="true"
-                      method="trending"
-            />
-        </AppInner>
-    </div>
+  <Navigation>
+    <Category title="Популярное"
+              gridClass="grid-big"
+              :nVideos="3"
+              :ap="true"
+              method="hot"
+    />
+    <Category title="Актуальное"
+              gridClass="grid-medium"
+              :nVideos="3"
+              :isPreview="true"
+              method="trending"
+    />
+  </Navigation>
 </template>
 
 <script>
-    import Navigation from './Navigation.vue'
     import Category from './Category.vue'
-    import AppInner from './AppInner.vue'
+    import Navigation from './Navigation.vue'
     
     export default {
         name: 'app',
         components: {
-            Navigation,
             Category,
-            AppInner,
+            Navigation,
         },
         
         created: function () {
