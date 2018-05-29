@@ -146,7 +146,7 @@
     },
 
     created: function() {
-      this.update();
+            this.update();
     }
     }
 </script>

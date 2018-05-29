@@ -79,9 +79,10 @@
                                 var keys = golos.auth.getPrivateKeys(login, password, roles)
 
                                 if (verifyResult) {
-                                    Cookies.set("login", login)
-                                    Cookies.set("posting_private", keys.posting)
-                                    vm.$emit("login_success")
+                                    Cookies.set("login", login);
+                                    Cookies.set("posting_private", keys.posting);
+                                    vm.$emit("login_success");
+                                    location.reload();
                                 } else {
                                     vm.password_is_invalid = true
                                     vm.password_feedback = "Неверный пароль"
