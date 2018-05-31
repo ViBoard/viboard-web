@@ -20,12 +20,6 @@
          :ap="false"
          method="personal"
          />
-      <Category title=""
-         gridClass="grid-big"
-         :nVideos="0"
-         :ap="false"
-         method="personal"
-         />
    </Navigation>
 </template>
 
