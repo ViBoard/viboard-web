@@ -75,13 +75,13 @@
         </b-navbar>
         <b-container fluid id="app-container">
           <b-row>
-            <b-col cols="3" class="d-none d-lg-block" id="side-col">
+            <b-col cols="2" class="d-none d-lg-block" id="side-col">
               <div v-for="item in SideLinksList">
                 <a class="nav-link text-dark" :href="item.href">
                     <i :class="item.icon"></i> {{ item.text }}
                 </a>
               </div>
-              <div cols="9" v-for="item in SubsList">
+              <div cols="10" v-for="item in SubsList">
                 <a class="nav-link text-dark sub" :href="item.href">
                   {{ item.text }}
                 </a>
