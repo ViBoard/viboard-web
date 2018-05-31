@@ -3,8 +3,7 @@
     <b-container>
       <b-row>
         <b-col>
-            <plyr-video id="video-container"
-                        :poster="previewSrc"
+            <plyr-video :poster="previewSrc"
                         :videos="this.videos"
                         :autoplay="ap"
                         :muted="muted"
@@ -166,12 +165,6 @@
 
   #similar-small {
     width: 40%;
-  }
-  
-  #video-container {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
   }
 </style>
 

@@ -1,7 +1,7 @@
 <template>
     <div id="navigation">
         <b-navbar toggleable="lg" fixed="top" class="bg-white" id="header">
-          <b-container>
+          <b-container fluid>
             <b-navbar-brand href="/" id="logo">
                 <img height="40" src="./assets/logo.jpg">
             </b-navbar-brand>
@@ -32,6 +32,7 @@
             </b-collapse>
             <b-collapse is-nav id="nav_collapse" v-else>
                 <b-navbar-nav class="ml-auto">
+                    <div class="pad"></div>
                     <b-button class="nav-button" variant="outline-primary" v-b-modal.login_modal> Загрузить видео на golos.io </b-button>
                     <b-button class="nav-link" variant="link" v-b-modal.signup_modal>Регистрация</b-button>
                     <b-button class="nav-link" variant="link" v-b-modal.login_modal>Войти</b-button>
@@ -72,7 +73,7 @@
           </b-container>
             
         </b-navbar>
-        <b-container id="app-container">
+        <b-container fluid id="app-container">
           <b-row>
             <b-col cols="3" class="d-none d-lg-block" id="side-col">
               <div v-for="item in SideLinksList">
@@ -323,14 +324,12 @@
       right: 2em;
     }
 
-    
-
     @media (max-width: 992px) {
      #nav_collapse {
         background-color: #fff;
+        width: 100%;
         position: fixed;
         top: 0;
-        right: 20%;
         padding: 3em;
         -webkit-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
         -moz-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
@@ -338,4 +337,7 @@
       }
     }
 
+    .pad {
+        margin-top: 3em;
+    }
 </style>
