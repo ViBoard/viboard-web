@@ -1,16 +1,13 @@
 <template>
-    <div id="app">
-        <Navigation/>
-        <AppInner>
-            <Category title="Новое"
-                      gridClass="grid-small"
-                      :nVideos="33"
-                      :isPreview="true"
-                      :custom_player="false"
-                      method="new"
-            />
-        </AppInner>
-    </div>
+  <Navigation>
+    <Category title="Новое"
+              gridClass="grid-small"
+              :nVideos="33"
+              :isPreview="true"
+              :custom_player="false"
+              method="new"
+    />
+  </Navigation>
 </template>
 
 <script>

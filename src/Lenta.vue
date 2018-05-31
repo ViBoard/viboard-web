@@ -1,15 +1,12 @@
 <template>
-    <div id="app">
-        <Navigation/>
-        <AppInner>
-            <Category title="Лента"
-                      gridClass="grid-medium"
-                      :nVideos="3"
-                      :ap="false"
-                      method="lenta"
-            />
-        </AppInner>
-    </div>
+  <Navigation>
+    <Category title="Лента"
+              gridClass="grid-medium"
+              :nVideos="3"
+              :ap="false"
+              method="lenta"
+    />
+  </Navigation>
 </template>
 
 <script>

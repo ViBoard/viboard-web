@@ -1,13 +1,11 @@
 <template>
     <div id="navigation">
         <b-navbar toggleable="lg" fixed="top" class="bg-white" id="header">
+          <b-container fluid>
             <b-navbar-brand href="/" id="logo">
                 <img height="40" src="./assets/logo.jpg">
             </b-navbar-brand>
-
-
-            <b-navbar-toggle class="ml-auto" target="nav_collapse"></b-navbar-toggle>
-            <b-collapse is-nav id="nav_collapse" v-if="logged_in">
+               <b-collapse is-nav id="nav_collapse" v-if="logged_in">
                 <b-navbar-nav>
                     <b-navbar-brand :href="link">
                         <img :src="imglogo" height="30" id="avatar-nav" class="rounded-circle">
@@ -21,26 +19,33 @@
                     <b-button class="nav-button" variant="outline-primary" href="/upload"> Загрузить видео на golos.io </b-button>
                     <b-button class="nav-link" variant="link" @click="signout"> Выйти </b-button>
                 </b-navbar-nav>
+              <div v-for="item in SideLinksList" class="d-lg-none">
+                <a class="nav-link text-dark" :href="item.href">
+                    <i :class="item.icon"></i> {{ item.text }}
+                </a>
+              </div>
+              <div cols="9" v-for="item in SubsList" class="d-lg-none">
+                <a class="nav-link text-dark sub" :href="item.href">
+                  {{ item.text }}
+                </a>
+              </div>            
             </b-collapse>
             <b-collapse is-nav id="nav_collapse" v-else>
                 <b-navbar-nav class="ml-auto">
+                    <div class="pad"></div>
                     <b-button class="nav-button" variant="outline-primary" v-b-modal.login_modal> Загрузить видео на golos.io </b-button>
                     <b-button class="nav-link" variant="link" v-b-modal.signup_modal>Регистрация</b-button>
                     <b-button class="nav-link" variant="link" v-b-modal.login_modal>Войти</b-button>
                 </b-navbar-nav>
+              <div v-for="item in SideLinksList" class="d-lg-none">
+                <a class="nav-link text-dark" :href="item.href">
+                    <i :class="item.icon"></i> {{ item.text }}
+                </a>
+              </div>
             </b-collapse>
-            <b-collapse is-nav id="nav_collapse"
-            <b-navbar-nav class="d-lg-none">
-                <div v-for="item in SideLinksList">
-                    <a class="nav-link text-dark" :href="item.href">
-                        <i :class="item.icon"></i> {{ item.text }}
-                    </a>
-                </div>
-            </b-navbar-nav>
-            </b-collapse>
+            <b-navbar-toggle class="ml-auto" id="navbar-toggler" target="nav_collapse"></b-navbar-toggle>
 
-
-            <b-modal id="signup_modal"
+           <b-modal id="signup_modal"
                      ref="signup_modal"
                      title="Регистрация"
                      :ok-title="reg_loading ? 'Загрузка...' : reg_finished ? 'OK' : 'Зарегистрироваться'"
@@ -65,25 +70,30 @@
                 <LoginForm ref="login_form"
                            @login_success="login_success"/>
             </b-modal>
+          </b-container>
+            
         </b-navbar>
-        <div class="container-fluid position-fixed d-none d-lg-block bg-light" style="padding-top: 7em; height:100%">
-            <b-row>
-                <b-col id="sidebar" lg="3">
-                    <div v-for="item in SideLinksList">
-                        <a class="nav-link text-dark" :href="item.href">
-                            <i :class="item.icon"></i> {{ item.text }}
-                        </a>
-                    </div>
-                    <b-col id="subs">
-                        <div v-for="item in SubsList">
-                            <a class="nav-link text-dark sub" :href="item.href">
-                                {{ item.text }}
-                            </a>
-                        </div>
-                    </b-col>
-                </b-col>
-            </b-row>
-        </div>
+        <b-container fluid id="app-container">
+          <b-row>
+            <b-col cols="2" class="d-none d-lg-block" id="side-col">
+              <div v-for="item in SideLinksList">
+                <a class="nav-link text-dark" :href="item.href">
+                    <i :class="item.icon"></i> {{ item.text }}
+                </a>
+              </div>
+              <div cols="10" v-for="item in SubsList">
+                <a class="nav-link text-dark sub" :href="item.href">
+                  {{ item.text }}
+                </a>
+              </div>
+            </b-col>
+            <b-col>
+              <slot>
+
+              </slot>
+            </b-col>
+          </b-row>
+        </b-container>
     </div>
 </template>
 
@@ -263,6 +273,14 @@
         transform: translateX(-50%);
     }
 
+    #app-container {
+        margin-top: 5em;
+    }
+
+    #side-col {
+      margin-top: 1em;
+    }
+
     .fas {
         margin-right: 3em;
     }
@@ -298,5 +316,28 @@
         padding: 8px;
         padding-left: 30px;
         padding-right: 30px;
+    }
+
+    #navbar-toggler {
+      position: fixed;
+      top: 1em;
+      right: 2em;
+    }
+
+    @media (max-width: 992px) {
+     #nav_collapse {
+        background-color: #fff;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        padding: 3em;
+        -webkit-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+        -moz-box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+        box-shadow: 0px 1px 5px 0px rgba(136, 136, 136, 0.2);
+      }
+    }
+
+    .pad {
+        margin-top: 3em;
     }
 </style>

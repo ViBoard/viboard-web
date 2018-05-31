@@ -1,29 +1,26 @@
 <template>
-    <div id="app">
-        <Navigation/>
-        <AppInner>
-            <img :src="imghat" id="hat" class="img-fluid">
-            <div id="personal_header" class="info">
-                <img :src="imglogo" id="avatar" class="rounded-circle">
-                <div id="info_block">
-                    <p id="nick">{{nickname}} </p>
-                    <p id="subscribers">{{subscribers}} подписчиков</p>
-                </div>
-                <button type="button" class="btn btn-light btn-lg butt" v-if="done && yet && !own" v-on:click="subs(1)">
-                    Отписаться
-                </button>
-                <button type="button" class="btn btn-light btn-lg butt" v-on:click="subs(0)" v-if="done && !yet && !own">
-                    Подписаться
-                </button>
-            </div>
-            <Category title=""
-                      gridClass="grid-big"
-                      :nVideos="0"
-                      :ap="false"
-                      method="personal"
-            />
-        </AppInner>
-    </div>
+   <Navigation>
+      <img :src="imghat" id="hat" class="img-fluid">
+      <div id="personal_header" class="info">
+         <img :src="imglogo" id="avatar" class="rounded-circle">
+         <div id="info_block">
+            <p id="nick">{{nickname}} </p>
+            <p id="subscribers">{{subscribers}} подписчиков</p>
+         </div>
+         <button type="button" class="btn btn-light btn-lg butt" v-if="done && yet && !own" v-on:click="subs(1)">
+         Отписаться
+         </button>
+         <button type="button" class="btn btn-light btn-lg butt" v-on:click="subs(0)" v-if="done && !yet && !own">
+         Подписаться
+         </button>
+      </div>     
+      <Category title=""
+         gridClass="grid-big"
+         :nVideos="0"
+         :ap="false"
+         method="personal"
+         />
+   </Navigation>
 </template>
 
 <script>
