@@ -13,7 +13,7 @@
          <button type="button" class="btn btn-light btn-lg butt" v-on:click="subs(0)" v-if="done && !yet && !own">
          Подписаться
          </button>
-      </div>
+      </div>     
       <Category title=""
          gridClass="grid-big"
          :nVideos="0"
