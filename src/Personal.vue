@@ -66,52 +66,57 @@
             golos.api.getAccounts([account], function (err, result) {
                 if (!err) {
                     result.forEach(function (item) {
-                        if (item['json_metadata'] !== "") {
-                            function tryHat(URL) {
-                                let tester = new Image()
-                                tester.onerror = HatNotFound()
-                                tester.src = URL
-                            }
+                        if (item['json_metadata'] !== "" && item['json_metadata'] !== "{}") {
+                            let obj = JSON.parse(item['json_metadata']);
+                            console.log("OBJ ", obj);
+                            console.log("ITEM ", item);
                             
-                            function HatNotFound() {
-                                vm.imghat = "../data/hat.png"
-                            }
-                            
-                            let obj = JSON.parse(item['json_metadata'])
-                            console.log("OBJ ", obj)
-                            
-                            if (obj['profile']['cover_image'] !== undefined) {
-                                if (obj['profile']['cover_image'] !== "") {
-                                    try {
-                                        tryHat(obj['profile']['cover_image'])
-                                        vm.imghat = obj['profile']['cover_image']
-                                    }
-                                    catch (e) {
-                                        console.log("ОШИБКА ЗАГРУЗКИ ШАПКИ", e)
+                            if (obj != {}) {
+                                function tryHat(URL) {
+                                    let tester = new Image()
+                                    tester.onerror = HatNotFound()
+                                    tester.src = URL
+                                }
+                                
+                                function HatNotFound() {
+                                    vm.imghat = "../data/hat.png"
+                                }
+                                
+
+                                
+                                if (obj['profile']['cover_image'] != undefined) {
+                                    if (obj['profile']['cover_image'] !== "") {
+                                        try {
+                                            tryHat(obj['profile']['cover_image'])
+                                            vm.imghat = obj['profile']['cover_image']
+                                        }
+                                        catch (e) {
+                                            console.log("ОШИБКА ЗАГРУЗКИ ШАПКИ", e)
+                                        }
                                     }
                                 }
-                            }
-                            
-                            function tryAva(URL) {
-                                let tester = new Image()
-                                tester.onerror = AvaNotFound()
-                                tester.src = URL
-                            }
-                            
-                            function AvaNotFound() {
-                                vm.imglogo = "../data/ava.png"
-                            }
-                            
-                            if (obj['profile']['profile_image'] !== undefined) {
-                                if (obj['profile']['profile_image'] !== "") {
-                                    try {
-                                        tryAva(obj['profile']['profile_image'])
-                                        vm.imglogo = obj['profile']['profile_image']
-                                    }
-                                    catch (e) {
-                                        console.log("ОШИБКА ЗАГРУЗКА АВАТАРКИ", e)
-                                    }
+                                
+                                function tryAva(URL) {
+                                    let tester = new Image()
+                                    tester.onerror = AvaNotFound()
+                                    tester.src = URL
                                 }
+                                
+                                function AvaNotFound() {
+                                    vm.imglogo = "../data/ava.png"
+                                }
+                                
+                                if (obj['profile']['profile_image'] !=   undefined) {
+                                    if (obj['profile']['profile_image'] !== "") {
+                                        try {
+                                            tryAva(obj['profile']['profile_image'])
+                                            vm.imglogo = obj['profile']['profile_image']
+                                        }
+                                        catch (e) {
+                                            console.log("ОШИБКА ЗАГРУЗКА АВАТАРКИ", e)
+                                        }
+                                    }
+                                }   
                             }
                         }
                     })
