@@ -6,6 +6,7 @@ export const getVideoContent = {
                 if (!err) {
                     vm.title = result.title
                     vm.video_id = result.id
+                    console.log("idgetter: ", result.id, vm.video_id)
                     vm.total = result.pending_payout_value
                     // console.log("Tags:", JSON.parse(result.json_metadata).tags);
                     let parsed = vm.parseBody(result.body)
