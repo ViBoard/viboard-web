@@ -110,6 +110,7 @@
             let whileCheck = setInterval(function () {
                 if (vm.contentGot) {
                     console.log("this", vm.tags, vm.author)
+                    document.title = vm.title
                     vm.$refs.similar1.kekule(vm.tags, vm.author, vm.video_id)
                     vm.$refs.similar2.kekule(vm.tags, vm.author, vm.video_id)
                     
@@ -170,4 +171,3 @@
         width: 40%;
     }
 </style>
-
