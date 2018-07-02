@@ -180,6 +180,8 @@
                 }
                 
                 golos.api.getDiscussionsByBlog(query, function (err, result) {
+                    console.log("RESULT", result);
+                    console.log("query", query);
                     if (!err) {
                         for (var i = 0; i < result.length; ++i) {
                             var v = result[i]

@@ -136,6 +136,7 @@
 
     created: function() {
       this.login = Cookies.get('login');
+      document.title = "Загрузить"
     },
 
     methods: {
